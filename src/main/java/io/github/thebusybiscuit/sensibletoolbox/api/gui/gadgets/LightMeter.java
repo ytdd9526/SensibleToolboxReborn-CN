@@ -1,6 +1,6 @@
 package io.github.thebusybiscuit.sensibletoolbox.api.gui.gadgets;
 
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
 
 import io.github.thebusybiscuit.sensibletoolbox.api.LightMeterHolder;
 import io.github.thebusybiscuit.sensibletoolbox.api.gui.InventoryGUI;
@@ -9,7 +9,7 @@ import io.github.thebusybiscuit.sensibletoolbox.api.gui.InventoryGUI;
  * Measures the light intensity for an STB block. The GUI that this gadget
  * is added to must be owned by an STB block which implements
  * {@link LightMeterHolder}.
- * 
+ *
  * @author desht
  */
 public class LightMeter extends MonitorGadget {
@@ -22,7 +22,7 @@ public class LightMeter extends MonitorGadget {
      */
     public LightMeter(InventoryGUI gui) {
         super(gui);
-        Validate.isTrue(gui.getOwningBlock() instanceof LightMeterHolder, "Attempt to install light meter in non-lightmeter-holder block!");
+        Preconditions.checkArgument(gui.getOwningBlock() instanceof LightMeterHolder, "Attempt to install light meter in non-lightmeter-holder block!");
     }
 
     @Override

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -18,7 +18,7 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
  * Serialize a Bukkit {@link Inventory} to or from a {@link String}.
  * <p/>
  * Credit for this goes to Comphenix: https://gist.github.com/aadnk/8138186
- * 
+ *
  * @author Comphenix
  * @author desht
  * @author TheBusyBiscuit
@@ -32,7 +32,7 @@ public final class BukkitSerialization {
     }
 
     public static String toBase64(@Nonnull Inventory inventory, int maxItems) {
-        Validate.notNull(inventory, "Cannot serialize a 'null' Inventory!");
+        Preconditions.checkArgument(inventory != null, "Cannot serialize a 'null' Inventory!");
         if (maxItems <= 0 || maxItems > inventory.getSize()) {
             maxItems = inventory.getSize();
         }

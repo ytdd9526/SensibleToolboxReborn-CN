@@ -19,7 +19,7 @@ import java.util.logging.Level;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -43,10 +43,10 @@ import me.desht.dhutils.text.LogUtils;
  * This class is responsible for managing the data stored at a given {@link Location}.
  * This utilizes a {@link DatabaseManager} in the background and connects to a local
  * SQLite database.
- * 
+ *
  * @author desht
  * @author TheBusyBiscuit
- * 
+ *
  * @see DatabaseManager
  * @see DatabaseTask
  *
@@ -114,7 +114,7 @@ public final class LocationManager {
     }
 
     public void addTicker(@Nonnull BaseSTBBlock stb) {
-        Validate.notNull(stb, "Cannot add a ticker that is null!");
+        Preconditions.checkArgument(stb != null, "Cannot add a ticker that is null!");
 
         Location loc = stb.getLocation();
         World w = loc.getWorld();
@@ -244,7 +244,7 @@ public final class LocationManager {
      *
      * @param loc
      *            the location to check at
-     * 
+     *
      * @return the STB block at the given location, or null if no matching item
      */
     @Nullable
@@ -261,7 +261,7 @@ public final class LocationManager {
      * @param checkSigns
      *            if true, and the location contains a sign, check at
      *            the location that the sign is attached to
-     * 
+     *
      * @return the STB block at the given location, or null if no matching item
      */
     @Nullable
@@ -292,7 +292,7 @@ public final class LocationManager {
      *            the type of STB block required
      * @param <T>
      *            a subclass of BaseSTBBlock
-     * 
+     *
      * @return the STB block at the given location, or null if no matching item
      */
     @Nullable
@@ -312,7 +312,7 @@ public final class LocationManager {
      * @param checkSigns
      *            if true, and the location contains a sign, check at
      *            the location that the sign is attached to
-     * 
+     *
      * @return the STB block at the given location, or null if no matching item
      */
     @Nullable
@@ -331,7 +331,7 @@ public final class LocationManager {
      *
      * @param chunk
      *            the chunk to check
-     * 
+     *
      * @return a {@link List} of STB block objects
      */
     @Nonnull
@@ -544,7 +544,7 @@ public final class LocationManager {
      *            the world to query
      * @param sorted
      *            if true, the array is sorted by block type
-     * 
+     *
      * @return a {@link List} of STB block objects
      */
     @Nonnull

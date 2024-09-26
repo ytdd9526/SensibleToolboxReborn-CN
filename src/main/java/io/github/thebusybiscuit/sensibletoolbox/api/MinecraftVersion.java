@@ -2,7 +2,7 @@ package io.github.thebusybiscuit.sensibletoolbox.api;
 
 import javax.annotation.Nonnull;
 
-import org.apache.commons.lang.Validate;
+import com.google.common.base.Preconditions;
 import org.bukkit.Server;
 
 import io.github.thebusybiscuit.sensibletoolbox.SensibleToolboxPlugin;
@@ -10,10 +10,10 @@ import io.papermc.lib.PaperLib;
 
 /**
  * This enum holds all versions of Minecraft that we currently support.
- * 
+ *
  * @author TheBusyBiscuit
  * @author Walshy
- * 
+ *
  * @see SensibleToolboxPlugin
  *
  */
@@ -50,6 +50,18 @@ public enum MinecraftVersion {
      *
      */
     MINECRAFT_1_18(18, "1.18.x"),
+    /**
+     * This constant represents Minecraft (Java Edition) Version 1.19
+     * (The "The Wild Update" Update)
+     *
+     */
+    MINECRAFT_1_19(19, "1.19.x"),
+    /**
+     * This constant represents Minecraft (Java Edition) Version 1.20
+     * (The "Trails and Tales" Update)
+     *
+     */
+    MINECRAFT_1_20(20, "1.20.x"),
 
     /**
      * This constant represents an exceptional state in which we were unable
@@ -71,7 +83,7 @@ public enum MinecraftVersion {
      * This constructs a new {@link MinecraftVersion} with the given name.
      * This constructor forces the {@link MinecraftVersion} to be real.
      * It must be a real version of Minecraft.
-     * 
+     *
      * @param majorVersion
      *            The major version of minecraft as an {@link Integer}
      * @param name
@@ -87,7 +99,7 @@ public enum MinecraftVersion {
      * This constructs a new {@link MinecraftVersion} with the given name.
      * A virtual {@link MinecraftVersion} (unknown or unit test) is not an actual
      * version of Minecraft but rather a state of the {@link Server} software.
-     * 
+     *
      * @param name
      *            The display name of this {@link MinecraftVersion}
      * @param virtual
@@ -101,7 +113,7 @@ public enum MinecraftVersion {
 
     /**
      * This returns the name of this {@link MinecraftVersion} in a readable format.
-     * 
+     *
      * @return The name of this {@link MinecraftVersion}
      */
     public @Nonnull String getName() {
@@ -114,7 +126,7 @@ public enum MinecraftVersion {
      * a state of the {@link Server} software used.
      * Virtual {@link MinecraftVersion MinecraftVersions} include "UNKNOWN" and
      * "UNIT TEST".
-     * 
+     *
      * @return Whether this {@link MinecraftVersion} is virtual or not
      */
     public boolean isVirtual() {
@@ -129,10 +141,10 @@ public enum MinecraftVersion {
      * It is equivalent to the "major" version
      * <p>
      * Example: {@literal "1.13"} returns {@literal 13}
-     * 
+     *
      * @param minecraftVersion
      *            The {@link Integer} version to match
-     * 
+     *
      * @return Whether this {@link MinecraftVersion} matches the specified version id
      */
     public boolean isMinecraftVersion(int minecraftVersion) {
@@ -142,16 +154,16 @@ public enum MinecraftVersion {
     /**
      * This method checks whether this {@link MinecraftVersion} is newer or equal to
      * the given {@link MinecraftVersion},
-     * 
+     *
      * An unknown version will default to {@literal false}.
-     * 
+     *
      * @param version
      *            The {@link MinecraftVersion} to compare
-     * 
+     *
      * @return Whether this {@link MinecraftVersion} is newer or equal to the given {@link MinecraftVersion}
      */
     public boolean isAtLeast(@Nonnull MinecraftVersion version) {
-        Validate.notNull(version, "A Minecraft version cannot be null!");
+        Preconditions.checkArgument(version != null, "A Minecraft version cannot be null!");
 
         if (this == UNKNOWN) {
             return false;
@@ -162,16 +174,16 @@ public enum MinecraftVersion {
 
     /**
      * This checks whether this {@link MinecraftVersion} is older than the specified {@link MinecraftVersion}.
-     * 
+     *
      * An unknown version will default to {@literal true}.
-     * 
+     *
      * @param version
      *            The {@link MinecraftVersion} to compare
-     * 
+     *
      * @return Whether this {@link MinecraftVersion} is older than the given one
      */
     public boolean isBefore(@Nonnull MinecraftVersion version) {
-        Validate.notNull(version, "A Minecraft version cannot be null!");
+        Preconditions.checkArgument(version != null, "A Minecraft version cannot be null!");
 
         if (this == UNKNOWN) {
             return true;

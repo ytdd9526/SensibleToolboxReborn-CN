@@ -8,7 +8,6 @@ import java.util.UUID;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.apache.commons.lang.math.IntRange;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -28,7 +27,7 @@ import me.desht.dhutils.Debugger;
 
 /**
  * Utility methods to interact with vanilla inventories.
- * 
+ *
  * @author desht
  * @author TheBusyBiscuit
  */
@@ -172,7 +171,7 @@ public final class VanillaInventoryUtils {
      * @param pullerId
      *            UUID of the player doing the pulling
      *            (may be null or the UUID of an offline player)
-     * 
+     *
      * @return the items pulled, or null if nothing was pulled
      */
     @Nullable
@@ -209,7 +208,7 @@ public final class VanillaInventoryUtils {
             return null;
         }
         IntRange range = getExtractionSlots(targetInv);
-        for (int slot = range.getMinimumInteger(); slot <= range.getMaximumInteger(); slot++) {
+        for (int slot = range.getMinimumInt(); slot <= range.getMaximumInt(); slot++) {
             ItemStack stack = targetInv.getItem(slot);
 
             if (stack != null) {
