@@ -211,7 +211,7 @@ public class MultiBuilder extends BaseSTBItem implements Chargeable {
                 updateHeldItemStack(player, event.getHand());
             } else if (material != null) {
                 // replace multiple blocks
-                int sharpness = event.getItem().getEnchantmentLevel(Enchantment.DAMAGE_ALL);
+                int sharpness = event.getItem().getEnchantmentLevel(Enchantment.SHARPNESS);
                 int layers = 3 + sharpness;
                 startSwap(event.getPlayer(), event.getItem(), this, clicked, material, layers);
                 Debugger.getInstance().debug(this + ": replacing " + layers + " layers of blocks");
@@ -239,7 +239,7 @@ public class MultiBuilder extends BaseSTBItem implements Chargeable {
         }
 
         int chargePerOp = getItemConfig().getInt("scu_per_op", DEF_SCU_PER_OPERATION);
-        double chargeNeeded = chargePerOp * Math.pow(0.8, item.getEnchantmentLevel(Enchantment.DIG_SPEED));
+        double chargeNeeded = chargePerOp * Math.pow(0.8, item.getEnchantmentLevel(Enchantment.EFFICIENCY));
         queue.add(new SwapRecord(player, origin, origin.getType(), target, maxBlocks, builder, -1, chargeNeeded));
     }
 
@@ -309,7 +309,7 @@ public class MultiBuilder extends BaseSTBItem implements Chargeable {
 
     private void doBuild(Player player, EquipmentSlot hand, ItemStack item, Block source, Set<Block> actualBlocks) {
         int chargePerOp = getItemConfig().getInt("scu_per_op", DEF_SCU_PER_OPERATION);
-        double chargeNeeded = chargePerOp * actualBlocks.size() * Math.pow(0.8, item.getEnchantmentLevel(Enchantment.DIG_SPEED));
+        double chargeNeeded = chargePerOp * actualBlocks.size() * Math.pow(0.8, item.getEnchantmentLevel(Enchantment.EFFICIENCY));
         // we know at this point that the tool has sufficient charge and that the player has sufficient material
         setCharge(getCharge() - chargeNeeded);
         ItemCost cost = new ItemCost(source.getType(), actualBlocks.size());
@@ -325,8 +325,8 @@ public class MultiBuilder extends BaseSTBItem implements Chargeable {
 
     @Nonnull
     private Set<Block> getBuildCandidates(Player player, ItemStack item, Block clickedBlock, BlockFace blockFace) {
-        int sharpness = item.getEnchantmentLevel(Enchantment.DAMAGE_ALL);
-        double chargePerOp = getItemConfig().getInt("scu_per_op", DEF_SCU_PER_OPERATION) * Math.pow(0.8, item.getEnchantmentLevel(Enchantment.DIG_SPEED));
+        int sharpness = item.getEnchantmentLevel(Enchantment.SHARPNESS);
+        double chargePerOp = getItemConfig().getInt("scu_per_op", DEF_SCU_PER_OPERATION) * Math.pow(0.8, item.getEnchantmentLevel(Enchantment.EFFICIENCY));
         int ch = (int) (getCharge() / chargePerOp);
 
         if (ch == 0) {
