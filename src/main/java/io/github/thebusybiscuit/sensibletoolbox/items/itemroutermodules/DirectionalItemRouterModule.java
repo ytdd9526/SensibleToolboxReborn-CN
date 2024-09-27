@@ -274,6 +274,12 @@ public abstract class DirectionalItemRouterModule extends ItemRouterModule imple
     }
 
     protected boolean doPull(BlockFace from, Location loc) {
+
+        if (getItemRouter() != null && getItemRouter().getBufferItem() != null) {
+            if (getFilter() != null && !getFilter().shouldPass(getItemRouter().getBufferItem())) {
+                return false;
+            }
+        }
         ItemStack inBuffer = getItemRouter().getBufferItem();
 
         if (inBuffer != null && inBuffer.getAmount() >= inBuffer.getType().getMaxStackSize()) {
@@ -304,9 +310,9 @@ public abstract class DirectionalItemRouterModule extends ItemRouterModule imple
         return false;
     }
 
-    protected boolean vanillaInsertion(Block target, int amount, BlockFace side) {
+    protected boolean vanillaInsertion(Block target, int amount, BlockFace face) {
         ItemStack buffer = getItemRouter().getBufferItem();
-        int nInserted = VanillaInventoryUtils.vanillaInsertion(target, buffer, amount, side, false, getItemRouter().getOwner());
+        int nInserted = VanillaInventoryUtils.vanillaInsertion(target, buffer, amount, face, false, getItemRouter().getOwner());
 
         if (nInserted == 0) {
             // no insertion happened
