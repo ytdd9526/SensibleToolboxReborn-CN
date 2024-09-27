@@ -29,6 +29,7 @@ import me.desht.dhutils.MiscUtil;
  * @author desht
  *
  */
+@SuppressWarnings("JavadocDeclaration")
 public abstract class AbstractCommand implements Comparable<AbstractCommand> {
 
     private static final Pattern quotedStringRegex = Pattern.compile("[^\\s\"']+|\"([^\"]*)\"|'([^']*)'");

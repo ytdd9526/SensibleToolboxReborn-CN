@@ -18,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.material.Attachable;
 import org.bukkit.util.Vector;
 
+@SuppressWarnings("JavadocDeclaration")
 public final class BlockUtil {
 
     private BlockUtil() {}

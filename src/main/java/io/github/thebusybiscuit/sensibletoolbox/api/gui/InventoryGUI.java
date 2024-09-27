@@ -101,7 +101,7 @@ public interface InventoryGUI {
     /**
      * Get the item in the given inventory slot. The slot must have
      * previously been marked as an item slot with
-     * {@link #setSlotType(int, me.desht.sensibletoolbox.api.gui.SlotType)}
+     * {@link #setSlotType(int, io.github.thebusybiscuit.sensibletoolbox.api.gui.SlotType)}
      *
      * @param slot
      *            the slot to check
@@ -113,7 +113,7 @@ public interface InventoryGUI {
     /**
      * Change the item in the given inventory slot. The slot must have
      * previously been marked as an item slot with
-     * {@link #setSlotType(int, me.desht.sensibletoolbox.api.gui.SlotType)}
+     * {@link #setSlotType(int, io.github.thebusybiscuit.sensibletoolbox.api.gui.SlotType)}
      *
      * @param slot
      *            the slot to update

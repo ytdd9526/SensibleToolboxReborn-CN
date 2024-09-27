@@ -18,6 +18,7 @@ import org.bukkit.plugin.Plugin;
  * @author TheBusyBiscuit
  *
  */
+@SuppressWarnings("JavadocDeclaration")
 public final class LogUtils {
 
     private LogUtils() {}

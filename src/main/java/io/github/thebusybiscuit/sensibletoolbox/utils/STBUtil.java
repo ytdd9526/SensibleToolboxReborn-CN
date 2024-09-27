@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import com.google.common.base.Strings;
 import com.google.common.base.Preconditions;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -224,15 +223,15 @@ public final class STBUtil {
     public static ChatColor dyeColorToChatColor(@Nonnull DyeColor dyeColor) {
         switch (dyeColor) {
             case BLACK:
+            case GRAY:
                 return ChatColor.DARK_GRAY;
             case BLUE:
                 return ChatColor.DARK_BLUE;
             case BROWN:
+            case ORANGE:
                 return ChatColor.GOLD;
             case CYAN:
                 return ChatColor.AQUA;
-            case GRAY:
-                return ChatColor.DARK_GRAY;
             case GREEN:
                 return ChatColor.DARK_GREEN;
             case LIGHT_BLUE:
@@ -240,9 +239,6 @@ public final class STBUtil {
             case LIME:
                 return ChatColor.GREEN;
             case MAGENTA:
-                return ChatColor.LIGHT_PURPLE;
-            case ORANGE:
-                return ChatColor.GOLD;
             case PINK:
                 return ChatColor.LIGHT_PURPLE;
             case PURPLE:
@@ -286,24 +282,6 @@ public final class STBUtil {
             case GREEN_WOOL:
             case RED_WOOL:
             case BLACK_WOOL:
-                return true;
-            case WHITE_CARPET:
-            case ORANGE_CARPET:
-            case MAGENTA_CARPET:
-            case LIGHT_BLUE_CARPET:
-            case YELLOW_CARPET:
-            case LIME_CARPET:
-            case PINK_CARPET:
-            case GRAY_CARPET:
-            case LIGHT_GRAY_CARPET:
-            case CYAN_CARPET:
-            case PURPLE_CARPET:
-            case BLUE_CARPET:
-            case BROWN_CARPET:
-            case GREEN_CARPET:
-            case RED_CARPET:
-            case BLACK_CARPET:
-                return true;
             case GLASS:
             case WHITE_STAINED_GLASS:
             case ORANGE_STAINED_GLASS:
@@ -321,7 +299,22 @@ public final class STBUtil {
             case GREEN_STAINED_GLASS:
             case RED_STAINED_GLASS:
             case BLACK_STAINED_GLASS:
-                return true;
+            case WHITE_CARPET:
+            case ORANGE_CARPET:
+            case MAGENTA_CARPET:
+            case LIGHT_BLUE_CARPET:
+            case YELLOW_CARPET:
+            case LIME_CARPET:
+            case PINK_CARPET:
+            case GRAY_CARPET:
+            case LIGHT_GRAY_CARPET:
+            case CYAN_CARPET:
+            case PURPLE_CARPET:
+            case BLUE_CARPET:
+            case BROWN_CARPET:
+            case GREEN_CARPET:
+            case RED_CARPET:
+            case BLACK_CARPET:
             case GLASS_PANE:
             case WHITE_STAINED_GLASS_PANE:
             case ORANGE_STAINED_GLASS_PANE:
@@ -339,7 +332,6 @@ public final class STBUtil {
             case GREEN_STAINED_GLASS_PANE:
             case RED_STAINED_GLASS_PANE:
             case BLACK_STAINED_GLASS_PANE:
-                return true;
             case TERRACOTTA:
             case WHITE_TERRACOTTA:
             case ORANGE_TERRACOTTA:
@@ -357,7 +349,6 @@ public final class STBUtil {
             case GREEN_TERRACOTTA:
             case RED_TERRACOTTA:
             case BLACK_TERRACOTTA:
-                return true;
             case WHITE_CONCRETE:
             case ORANGE_CONCRETE:
             case MAGENTA_CONCRETE:
@@ -374,6 +365,7 @@ public final class STBUtil {
             case GREEN_CONCRETE:
             case RED_CONCRETE:
             case BLACK_CONCRETE:
+                return true;
             default:
                 return false;
         }

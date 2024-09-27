@@ -269,7 +269,7 @@ public abstract class BaseSTBBlock extends BaseSTBItem {
      * Check if this block may be interacted with by the player of the given
      * UUID, based on its current security settings. Note that no player
      * permission check is done here; see
-     * {@link BaseSTBItem#checkPlayerPermission(org.bukkit.entity.Player, me.desht.sensibletoolbox.api.items.BaseSTBItem.ItemAction)}.
+     * {@link BaseSTBItem#checkPlayerPermission(org.bukkit.permissions.Permissible, io.github.thebusybiscuit.sensibletoolbox.api.items.ItemAction)}.
      *
      * @param uuid
      *            the UUID to check

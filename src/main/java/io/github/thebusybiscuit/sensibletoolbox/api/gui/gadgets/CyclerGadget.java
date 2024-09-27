@@ -84,7 +84,7 @@ public abstract class CyclerGadget<T extends Enum<T>> extends ClickableGadget {
      *            the enum value for which the texture is being defined
      * @param color
      *            color to use in the texture's tooltip
-     * @param texture
+     * @param type
      *            material to use for the texture
      * @param lore
      *            extra tooltip text

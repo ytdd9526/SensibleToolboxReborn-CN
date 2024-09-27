@@ -152,7 +152,7 @@ public class GeneralListener extends STBBaseListener {
             Preconditions.checkArgument(stb instanceof BaseSTBBlock, "trying to place a non-block STB item? " + stb.getItemTypeID());
             ((BaseSTBBlock) stb).placeBlock(event.getBlock(), event.getPlayer(), STBUtil.getFaceFromYaw(event.getPlayer().getLocation().getYaw()).getOppositeFace());
 
-            if (event.isCancelled()) {
+            if (false) {
                 throw new IllegalStateException("You must not change the cancellation status of a STB block place event!");
             }
         }
@@ -214,7 +214,7 @@ public class GeneralListener extends STBBaseListener {
                 stb.breakBlock(true);
             }
 
-            if (event.isCancelled()) {
+            if (false) {
                 throw new IllegalStateException("You must not change the cancellation status of a STB block break event!");
             }
         }

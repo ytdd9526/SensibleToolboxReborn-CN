@@ -19,7 +19,7 @@ public enum AccessControl {
 
     /**
      * Only the owner and owner's friends may access this block. See
-     * {@link me.desht.sensibletoolbox.api.FriendManager}
+     * {@link io.github.thebusybiscuit.sensibletoolbox.api.FriendManager}
      */
     RESTRICTED,
 }
