@@ -63,7 +63,7 @@ public class BioEngine extends Generator {
         fuelItems.addFuel(new ItemStack(Material.SUGAR_CANE), true, 8, 100);
         fuelItems.addFuel(new ItemStack(Material.NETHER_WART), true, 12, 140);
         fuelItems.addFuel(new ItemStack(Material.DIRT), true, 0.5, 20);
-        fuelItems.addFuel(new ItemStack(Material.GRASS), true, 0.5, 20);
+        fuelItems.addFuel(new ItemStack(Material.GRASS_BLOCK), true, 0.5, 20);
 
         for (Material flower : Tag.SMALL_FLOWERS.getValues()) {
             fuelItems.addFuel(new ItemStack(flower), true, 11, 80);
