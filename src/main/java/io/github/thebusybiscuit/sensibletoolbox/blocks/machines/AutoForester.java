@@ -12,6 +12,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -71,10 +72,11 @@ public class AutoForester extends AutoFarmingMachine {
     @Override
     public void onBlockRegistered(Location location, boolean isPlacing) {
         int i = RADIUS / 2;
+        Block block = location.getBlock();
 
         for (int x = -i; x <= i; x++) {
             for (int z = -i; z <= i; z++) {
-                blocks.add(new Location(location.getWorld(), location.getBlockX() + (double) x, location.getBlockY() + 2.0, location.getBlockZ() + (double) z).getBlock());
+                blocks.add(block.getRelative(x, 2, z));
             }
         }
 
@@ -108,7 +110,11 @@ public class AutoForester extends AutoFarmingMachine {
                             Optional<Material> sapling = MaterialConverter.getSaplingFromLog(b.getType());
 
                             if (sapling.isPresent()) {
-                                b.setType(sapling.get());
+                                if (Tag.DIRT.isTagged(b.getRelative(BlockFace.DOWN).getType())) {
+                                    b.setType(sapling.get());
+                                } else {
+                                    b.setType(Material.AIR);
+                                }
                             } else {
                                 b.setType(Material.AIR);
                             }
