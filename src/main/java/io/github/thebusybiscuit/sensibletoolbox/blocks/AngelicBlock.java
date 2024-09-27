@@ -4,6 +4,7 @@ import javax.annotation.Nonnull;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -71,10 +72,12 @@ public class AngelicBlock extends BaseSTBBlock {
             if (b.isEmpty() && SensibleToolbox.getProtectionManager().hasPermission(p, b, Interaction.PLACE_BLOCK) && isWithinWorldBounds(b)) {
                 ItemStack stack = event.getItem();
 
-                if (stack.getAmount() > 1) {
-                    stack.setAmount(stack.getAmount() - 1);
-                } else {
-                    stack.setAmount(0);
+                if (p.getGameMode() != GameMode.CREATIVE) {
+                    if (stack.getAmount() > 1) {
+                        stack.setAmount(stack.getAmount() - 1);
+                    } else {
+                        stack.setAmount(0);
+                    }
                 }
 
                 b.setType(getMaterial());
