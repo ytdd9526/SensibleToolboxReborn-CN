@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Ageable;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -80,12 +81,12 @@ public class AutoFarm extends AutoFarmingMachine {
 
     @Override
     public void onBlockRegistered(Location location, boolean isPlacing) {
-        int range = RADIUS / 2;
+        int i = RADIUS;
         Block block = location.getBlock();
 
-        for (int x = -range; x <= range; x++) {
-            for (int z = -range; z <= range; z++) {
-                blocks.add(block.getRelative(x, 0, z));
+        for (int x = -i; x <= i; x++) {
+            for (int z = -i; z <= i; z++) {
+                blocks.add(block.getRelative(x, 2, z));
             }
         }
 
@@ -101,9 +102,17 @@ public class AutoFarm extends AutoFarmingMachine {
                         Ageable ageable = (Ageable) crop.getBlockData();
 
                         if (ageable.getAge() >= ageable.getMaximumAge()) {
-                            setCharge(getCharge() - getScuPerCycle());
+                            if (getCharge() >= getScuPerCycle()) {
+                                setCharge(getCharge() - getScuPerCycle());
+                            } else {
+                                break;
+                            }
 
-                            ageable.setAge(0);
+                            BlockData data = crop.getBlockData();
+                            Ageable cropData = (Ageable) data;
+                            cropData.setAge(0);
+
+                            crop.setBlockData(data);
                             crop.getWorld().playEffect(crop.getLocation(), Effect.STEP_SOUND, crop.getType());
                             setJammed(!output(crops.get(crop.getType())));
                             break;
