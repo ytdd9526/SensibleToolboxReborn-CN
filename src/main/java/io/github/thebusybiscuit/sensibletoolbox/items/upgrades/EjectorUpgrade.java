@@ -44,11 +44,6 @@ public class EjectorUpgrade extends AbstractMachineUpgrade implements Directiona
     }
 
     @Override
-    public boolean hasGlow() {
-        return true;
-    }
-
-    @Override
     public Material getMaterial() {
         return Material.QUARTZ;
     }

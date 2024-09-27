@@ -21,11 +21,6 @@ public class SpeedUpgrade extends AbstractMachineUpgrade {
     }
 
     @Override
-    public boolean hasGlow() {
-        return true;
-    }
-
-    @Override
     public String getItemName() {
         return "Speed Upgrade";
     }

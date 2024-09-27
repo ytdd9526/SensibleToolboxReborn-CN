@@ -39,11 +39,6 @@ public class GoldDust extends BaseSTBItem {
     }
 
     @Override
-    public boolean hasGlow() {
-        return true;
-    }
-
-    @Override
     public ItemStack getSmeltingResult() {
         return new ItemStack(Material.GOLD_INGOT);
     }

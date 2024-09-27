@@ -44,9 +44,4 @@ public class ThoroughnessUpgrade extends AbstractMachineUpgrade {
         recipe.setIngredient('G', Material.GLASS_PANE);
         return recipe;
     }
-
-    @Override
-    public boolean hasGlow() {
-        return true;
-    }
 }

@@ -40,9 +40,4 @@ public class SimpleCircuit extends BaseSTBItem {
         recipe.setIngredient('G', Material.GOLD_NUGGET);
         return recipe;
     }
-
-    @Override
-    public boolean hasGlow() {
-        return true;
-    }
 }

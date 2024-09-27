@@ -34,8 +34,4 @@ public class EnergizedIronIngot extends BaseSTBItem {
         return null;
     }
 
-    @Override
-    public boolean hasGlow() {
-        return true;
-    }
 }

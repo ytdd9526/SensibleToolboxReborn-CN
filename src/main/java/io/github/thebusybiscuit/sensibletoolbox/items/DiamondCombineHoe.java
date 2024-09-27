@@ -40,4 +40,8 @@ public class DiamondCombineHoe extends CombineHoe {
     public int getWorkRadius() {
         return 2;
     }
+
+    public boolean hasGlow() {
+        return true;
+    }
 }

@@ -42,9 +42,4 @@ public class RegulatorUpgrade extends AbstractMachineUpgrade {
         recipe.setIngredient('R', Material.REDSTONE);
         return recipe;
     }
-
-    @Override
-    public boolean hasGlow() {
-        return true;
-    }
 }

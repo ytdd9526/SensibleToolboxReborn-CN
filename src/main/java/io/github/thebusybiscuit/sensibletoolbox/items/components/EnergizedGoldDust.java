@@ -41,11 +41,6 @@ public class EnergizedGoldDust extends BaseSTBItem {
     }
 
     @Override
-    public boolean hasGlow() {
-        return true;
-    }
-
-    @Override
     public ItemStack getSmeltingResult() {
         return new EnergizedGoldIngot().toItemStack();
     }

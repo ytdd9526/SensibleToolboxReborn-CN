@@ -32,9 +32,4 @@ public class InfernalDust extends BaseSTBItem {
         // no vanilla recipe to make infernal dust, but a custom recipe will be added
         return null;
     }
-
-    @Override
-    public boolean hasGlow() {
-        return true;
-    }
 }
