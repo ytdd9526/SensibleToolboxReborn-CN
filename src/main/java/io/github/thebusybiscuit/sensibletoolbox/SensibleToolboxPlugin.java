@@ -10,6 +10,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 import com.google.common.base.Preconditions;
+import io.github.thebusybiscuit.sensibletoolbox.items.NetheriteCombineHoe;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
@@ -365,6 +366,7 @@ public class SensibleToolboxPlugin extends JavaPlugin implements ConfigurationLi
         itemRegistry.registerItem(new IronCombineHoe(), this, configPrefix, permissionNode);
         itemRegistry.registerItem(new GoldCombineHoe(), this, configPrefix, permissionNode);
         itemRegistry.registerItem(new DiamondCombineHoe(), this, configPrefix, permissionNode);
+        itemRegistry.registerItem(new NetheriteCombineHoe(), this, configPrefix, permissionNode);
         itemRegistry.registerItem(new TrashCan(), this, configPrefix, permissionNode);
         itemRegistry.registerItem(new PaintBrush(), this, configPrefix, permissionNode);
         itemRegistry.registerItem(new PaintRoller(), this, configPrefix, permissionNode);
