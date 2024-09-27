@@ -191,8 +191,8 @@ public class WateringCan extends BaseSTBItem {
     private boolean maybeGrowGrass(Block b) {
         for (BlockFace face : STBUtil.getAllHorizontalFaces()) {
             Block b1 = b.getRelative(face);
-            if (b1.getType() == Material.GRASS) {
-                b.setType(Material.GRASS);
+            if (b1.getType() == Material.SHORT_GRASS) {
+                b.setType(Material.SHORT_GRASS);
                 return true;
             }
         }
@@ -305,6 +305,6 @@ public class WateringCan extends BaseSTBItem {
     private void useSomeWater(Player p, Block b, int amount) {
         setWaterLevel(Math.max(0, getWaterLevel() - amount));
         p.playSound(p.getLocation(), Sound.AMBIENT_UNDERWATER_EXIT, 0.1F, 1.3F);
-        p.getWorld().spawnParticle(Particle.WATER_SPLASH, b.getX() + 0.5, b.getY() + 1.0, b.getZ() + 0.5, 14, 0.75, 0.15, 0.75);
+        p.getWorld().spawnParticle(Particle.SPLASH, b.getX() + 0.5, b.getY() + 1.0, b.getZ() + 0.5, 14, 0.75, 0.15, 0.75);
     }
 }
