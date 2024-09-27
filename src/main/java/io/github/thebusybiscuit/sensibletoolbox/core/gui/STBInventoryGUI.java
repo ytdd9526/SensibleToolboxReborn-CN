@@ -39,6 +39,8 @@ import io.github.thebusybiscuit.sensibletoolbox.utils.IntRange;
 import me.desht.dhutils.Debugger;
 import me.desht.dhutils.text.LogUtils;
 
+import javax.annotation.Nonnull;
+
 public class STBInventoryGUI implements InventoryGUI {
 
     // some handy stock textures
@@ -103,6 +105,10 @@ public class STBInventoryGUI implements InventoryGUI {
         } else {
             player.removeMetadata(STB_OPEN_GUI, SensibleToolboxPlugin.getInstance());
         }
+    }
+
+    private boolean hasOpenGUI(@Nonnull Player player) {
+        return getOpenGUI(player) == null;
     }
 
     @Override
@@ -199,10 +205,19 @@ public class STBInventoryGUI implements InventoryGUI {
                 monitor.doRepaint();
             }
         }
-        Debugger.getInstance().debug(player.getName() + " opened GUI for " + getOwningItem());
-        setOpenGUI(player, this);
-        listener.onGUIOpened(player);
-        player.openInventory(inventory);
+        if (hasOpenGUI(player)) {
+            Debugger.getInstance().debug(player.getName() + " opened GUI for " + getOwningItem());
+            setOpenGUI(player, this);
+            listener.onGUIOpened(player);
+            player.openInventory(inventory);
+        }
+    }
+
+    @Override
+    public void hideForAll() {
+        for (HumanEntity player : new ArrayList<>(inventory.getViewers())) {
+            hide((Player) player);
+        }
     }
 
     @Override
@@ -241,19 +256,31 @@ public class STBInventoryGUI implements InventoryGUI {
                 }
             } else if (event.getRawSlot() > 0) {
                 // clicking inside the player's inventory
-                if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
-                    int nInserted = listener.onShiftClickInsert(event.getWhoClicked(), event.getRawSlot(), event.getCurrentItem());
-                    if (nInserted > 0) {
-                        ItemStack stack = event.getCurrentItem();
-                        stack.setAmount(stack.getAmount() - nInserted);
-                        event.setCurrentItem(stack.getAmount() > 0 ? stack : null);
+                if (event.getAction() != InventoryAction.COLLECT_TO_CURSOR) {
+                    if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                        int nInserted = listener.onShiftClickInsert(
+                            event.getWhoClicked(),
+                            event.getRawSlot(),
+                            event.getCurrentItem()
+                        );
+                        if (nInserted > 0) {
+                            ItemStack stack = event.getCurrentItem();
+                            stack.setAmount(stack.getAmount() - nInserted);
+                            event.setCurrentItem(stack.getAmount() > 0 ? stack : null);
+                        }
+                    } else {
+                        shouldCancel = !listener.onPlayerInventoryClick(
+                            event.getWhoClicked(),
+                            event.getSlot(),
+                            event.getClick(),
+                            event.getCurrentItem(),
+                            event.getCursor()
+                        );
                     }
                 } else {
-                    shouldCancel = !listener.onPlayerInventoryClick(event.getWhoClicked(), event.getSlot(), event.getClick(), event.getCurrentItem(), event.getCursor());
+                    // clicking outside the inventory entirely
+                    shouldCancel = !listener.onClickOutside(event.getWhoClicked());
                 }
-            } else {
-                // clicking outside the inventory entirely
-                shouldCancel = !listener.onClickOutside(event.getWhoClicked());
             }
         } finally {
             if (shouldCancel) {
@@ -397,5 +424,4 @@ public class STBInventoryGUI implements InventoryGUI {
             }
         }
     }
-
 }
