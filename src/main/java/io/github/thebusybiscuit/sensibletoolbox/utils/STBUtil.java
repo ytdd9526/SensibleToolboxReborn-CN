@@ -174,22 +174,15 @@ public final class STBUtil {
 
     @Nullable
     public static Material getCropType(@Nonnull Material seedType) {
-        switch (seedType) {
-            case WHEAT_SEEDS:
-                return Material.WHEAT;
-            case POTATO:
-                return Material.POTATOES;
-            case CARROT:
-                return Material.CARROTS;
-            case PUMPKIN_SEEDS:
-                return Material.PUMPKIN_STEM;
-            case MELON_SEEDS:
-                return Material.MELON_STEM;
-            case BEETROOT_SEEDS:
-                return Material.BEETROOTS;
-            default:
-                return null;
-        }
+        return switch (seedType) {
+            case WHEAT_SEEDS -> Material.WHEAT;
+            case POTATO -> Material.POTATOES;
+            case CARROT -> Material.CARROTS;
+            case PUMPKIN_SEEDS -> Material.PUMPKIN_STEM;
+            case MELON_SEEDS -> Material.MELON_STEM;
+            case BEETROOT_SEEDS -> Material.BEETROOTS;
+            default -> null;
+        };
     }
 
     /**
