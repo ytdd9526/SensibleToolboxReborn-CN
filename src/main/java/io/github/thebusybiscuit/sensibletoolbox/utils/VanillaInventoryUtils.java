@@ -86,7 +86,8 @@ public final class VanillaInventoryUtils {
 
         Optional<Inventory> targetInv = getVanillaInventory(target);
 
-        if (!targetInv.isPresent()) {
+
+        if (targetInv.isEmpty()) {
             return 0;
         } else {
             return vanillaInsertion(targetInv.get(), source, amount, side, sorting);
@@ -134,20 +135,18 @@ public final class VanillaInventoryUtils {
                     excess = addToBrewingStand((BrewerInventory) targetInv, stack, side);
                     break;
                 default:
-                    excess = targetInv.addItem(stack);
+                    if (amount != targetInv.getMaxStackSize()) {
+                        excess = targetInv.addItem(stack);
+                    } else {
+                        excess = targetInv.addItem(source);
+                    }
                     break;
             }
 
             if (!excess.isEmpty()) {
-                for (ItemStack s : excess.values()) {
-                    if (s.isSimilar(source)) {
-                        source.setAmount((source.getAmount() - stack.getAmount()) + s.getAmount());
-                        return stack.getAmount() - s.getAmount();
-                    }
-                }
-
-                // We shouldn't get here!
-                return stack.getAmount();
+                int insertedAmount = stack.getAmount() - excess.values().stream().mapToInt(ItemStack::getAmount).sum();
+                source.setAmount(source.getAmount() - insertedAmount);
+                return insertedAmount;
             } else {
                 source.setAmount(source.getAmount() - stack.getAmount());
                 return stack.getAmount();
