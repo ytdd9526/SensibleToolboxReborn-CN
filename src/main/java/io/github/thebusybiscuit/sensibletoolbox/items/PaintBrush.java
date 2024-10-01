@@ -147,6 +147,7 @@ public class PaintBrush extends BaseSTBItem {
 
             if (stb instanceof PaintCan) {
                 refillFromCan((PaintCan) stb);
+                event.setCancelled(true);
             } else if (okToColor(b, stb)) {
                 int painted = paint(player, b);
 
