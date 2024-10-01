@@ -80,8 +80,8 @@ public abstract class BaseSTBBlock extends BaseSTBItem {
     protected BaseSTBBlock() {
         super();
         setFacing(BlockFace.SELF);
-        redstoneBehaviour = SensibleToolbox.getPluginInstance().getConfigCache().getDefaultRedstone();
-        accessControl = SensibleToolbox.getPluginInstance().getConfigCache().getDefaultAccess();
+        redstoneBehaviour = SensibleToolbox.getInstance().getConfigCache().getDefaultRedstone();
+        accessControl = SensibleToolbox.getInstance().getConfigCache().getDefaultAccess();
         ticksLived = 0;
         needToScanSigns = false;
     }
@@ -567,7 +567,7 @@ public abstract class BaseSTBBlock extends BaseSTBItem {
     public final void moveTo(BlockAccess blockAccess, final Location oldLoc, final Location newLoc) {
         Preconditions.checkArgument(blockAccess != null, "Don't call this method directly");
 
-        oldLoc.getBlock().removeMetadata(BaseSTBBlock.STB_BLOCK, SensibleToolbox.getPluginInstance());
+        oldLoc.getBlock().removeMetadata(BaseSTBBlock.STB_BLOCK, SensibleToolbox.getInstance());
         for (RelativePosition pos : getBlockStructure()) {
             Block auxBlock = getAuxiliaryBlock(oldLoc, pos);
             auxBlock.removeMetadata(STB_MULTI_BLOCK, SensibleToolboxPlugin.getInstance());
@@ -578,7 +578,7 @@ public abstract class BaseSTBBlock extends BaseSTBItem {
 
         persistableLocation = new PersistableLocation(newLoc);
 
-        newLoc.getBlock().setMetadata(BaseSTBBlock.STB_BLOCK, new FixedMetadataValue(SensibleToolbox.getPluginInstance(), this));
+        newLoc.getBlock().setMetadata(BaseSTBBlock.STB_BLOCK, new FixedMetadataValue(SensibleToolbox.getInstance(), this));
         for (RelativePosition pos : getBlockStructure()) {
             Block auxBlock = getAuxiliaryBlock(newLoc, pos);
             Debugger.getInstance().debug(2, "Multiblock for " + this + " -> " + auxBlock);

@@ -148,7 +148,7 @@ public class Masher extends AbstractIOMachine {
 
     @Override
     protected void onMachineStartup() {
-        if (SensibleToolbox.getPluginInstance().getConfigCache().isNoisyMachines()) {
+        if (SensibleToolbox.getInstance().getConfigCache().isNoisyMachines()) {
             getLocation().getWorld().playSound(getLocation(), Sound.ENTITY_SKELETON_HORSE_AMBIENT, 1.0F, 0.5F);
         }
     }

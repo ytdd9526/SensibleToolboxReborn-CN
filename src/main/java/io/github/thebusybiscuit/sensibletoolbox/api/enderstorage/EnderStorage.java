@@ -61,7 +61,7 @@ public final class EnderStorage {
      * @return a personal ender inventory holder
      */
     public static EnderStorageHolder getEnderStorageHolder(OfflinePlayer player, int frequency) {
-        return SensibleToolbox.getPluginInstance().getEnderStorageManager().getPlayerInventoryHolder(player, frequency);
+        return SensibleToolbox.getInstance().getEnderStorageManager().getPlayerInventoryHolder(player, frequency);
     }
 
     /**
@@ -72,7 +72,7 @@ public final class EnderStorage {
      * @return a global ender inventory holder
      */
     public static EnderStorageHolder getEnderStorageHolder(int frequency) {
-        return SensibleToolbox.getPluginInstance().getEnderStorageManager().getGlobalInventoryHolder(frequency);
+        return SensibleToolbox.getInstance().getEnderStorageManager().getGlobalInventoryHolder(frequency);
     }
 
 }

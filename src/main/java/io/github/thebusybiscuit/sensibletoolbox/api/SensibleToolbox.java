@@ -26,7 +26,7 @@ public final class SensibleToolbox {
      *
      * @return the SensibleToolboxPlugin instance
      */
-    public static SensibleToolboxPlugin getPluginInstance() {
+    public static SensibleToolboxPlugin getInstance() {
         if (instance == null) {
             instance = (SensibleToolboxPlugin) Bukkit.getPluginManager().getPlugin("SensibleToolbox");
 
@@ -45,7 +45,7 @@ public final class SensibleToolbox {
      * @return the STB item registry
      */
     public static ItemRegistry getItemRegistry() {
-        return getPluginInstance().getItemRegistry();
+        return getInstance().getItemRegistry();
     }
 
     /**
@@ -99,7 +99,7 @@ public final class SensibleToolbox {
      * @return the friend manager
      */
     public static FriendManager getFriendManager() {
-        return getPluginInstance().getFriendManager();
+        return getInstance().getFriendManager();
     }
 
     /**
@@ -109,10 +109,10 @@ public final class SensibleToolbox {
      *            the block to check
      */
     public static EnergyNet getEnergyNet(Block block) {
-        return getPluginInstance().getEnergyNetManager().getEnergyNet(block);
+        return getInstance().getEnergyNetManager().getEnergyNet(block);
     }
 
     public static ProtectionManager getProtectionManager() {
-        return getPluginInstance().getProtectionManager();
+        return getInstance().getProtectionManager();
     }
 }

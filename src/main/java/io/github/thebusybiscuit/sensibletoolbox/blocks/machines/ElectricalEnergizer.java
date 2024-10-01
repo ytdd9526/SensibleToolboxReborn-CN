@@ -75,7 +75,7 @@ public class ElectricalEnergizer extends AbstractIOMachine {
 
     @Override
     protected void onMachineStartup() {
-        if (SensibleToolbox.getPluginInstance().getConfigCache().isNoisyMachines()) {
+        if (SensibleToolbox.getInstance().getConfigCache().isNoisyMachines()) {
             getLocation().getWorld().playSound(getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 0.5F);
         }
     }

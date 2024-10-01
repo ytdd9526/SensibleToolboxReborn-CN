@@ -76,7 +76,7 @@ public class SenderModule extends DirectionalItemRouterModule {
                     int nReceived = receiver.receiveItem(toSend, getItemRouter().getOwner());
                     getItemRouter().reduceBuffer(nReceived);
 
-                    if (nReceived > 0 && SensibleToolbox.getPluginInstance().getConfigCache().getParticleLevel() >= 2) {
+                    if (nReceived > 0 && SensibleToolbox.getInstance().getConfigCache().getParticleLevel() >= 2) {
                         playSenderParticles(getItemRouter(), receiver.getItemRouter());
 
                     }
