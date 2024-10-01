@@ -5,7 +5,6 @@ import javax.annotation.Nullable;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.Plugin;
@@ -109,7 +108,7 @@ public final class ItemGlow {
     private static void addGlow(ItemStack[] stacks) {
         for (ItemStack stack : stacks) {
             // Only update those stacks that have our flag enchantment
-            if (stack != null && stack.getEnchantmentLevel(getFlag(stack)) == 32) {
+            if (stack != null && stack.getEnchantmentLevel(getFlag(stack)) == 1) {
                 NbtCompound compound = (NbtCompound) NbtFactory.fromItemTag(stack);
                 compound.put(NbtFactory.ofList("ench"));
             }
