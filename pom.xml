@@ -11,7 +11,9 @@
     <inceptionYear>2014</inceptionYear>
     <packaging>jar</packaging>
 
-    <description>SensibleToolbox is a Spigot/Paper plugin which adds tons of items and machines inspired by popular mods.</description>
+    <description>SensibleToolbox is a Spigot/Paper plugin which adds tons of items and machines inspired by popular
+        mods.
+    </description>
     <url>https://github.com/Slimefun/SensibleToolbox</url>
 
     <properties>
@@ -208,9 +210,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.comphenix.protocol</groupId>
+            <groupId>com.github.dmulloy2</groupId>
             <artifactId>ProtocolLib</artifactId>
-            <version>4.8.0</version>
+            <version>5.1.0</version>
             <scope>provided</scope>
         </dependency>
 
