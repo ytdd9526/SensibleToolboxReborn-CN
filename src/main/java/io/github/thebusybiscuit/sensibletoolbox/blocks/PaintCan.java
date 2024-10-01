@@ -20,6 +20,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
@@ -147,24 +148,23 @@ public class PaintCan extends BaseSTBBlock implements LevelReporter {
     @Override
     public void onInteractBlock(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        ItemStack stack = event.getItem();
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+        if (event.getHand() == EquipmentSlot.HAND && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            ItemStack stack = player.getInventory().getItemInMainHand();
             PaintBrush brush = SensibleToolbox.getItemRegistry().fromItemStack(stack, PaintBrush.class);
 
-            if (brush == null) {
-                // refilling a paintbrush/roller from the can is handled in the PaintBrush object
+            if (brush != null) {
+                super.onInteractBlock(event);
+            } else {
                 getGUI().show(player);
                 LevelMonitor monitor = getPaintLevelMonitor();
 
                 if (monitor != null) {
                     monitor.repaint();
                 }
-            }
 
-            event.setCancelled(true);
-        } else {
-            super.onInteractBlock(event);
+                event.setCancelled(true);
+            }
         }
     }
 
