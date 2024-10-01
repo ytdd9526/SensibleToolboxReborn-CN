@@ -30,7 +30,7 @@ class QueueSwapper extends BukkitRunnable {
     @Override
     public void run() {
         boolean didWork = false;
-        SwapRecord rec = null;
+        SwapRecord rec;
 
         while (!didWork) {
             // first, some validation & sanity checking...
