@@ -6,6 +6,7 @@ import java.util.Queue;
 import javax.annotation.Nonnull;
 
 import org.bukkit.Effect;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,7 +20,6 @@ import io.github.thebusybiscuit.sensibletoolbox.utils.STBUtil;
 
 class QueueSwapper extends BukkitRunnable {
 
-    // Ensure we can mine anything
     private final ItemStack tool = new ItemStack(Material.DIAMOND_PICKAXE);
     private final Queue<SwapRecord> queue;
 
@@ -30,10 +30,11 @@ class QueueSwapper extends BukkitRunnable {
     @Override
     public void run() {
         boolean didWork = false;
+        SwapRecord rec = null;
 
         while (!didWork) {
             // first, some validation & sanity checking...
-            SwapRecord rec = queue.poll();
+            rec = queue.poll();
 
             if (rec == null) {
                 cancel();
@@ -46,7 +47,9 @@ class QueueSwapper extends BukkitRunnable {
 
             Block b = rec.getBlock();
 
-            if (b.getType() == rec.getTarget() || rec.getMultiBuilder().getCharge() < rec.getRequiredCharge() || !rec.getMultiBuilder().canReplace(rec.getPlayer(), rec.getBlock())) {
+            if (b.getType() == rec.getTarget() || rec.getMultiBuilder()
+                .getCharge() < rec.getRequiredCharge() || !rec.getMultiBuilder()
+                .canReplace(rec.getPlayer(), rec.getBlock())) {
                 continue;
             }
 
@@ -54,43 +57,57 @@ class QueueSwapper extends BukkitRunnable {
             int slot = rec.getSlot();
             PlayerInventory inventory = rec.getPlayer().getInventory();
 
-            if (slot < 0 || inventory.getItem(slot) == null) {
-                slot = getSlotForItem(rec.getPlayer(), rec.getTarget());
+            if (rec.getPlayer().getGameMode() != GameMode.CREATIVE) {
+                if (slot < 0 || inventory.getItem(slot) == null) {
+                    slot = getSlotForItem(rec.getPlayer(), rec.getTarget());
 
-                if (slot == -1) {
-                    // player is out of materials to swap: scan the queue and remove any other
-                    // records for this player & material, to avoid constant inventory rescanning
+                    if (slot == -1) {
+                        // player is out of materials to swap: scan the queue and remove any other
+                        // records for this player & material, to avoid constant inventory rescanning
+                        Iterator<SwapRecord> iter = queue.iterator();
+
+                        while (iter.hasNext()) {
+                            SwapRecord r = iter.next();
+
+                            if (r.getPlayer().equals(rec.getPlayer()) && r.getTarget() == rec.getTarget()) {
+                                iter.remove();
+                            }
+                        }
+                        continue;
+                    }
+                }
+
+                ItemStack item = inventory.getItem(slot);
+
+                if (item.getAmount() < 1) {
                     Iterator<SwapRecord> iter = queue.iterator();
-
                     while (iter.hasNext()) {
                         SwapRecord r = iter.next();
-
                         if (r.getPlayer().equals(rec.getPlayer()) && r.getTarget() == rec.getTarget()) {
                             iter.remove();
                         }
                     }
                     continue;
                 }
-            }
 
-            ItemStack item = inventory.getItem(slot);
-            item.setAmount(item.getAmount() - 1);
-            inventory.setItem(slot, item.getAmount() > 0 ? item : null);
+                item.setAmount(item.getAmount() - 1);
+                inventory.setItem(slot, item.getAmount() > 0 ? item : null);
 
-            // take SCU from the multibuilder...
-            rec.getMultiBuilder().setCharge(rec.getMultiBuilder().getCharge() - rec.getRequiredCharge());
-            ItemStack builderItem = rec.getMultiBuilder().toItemStack();
-            rec.getPlayer().setItemInHand(builderItem);
+                // take SCU from the multibuilder...
+                rec.getMultiBuilder().setCharge(rec.getMultiBuilder().getCharge() - rec.getRequiredCharge());
+                ItemStack builderItem = rec.getMultiBuilder().toItemStack();
+                rec.getPlayer().setItemInHand(builderItem);
 
-            // give materials to the player...
-            if (builderItem.getEnchantmentLevel(Enchantment.SILK_TOUCH) == 1) {
-                tool.addEnchantment(Enchantment.SILK_TOUCH, 1);
-            } else {
-                tool.removeEnchantment(Enchantment.SILK_TOUCH);
-            }
+                // give materials to the player...
+                if (builderItem.getEnchantmentLevel(Enchantment.SILK_TOUCH) == 1) {
+                    tool.addEnchantment(Enchantment.SILK_TOUCH, 1);
+                } else {
+                    tool.removeEnchantment(Enchantment.SILK_TOUCH);
+                }
 
-            for (ItemStack stack : b.getDrops(tool)) {
-                STBUtil.giveItems(rec.getPlayer(), stack);
+                for (ItemStack stack : b.getDrops(tool)) {
+                    STBUtil.giveItems(rec.getPlayer(), stack);
+                }
             }
 
             // make the actual in-world swap
@@ -106,19 +123,16 @@ class QueueSwapper extends BukkitRunnable {
 
     private void queueNextSet(@Nonnull SwapRecord rec, @Nonnull Block b, int slot) {
         if (rec.getRemainingLayers() > 0) {
-            for (int x = -1; x <= 1; x++) {
-                for (int y = -1; y <= 1; y++) {
-                    for (int z = -1; z <= 1; z++) {
-                        Block block = b.getRelative(x, y, z);
+            Block nextBlock = b.getRelative(rec.getDirection());
+            if (nextBlock.getType() == rec.getSource() && isExposed(nextBlock)) {
+                SwapRecord record = new SwapRecord(
+                    rec.getPlayer(), nextBlock, rec.getSource(), rec.getTarget(),
+                    rec.getRemainingLayers() - 1, rec.getMultiBuilder(),
+                    slot, rec.getRequiredCharge(), rec.getDirection()
+                );
 
-                        if ((x != 0 || y != 0 || z != 0) && block.getType() == rec.getSource() && isExposed(block)) {
-                            SwapRecord record = new SwapRecord(rec.getPlayer(), block, rec.getSource(), rec.getTarget(), rec.getRemainingLayers() - 1, rec.getMultiBuilder(), slot, rec.getRequiredCharge());
-
-                            if (queue.offer(record)) {
-                                return;
-                            }
-                        }
-                    }
+                if (queue.offer(record)) {
+                    return;
                 }
             }
         }
@@ -140,10 +154,8 @@ class QueueSwapper extends BukkitRunnable {
      * Check if the given block is exposed to the world on the given face.
      * {@link org.bukkit.Material#isOccluding()} is used to check if a face is exposed.
      *
-     * @param block
-     *            the block to check
-     * @param face
-     *            the face to check
+     * @param block the block to check
+     * @param face  the face to check
      * @return true if the given block face is exposed
      */
     private boolean isExposed(@Nonnull Block block, @Nonnull BlockFace face) {
@@ -154,8 +166,7 @@ class QueueSwapper extends BukkitRunnable {
      * Check if the given block is exposed on <i>any</i> face.
      * {@link org.bukkit.Material#isOccluding()} is used to check if a face is exposed.
      *
-     * @param block
-     *            the block to check
+     * @param block the block to check
      * @return true if any face of the block is exposed
      */
     private boolean isExposed(@Nonnull Block block) {
