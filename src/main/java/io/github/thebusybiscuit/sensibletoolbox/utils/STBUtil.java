@@ -923,4 +923,16 @@ public final class STBUtil {
         return ALL_HORIZONTAL_BLOCK_FACES;
     }
 
+    public static String getDirectionString(BlockFace face) {
+        return switch (face) {
+            case NORTH -> "North";
+            case SOUTH -> "South";
+            case EAST -> "East";
+            case WEST -> "West";
+            case UP -> "Upward";
+            case DOWN -> "Downward";
+            default -> "Unknown Direction";
+        };
+    }
+
 }
