@@ -69,7 +69,7 @@ public class TapeMeasure extends BaseSTBItem {
     @Override
     public String[] getExtraLore() {
         if (world != null) {
-            return new String[] { ChatColor.WHITE + "Anchor point: " + ChatColor.GOLD + world + "," + x + "," + y + "," + z };
+            return new String[] { ChatColor.YELLOW + "Anchor point: " + ChatColor.WHITE + world + "," + x + "," + y + "," + z };
         } else {
             return new String[0];
         }
@@ -90,14 +90,14 @@ public class TapeMeasure extends BaseSTBItem {
             if (event.getPlayer().isSneaking()) {
                 setAnchor(event.getClickedBlock());
                 updateHeldItemStack(event.getPlayer(), event.getHand());
-                MiscUtil.statusMessage(event.getPlayer(), "Tape measure anchor point set.");
+                MiscUtil.statusMessage(event.getPlayer(), ChatColor.YELLOW + "Tape measure anchor point set.");
             } else {
                 makeMeasurement(event.getPlayer(), event.getClickedBlock());
             }
         } else if (event.getAction() == Action.RIGHT_CLICK_AIR) {
             setAnchor(null);
             updateHeldItemStack(event.getPlayer(), event.getHand());
-            MiscUtil.statusMessage(event.getPlayer(), "Tape measure anchor point cleared.");
+            MiscUtil.statusMessage(event.getPlayer(), ChatColor.YELLOW + "Tape measure anchor point cleared.");
         }
 
         event.setCancelled(true);
@@ -111,9 +111,14 @@ public class TapeMeasure extends BaseSTBItem {
             int xOff = b.getX() - x;
             int yOff = b.getY() - y;
             int zOff = b.getZ() - z;
-            Location anchorLoc = new Location(b.getWorld(), x, y, z);
-            double dist = b.getLocation().distance(anchorLoc);
-            MiscUtil.statusMessage(p, String.format("Measurement: " + ChatColor.WHITE + "X=%d Y=%d Z=%d total=%.2f", xOff, yOff, zOff, dist));
+
+            xOff = Math.abs(xOff);
+            yOff = Math.abs(yOff);
+            zOff = Math.abs(zOff);
+
+            int totalBlocks = xOff + yOff + zOff + 1; // +1 to count the clicked block
+
+            MiscUtil.statusMessage(p, String.format(ChatColor.YELLOW + "Measurement: " + ChatColor.WHITE + "Distance: X=%d Y=%d Z=%d, Total=%d", xOff, yOff, zOff, totalBlocks));
         }
     }
 
