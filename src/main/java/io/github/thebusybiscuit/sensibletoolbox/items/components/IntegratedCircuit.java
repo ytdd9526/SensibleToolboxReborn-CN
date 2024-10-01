@@ -41,9 +41,4 @@ public class IntegratedCircuit extends BaseSTBItem {
         recipe.setIngredient('S', si.getMaterial());
         return recipe;
     }
-
-    @Override
-    public boolean hasGlow() {
-        return true;
-    }
 }
