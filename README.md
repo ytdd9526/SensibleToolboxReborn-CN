@@ -72,7 +72,8 @@
 > - Moved a few items from Blocks category to Items
 > - Sign updating overall has been improved
 > - Glow now applies to notable tools & IR modules
-> - More consistent coloring of item lore & messaging```
+> - More consistent coloring of item lore & messaging
+> ```
 ## 📺 Media
 
 <details> 
