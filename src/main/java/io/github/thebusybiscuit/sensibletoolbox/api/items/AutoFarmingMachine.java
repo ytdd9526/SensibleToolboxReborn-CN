@@ -39,7 +39,9 @@ public abstract class AutoFarmingMachine extends BaseSTBMachine {
 
     @Override
     public int getTickRate() {
-        return 60;
+        double speedMultiplier = getSpeedMultiplier();
+        int baseTickRate = 60;
+        return (int) Math.max(1, baseTickRate / (1 + speedMultiplier));
     }
 
     @Override
