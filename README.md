@@ -5,6 +5,8 @@
 ### Sensible Toolbox Reborn (STBR) is a continuation and modernization of the original Sensible Toolbox plugin. Originally developed in 2014 by [@desht](https://github.com/desht), this fork has been revitalized to bring it in line with modern Minecraft versions and includes various improvements and fixes. The original repository can be found [here](https://github.com/desht/sensibletoolbox).
 > [!TIP]
 > This fork introduces many new features and enhancements while staying true to the plugin’s core principles. Whether you're automating farms, or building complex systems, STBR will continue provide a user-friendly experience!
+>
+> ### Supported MC Versions: 1.20+
 > 
 ## :gear: Key Features and Updates
 > [!IMPORTANT]
