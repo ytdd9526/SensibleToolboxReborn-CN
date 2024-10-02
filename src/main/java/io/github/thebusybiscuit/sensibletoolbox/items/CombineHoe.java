@@ -170,7 +170,6 @@ public abstract class CombineHoe extends BaseSTBItem {
                 if (!player.isSneaking()) {
                     harvestLayer(player, b);
                 }
-
                 ItemUtils.damageItem(player.getInventory().getItemInMainHand(), false);
             } else if (STBUtil.isPlant(b.getType())) {
                 harvestLayer(player, b);
@@ -313,7 +312,7 @@ public abstract class CombineHoe extends BaseSTBItem {
     @ParametersAreNonnullByDefault
     private void harvestLayer(Player player, Block b) {
         Cuboid cuboid = new Cuboid(b.getLocation());
-        cuboid = cuboid.outset(CuboidDirection.BOTH, Tag.LEAVES.isTagged(b.getType()) ? getWorkRadius() : 1);
+        cuboid = cuboid.outset(CuboidDirection.BOTH, getWorkRadius());
 
         for (Block block : cuboid) {
             if (!block.equals(b) && (STBUtil.isPlant(block.getType()) || Tag.LEAVES.isTagged(block.getType()))) {
