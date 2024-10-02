@@ -7,7 +7,7 @@
     <groupId>com.github.slimefun</groupId>
     <artifactId>SensibleToolbox</artifactId>
 
-    <version>UNOFFICIAL</version>
+    <version>1.0.0</version>
     <inceptionYear>2014</inceptionYear>
     <packaging>jar</packaging>
 
@@ -74,7 +74,7 @@
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-        <finalName>${project.name} v${project.version}</finalName>
+        <finalName>${project.name} Reborn v${project.version}</finalName>
 
         <plugins>
             <!-- Compiler plugin -->
