@@ -84,11 +84,11 @@ public abstract class EnergyCell extends BaseSTBItem implements Chargeable {
 
     @Override
     public void onInteractItem(PlayerInteractEvent event) {
-        if (event.getHand() == EquipmentSlot.OFF_HAND) {
-            event.setCancelled(true);
-            return;
-        }
         if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (event.getHand() == EquipmentSlot.OFF_HAND) {
+                event.setCancelled(true);
+                return;
+            }
             event.setCancelled(true);
             chargeHotbarItems(event.getPlayer());
         }
@@ -122,5 +122,4 @@ public abstract class EnergyCell extends BaseSTBItem implements Chargeable {
             }
         }
     }
-
 }
