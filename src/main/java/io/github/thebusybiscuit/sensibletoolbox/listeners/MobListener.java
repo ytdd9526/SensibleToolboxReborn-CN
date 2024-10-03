@@ -3,7 +3,7 @@ package io.github.thebusybiscuit.sensibletoolbox.listeners;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
-import org.bukkit.enchantments.Enchantment;
+import net.guizhanss.guizhanlib.minecraft.utils.compatibility.EnchantmentX;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -32,7 +32,7 @@ public class MobListener extends STBBaseListener {
 
                 Random random = ThreadLocalRandom.current();
                 ItemStack item = killer.getInventory().getItemInMainHand();
-                switch (item.getEnchantmentLevel(Enchantment.LOOTING)) {
+                switch (item.getEnchantmentLevel(EnchantmentX.LOOTING)) {
                     case 1:
                         chance = 30;
                         amount = random.nextInt(2) + 1;

@@ -3,6 +3,7 @@ package io.github.thebusybiscuit.sensibletoolbox.utils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.guizhanss.guizhanlib.minecraft.utils.compatibility.EnchantmentX;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
@@ -32,9 +33,9 @@ public final class ItemGlow {
     private static boolean inited = false;
 
     // use this enchantment on most items
-    private static final Enchantment GLOW_FLAG = Enchantment.INFINITY;
+    private static final Enchantment GLOW_FLAG = EnchantmentX.INFINITY;
     // use this enchantment on bows, where Infinity actually means something
-    private static final Enchantment GLOW_FLAG_2 = Enchantment.PROTECTION;
+    private static final Enchantment GLOW_FLAG_2 = EnchantmentX.PROTECTION;
     private static final int GLOW_FLAG_LEVEL = 32;
 
     /**

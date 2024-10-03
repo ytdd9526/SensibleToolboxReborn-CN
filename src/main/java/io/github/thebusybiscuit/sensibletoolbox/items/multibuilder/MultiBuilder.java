@@ -11,6 +11,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
+import net.guizhanss.guizhanlib.minecraft.utils.compatibility.EnchantmentX;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -21,7 +22,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -228,7 +228,7 @@ public class MultiBuilder extends BaseSTBItem implements Chargeable {
             if (player.isSneaking()) {
                 startSwap(player, event.getItem(), this, clicked, material, 0);
             } else if (material != null) {
-                int sharpness = event.getItem().getEnchantmentLevel(Enchantment.SHARPNESS);
+                int sharpness = event.getItem().getEnchantmentLevel(EnchantmentX.SHARPNESS);
                 int layers = MAX_BUILD_BLOCKS + sharpness * 3;
 
                 int exchangedCount = Math.min(layers, MAX_TOTAL_BLOCKS);
@@ -262,7 +262,7 @@ public class MultiBuilder extends BaseSTBItem implements Chargeable {
         }
 
         int chargePerOp = getItemConfig().getInt("scu_per_op", DEF_SCU_PER_OPERATION);
-        double chargeNeeded = chargePerOp * Math.pow(0.8, item.getEnchantmentLevel(Enchantment.EFFICIENCY));
+        double chargeNeeded = chargePerOp * Math.pow(0.8, item.getEnchantmentLevel(EnchantmentX.EFFICIENCY));
 
         if (player.getGameMode() == GameMode.CREATIVE) {
             chargeNeeded = 0;
@@ -387,7 +387,7 @@ public class MultiBuilder extends BaseSTBItem implements Chargeable {
         int chargePerOp = getItemConfig().getInt("scu_per_op", DEF_SCU_PER_OPERATION);
         double chargeNeeded = chargePerOp * actualBlocks.size() * Math.pow(
             0.8,
-            item.getEnchantmentLevel(Enchantment.EFFICIENCY)
+            item.getEnchantmentLevel(EnchantmentX.EFFICIENCY)
         );
 
         if (player.getGameMode() != GameMode.CREATIVE) {
@@ -422,7 +422,7 @@ public class MultiBuilder extends BaseSTBItem implements Chargeable {
 
     @Nonnull
     private Set<Block> getBuildCandidates(Player player, ItemStack item, Block clickedBlock, BlockFace blockFace) {
-        int sharpness = item.getEnchantmentLevel(Enchantment.SHARPNESS);
+        int sharpness = item.getEnchantmentLevel(EnchantmentX.SHARPNESS);
         int baseBlocks = MAX_BUILD_BLOCKS;
 
         if (sharpness > 0) {
@@ -431,7 +431,7 @@ public class MultiBuilder extends BaseSTBItem implements Chargeable {
 
         double chargePerOp = getItemConfig().getInt("scu_per_op", DEF_SCU_PER_OPERATION) * Math.pow(
             0.8,
-            item.getEnchantmentLevel(Enchantment.EFFICIENCY)
+            item.getEnchantmentLevel(EnchantmentX.EFFICIENCY)
         );
         int ch = (int) (getCharge() / chargePerOp);
 
