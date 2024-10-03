@@ -1059,6 +1059,14 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
         return 1;
     }
 
+    public void updateEnergyCellInGUI() {
+        if (installedCell != null) {
+            ItemStack energyCellItem = installedCell.toItemStack();
+            STBUtil.levelToDurability(energyCellItem, (int) installedCell.getCharge(), installedCell.getMaxCharge());
+            getGUI().getInventory().setItem(getEnergyCellSlot(), energyCellItem);
+        }
+    }
+
     @Override
     public void onServerTick() {
         if (getTicksLived() % SensibleToolboxPlugin.getInstance().getEnergyNetManager().getTickRate() == 0) {
@@ -1084,6 +1092,7 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
 
                 if (chargeMeterId >= 0) {
                     getGUI().getMonitor(chargeMeterId).doRepaint();
+
                 }
             }
         }
@@ -1097,6 +1106,7 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
             needToProcessUpgrades = false;
         }
 
+        updateEnergyCellInGUI();
         super.onServerTick();
     }
 
