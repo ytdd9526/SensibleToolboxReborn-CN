@@ -101,11 +101,11 @@ public abstract class STBEnderStorageHolder implements EnderStorageHolder {
 
     @Override
     public ItemStack extractItems(BlockFace face, ItemStack receiver, int amount, UUID uuid) {
-        ItemStack stack = VanillaInventoryUtils.pullFromInventory(getInventory(), amount, receiver, null);
-        if (stack != null) {
+        ItemStack s = VanillaInventoryUtils.pullFromInventory(getInventory(), amount, receiver, null);
+        if (s != null) {
             setChanged();
         }
-        return stack;
+        return s;
     }
 
     @Override
@@ -149,4 +149,5 @@ public abstract class STBEnderStorageHolder implements EnderStorageHolder {
     public int hashCode() {
         return frequency;
     }
+
 }

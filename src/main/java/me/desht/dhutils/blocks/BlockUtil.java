@@ -63,12 +63,12 @@ public final class BlockUtil {
      * Get the nearest face on the given block relative to the given location.
      *
      * @param block
-     * @param loc
+     * @param l
      * @return
      */
-    public static BlockFace getNearestFace(Block block, Location loc) {
+    public static BlockFace getNearestFace(Block block, Location l) {
         Location bLoc = block.getLocation().add(0.5, 0.5, 0.5);
-        Vector v = loc.toVector().subtract(bLoc.toVector());
+        Vector v = l.toVector().subtract(bLoc.toVector());
         float min = Float.MAX_VALUE;
         BlockFace wantedFace = null;
         for (BlockFace face : allFaces) {
@@ -101,8 +101,8 @@ public final class BlockUtil {
         }
     }
 
-    public static BlockAndPosition getTargetPoint(Player player, Set<Material> transparent, int maxDistance) {
-        List<Block> lastBlocks = player.getLastTwoTargetBlocks(transparent, maxDistance);
+    public static BlockAndPosition getTargetPoint(Player p, Set<Material> transparent, int maxDistance) {
+        List<Block> lastBlocks = p.getLastTwoTargetBlocks(transparent, maxDistance);
         Block block = lastBlocks.get(1);
         BlockFace face = block.getFace(lastBlocks.get(0));
 
@@ -152,9 +152,9 @@ public final class BlockUtil {
         // get any two points along the line the player is looking
         // player's eye location is an obvious choice
         // second point can be anywhere along the line of sight
-        Location loc = player.getEyeLocation();
-        Vector eye = new Vector(loc.getX(), loc.getY(), loc.getZ());
-        Vector p2 = eye.clone().add(player.getLocation().getDirection());
+        Location l = p.getEyeLocation();
+        Vector eye = new Vector(l.getX(), l.getY(), l.getZ());
+        Vector p2 = eye.clone().add(p.getLocation().getDirection());
 
         Vector isect = isectLinePlane(eye, p2, plane, normal, 0.0000001);
         return new BlockAndPosition(block, face, isect);

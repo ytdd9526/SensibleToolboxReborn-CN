@@ -78,9 +78,9 @@ public class STBInventoryGUI implements InventoryGUI {
         this(null, listener, size, title);
     }
 
-    public STBInventoryGUI(Player player, InventoryGUIListener listener, int size, String title) {
+    public STBInventoryGUI(Player p, InventoryGUIListener listener, int size, String title) {
         this.listener = listener;
-        this.inventory = player == null ? Bukkit.createInventory(((BaseSTBBlock) listener).getGuiHolder(), size, title) : Bukkit.createInventory(player, size, title);
+        this.inventory = p == null ? Bukkit.createInventory(((BaseSTBBlock) listener).getGuiHolder(), size, title) : Bukkit.createInventory(p, size, title);
         this.gadgets = new ClickableGadget[size];
         this.slotRange = new IntRange(0, size - 1);
         this.slotTypes = new SlotType[size];
@@ -90,8 +90,8 @@ public class STBInventoryGUI implements InventoryGUI {
         }
     }
 
-    public static InventoryGUI getOpenGUI(Player player) {
-        for (MetadataValue mv : player.getMetadata(STB_OPEN_GUI)) {
+    public static InventoryGUI getOpenGUI(Player p) {
+        for (MetadataValue mv : p.getMetadata(STB_OPEN_GUI)) {
             if (mv.getOwningPlugin() == SensibleToolboxPlugin.getInstance()) {
                 return (InventoryGUI) mv.value();
             }
@@ -99,16 +99,16 @@ public class STBInventoryGUI implements InventoryGUI {
         return null;
     }
 
-    private static void setOpenGUI(Player player, InventoryGUI gui) {
+    private static void setOpenGUI(Player p, InventoryGUI gui) {
         if (gui != null) {
-            player.setMetadata(STB_OPEN_GUI, new FixedMetadataValue(SensibleToolboxPlugin.getInstance(), gui));
+            p.setMetadata(STB_OPEN_GUI, new FixedMetadataValue(SensibleToolboxPlugin.getInstance(), gui));
         } else {
-            player.removeMetadata(STB_OPEN_GUI, SensibleToolboxPlugin.getInstance());
+            p.removeMetadata(STB_OPEN_GUI, SensibleToolboxPlugin.getInstance());
         }
     }
 
-    private boolean hasOpenGUI(@Nonnull Player player) {
-        return getOpenGUI(player) == null;
+    private boolean hasOpenGUI(@Nonnull Player p) {
+        return getOpenGUI(p) == null;
     }
 
     @Override
@@ -123,15 +123,15 @@ public class STBInventoryGUI implements InventoryGUI {
 
     @Override
     public void addLabel(String label, int slot, ItemStack texture, String... lore) {
-        ItemStack stack = texture == null ? LABEL_TEXTURE.clone() : texture;
-        ItemMeta meta = stack.getItemMeta();
+        ItemStack s = texture == null ? LABEL_TEXTURE.clone() : texture;
+        ItemMeta meta = s.getItemMeta();
         meta.setDisplayName(ChatColor.AQUA + label);
         if (lore.length > 0) {
             meta.setLore(GUIUtil.makeLore(lore));
         }
-        stack.setItemMeta(meta);
+        s.setItemMeta(meta);
         setSlotType(slot, SlotType.BACKGROUND);
-        inventory.setItem(slot, stack);
+        inventory.setItem(slot, s);
     }
 
     @Override
@@ -151,9 +151,9 @@ public class STBInventoryGUI implements InventoryGUI {
     }
 
     @Override
-    public void setItem(int slot, ItemStack stack) {
+    public void setItem(int slot, ItemStack s) {
         Preconditions.checkArgument(getSlotType(slot) == SlotType.ITEM, "Slot " + slot + " is not an item slot");
-        inventory.setItem(slot, stack);
+        inventory.setItem(slot, s);
     }
 
     @Override
@@ -193,9 +193,9 @@ public class STBInventoryGUI implements InventoryGUI {
     }
 
     @Override
-    public void show(Player player) {
-        if (getOwningItem() instanceof BaseSTBBlock && !getOwningBlock().hasAccessRights(player)) {
-            STBUtil.complain(player, "That " + getOwningItem().getItemName() + " is private!");
+    public void show(Player p) {
+        if (getOwningItem() instanceof BaseSTBBlock && !getOwningBlock().hasAccessRights(p)) {
+            STBUtil.complain(p, "That " + getOwningItem().getItemName() + " is private!");
             return;
         }
         if (inventory.getViewers().isEmpty()) {
@@ -205,26 +205,26 @@ public class STBInventoryGUI implements InventoryGUI {
                 monitor.doRepaint();
             }
         }
-        if (hasOpenGUI(player)) {
-            Debugger.getInstance().debug(player.getName() + " opened GUI for " + getOwningItem());
-            setOpenGUI(player, this);
-            listener.onGUIOpened(player);
-            player.openInventory(inventory);
+        if (hasOpenGUI(p)) {
+            Debugger.getInstance().debug(p.getName() + " opened GUI for " + getOwningItem());
+            setOpenGUI(p, this);
+            listener.onGUIOpened(p);
+            p.openInventory(inventory);
         }
     }
 
     @Override
     public void hideForAll() {
-        for (HumanEntity player : new ArrayList<>(inventory.getViewers())) {
-            hide((Player) player);
+        for (HumanEntity p : new ArrayList<>(inventory.getViewers())) {
+            hide((Player) p);
         }
     }
 
     @Override
-    public void hide(Player player) {
-        Debugger.getInstance().debug(player.getName() + ": hide GUI");
-        setOpenGUI(player, null);
-        player.closeInventory();
+    public void hide(Player p) {
+        Debugger.getInstance().debug(p.getName() + ": hide GUI");
+        setOpenGUI(p, null);
+        p.closeInventory();
     }
 
     @Override
@@ -232,77 +232,77 @@ public class STBInventoryGUI implements InventoryGUI {
         return inventory.getViewers();
     }
 
-    public void receiveEvent(InventoryClickEvent event) {
+    public void receiveEvent(InventoryClickEvent e) {
         boolean shouldCancel = true;
 
         // try/finally here ensures the event always gets cancelled, even if
         // a listener's code throws an exception; we don't want bugs in
         // listeners allowing players to take items out of a GUI
         try {
-            if (containsSlot(event.getRawSlot())) {
+            if (containsSlot(e.getRawSlot())) {
                 // clicking inside the GUI
-                switch (getSlotType(event.getRawSlot())) {
+                switch (getSlotType(e.getRawSlot())) {
                     case GADGET:
-                        if (gadgets[event.getRawSlot()] != null && gadgets[event.getRawSlot()].isEnabled()) {
-                            gadgets[event.getRawSlot()].onClicked(event);
+                        if (gadgets[e.getRawSlot()] != null && gadgets[e.getRawSlot()].isEnabled()) {
+                            gadgets[e.getRawSlot()].onClicked(e);
                         }
                         break;
                     case ITEM:
-                        shouldCancel = !processGUIInventoryAction(event);
-                        Debugger.getInstance().debug("handled click for " + event.getWhoClicked().getName() + " in item slot " + event.getRawSlot() + " of " + getOwningItem() + ": cancelled = " + shouldCancel);
+                        shouldCancel = !processGUIInventoryAction(e);
+                        Debugger.getInstance().debug("handled click for " + e.getWhoClicked().getName() + " in item slot " + e.getRawSlot() + " of " + getOwningItem() + ": cancelled = " + shouldCancel);
                         break;
                     default:
                         break;
                 }
-            } else if (event.getRawSlot() > 0) {
+            } else if (e.getRawSlot() > 0) {
                 // clicking inside the player's inventory
-                if (event.getAction() != InventoryAction.COLLECT_TO_CURSOR) {
-                    if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
+                if (e.getAction() != InventoryAction.COLLECT_TO_CURSOR) {
+                    if (e.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY) {
                         int nInserted = listener.onShiftClickInsert(
-                            event.getWhoClicked(),
-                            event.getRawSlot(),
-                            event.getCurrentItem()
+                            e.getWhoClicked(),
+                            e.getRawSlot(),
+                            e.getCurrentItem()
                         );
                         if (nInserted > 0) {
-                            ItemStack stack = event.getCurrentItem();
-                            stack.setAmount(stack.getAmount() - nInserted);
-                            event.setCurrentItem(stack.getAmount() > 0 ? stack : null);
+                            ItemStack s = e.getCurrentItem();
+                            s.setAmount(s.getAmount() - nInserted);
+                            e.setCurrentItem(s.getAmount() > 0 ? s : null);
                         }
                     } else {
                         shouldCancel = !listener.onPlayerInventoryClick(
-                            event.getWhoClicked(),
-                            event.getSlot(),
-                            event.getClick(),
-                            event.getCurrentItem(),
-                            event.getCursor()
+                            e.getWhoClicked(),
+                            e.getSlot(),
+                            e.getClick(),
+                            e.getCurrentItem(),
+                            e.getCursor()
                         );
                     }
                 } else {
                     // clicking outside the inventory entirely
-                    shouldCancel = !listener.onClickOutside(event.getWhoClicked());
+                    shouldCancel = !listener.onClickOutside(e.getWhoClicked());
                 }
             }
         } finally {
             if (shouldCancel) {
-                event.setCancelled(true);
+                e.setCancelled(true);
             }
         }
     }
 
-    public void receiveEvent(InventoryDragEvent event) {
+    public void receiveEvent(InventoryDragEvent e) {
         boolean inGUI = false;
         boolean shouldCancel = true;
         try {
-            for (int slot : event.getRawSlots()) {
+            for (int slot : e.getRawSlots()) {
                 if (containsSlot(slot)) {
                     inGUI = true;
                 }
             }
             if (inGUI) {
                 // we only allow drags with a single slot involved, and we fake that as a left-click on the slot
-                if (event.getRawSlots().size() == 1) {
-                    int slot = (event.getRawSlots().toArray(new Integer[1]))[0];
-                    shouldCancel = !listener.onSlotClick(event.getWhoClicked(), slot, ClickType.LEFT, inventory.getItem(slot), event.getOldCursor());
+                if (e.getRawSlots().size() == 1) {
+                    int slot = (e.getRawSlots().toArray(new Integer[1]))[0];
+                    shouldCancel = !listener.onSlotClick(e.getWhoClicked(), slot, ClickType.LEFT, inventory.getItem(slot), e.getOldCursor());
                 }
             } else {
                 // drag is purely in the player's inventory; allow it
@@ -310,15 +310,15 @@ public class STBInventoryGUI implements InventoryGUI {
             }
         } finally {
             if (shouldCancel) {
-                event.setCancelled(true);
+                e.setCancelled(true);
             }
         }
     }
 
-    private boolean processGUIInventoryAction(InventoryClickEvent event) {
-        switch (event.getAction()) {
+    private boolean processGUIInventoryAction(InventoryClickEvent e) {
+        switch (e.getAction()) {
             case MOVE_TO_OTHER_INVENTORY:
-                return listener.onShiftClickExtract(event.getWhoClicked(), event.getRawSlot(), event.getCurrentItem());
+                return listener.onShiftClickExtract(e.getWhoClicked(), e.getRawSlot(), e.getCurrentItem());
             case PLACE_ONE:
             case PLACE_ALL:
             case PLACE_SOME:
@@ -327,19 +327,19 @@ public class STBInventoryGUI implements InventoryGUI {
             case PICKUP_HALF:
             case PICKUP_ONE:
             case PICKUP_SOME:
-                return listener.onSlotClick(event.getWhoClicked(), event.getRawSlot(), event.getClick(), event.getCurrentItem(), event.getCursor());
+                return listener.onSlotClick(e.getWhoClicked(), e.getRawSlot(), e.getClick(), e.getCurrentItem(), e.getCursor());
             default:
                 return false;
         }
     }
 
-    public void receiveEvent(InventoryCloseEvent event) {
-        Debugger.getInstance().debug("received GUI close event for " + event.getPlayer().getName());
-        listener.onGUIClosed(event.getPlayer());
-        if (event.getPlayer() instanceof Player) {
-            setOpenGUI((Player) event.getPlayer(), null);
+    public void receiveEvent(InventoryCloseEvent e) {
+        Debugger.getInstance().debug("received GUI close event for " + e.getPlayer().getName());
+        listener.onGUIClosed(e.getPlayer());
+        if (e.getPlayer() instanceof Player) {
+            setOpenGUI((Player) e.getPlayer(), null);
         }
-        Debugger.getInstance().debug(event.getPlayer().getName() + " closed GUI for " + getOwningItem());
+        Debugger.getInstance().debug(e.getPlayer().getName() + " closed GUI for " + getOwningItem());
     }
 
     @Override
@@ -413,13 +413,13 @@ public class STBInventoryGUI implements InventoryGUI {
 
     @Override
     public void ejectItems(int... slots) {
-        Location loc = getOwningBlock().getLocation();
+        Location l = getOwningBlock().getLocation();
 
         for (int slot : slots) {
-            ItemStack stack = inventory.getItem(slot);
+            ItemStack s = inventory.getItem(slot);
 
-            if (stack != null) {
-                loc.getWorld().dropItemNaturally(loc, stack);
+            if (s != null) {
+                l.getWorld().dropItemNaturally(l, s);
                 inventory.setItem(slot, null);
             }
         }

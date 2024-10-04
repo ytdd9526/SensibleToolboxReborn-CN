@@ -55,13 +55,13 @@ public class SenderModule extends DirectionalItemRouterModule {
     }
 
     @Override
-    public boolean execute(Location loc) {
+    public boolean execute(Location l) {
         if (getItemRouter() != null && getItemRouter().getBufferItem() != null) {
             if (getFilter() != null && !getFilter().shouldPass(getItemRouter().getBufferItem())) {
                 return false;
             }
             Debugger.getInstance().debug(2, "sender in " + getItemRouter() + " has: " + getItemRouter().getBufferItem());
-            Block b = loc.getBlock();
+            Block b = l.getBlock();
             Block target = b.getRelative(getFacing());
             int nToInsert = getItemRouter().getStackSize();
 

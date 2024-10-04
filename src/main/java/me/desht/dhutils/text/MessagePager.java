@@ -291,23 +291,23 @@ public class MessagePager {
                 throw new IllegalArgumentException("Page number " + pageNum + " is out of range.");
             }
 
-            Player player = (Player) sender;
+            Player p = (Player) sender;
 
             int i = (pageNum - 1) * getPageSize();
             int nMessages = getSize();
             String header = String.format("\u2524 %d-%d of %d lines (page %d/%d) \u251c", i + 1, Math.min(getPageSize() * pageNum, nMessages), nMessages, pageNum, getPageCount());
-            MiscUtil.rawMessage(player, ChatColor.GREEN + "\u250c" + getCenteredLabel(header, 2));
+            MiscUtil.rawMessage(p, ChatColor.GREEN + "\u250c" + getCenteredLabel(header, 2));
 
             for (; i < nMessages && i < pageNum * getPageSize(); ++i) {
                 if (parseColors) {
-                    MiscUtil.generalMessage(player, ChatColor.GREEN + "\u250a " + ChatColor.WHITE + getLine(i));
+                    MiscUtil.generalMessage(p, ChatColor.GREEN + "\u250a " + ChatColor.WHITE + getLine(i));
                 } else {
-                    MiscUtil.rawMessage(player, ChatColor.GREEN + "\u250a " + ChatColor.WHITE + getLine(i));
+                    MiscUtil.rawMessage(p, ChatColor.GREEN + "\u250a " + ChatColor.WHITE + getLine(i));
                 }
             }
 
             String footer = getPageCount() > 1 ? "\u2524 Use " + pageCmd + " to see other pages \u251c" : "";
-            MiscUtil.rawMessage(player, ChatColor.GREEN + "\u2514" + getCenteredLabel(footer, 2));
+            MiscUtil.rawMessage(p, ChatColor.GREEN + "\u2514" + getCenteredLabel(footer, 2));
 
             setPage(pageNum);
         } else {

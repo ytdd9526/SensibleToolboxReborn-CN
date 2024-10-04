@@ -31,10 +31,10 @@ public abstract class ClickableGadget extends Gadget {
     /**
      * Called when the gadget is clicked.
      *
-     * @param event
+     * @param e
      *            the inventory click event
      */
-    public abstract void onClicked(InventoryClickEvent event);
+    public abstract void onClicked(InventoryClickEvent e);
 
     /**
      * Return an item stack representing this gadget's texture in the GUI.

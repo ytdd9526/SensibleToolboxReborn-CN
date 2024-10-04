@@ -27,14 +27,14 @@ public final class EnderStorage {
      * returned by the Bukkit
      * {@link org.bukkit.entity.Player#getEnderChest()} method.
      *
-     * @param player
+     * @param p
      *            the player
      * @param frequency
      *            the ender frequency to use
      * @return an ender inventory
      */
-    public static Inventory getEnderInventory(OfflinePlayer player, int frequency) {
-        return getEnderStorageHolder(player, frequency).getInventory();
+    public static Inventory getEnderInventory(OfflinePlayer p, int frequency) {
+        return getEnderStorageHolder(p, frequency).getInventory();
     }
 
     /**
@@ -54,14 +54,14 @@ public final class EnderStorage {
      * Get the personal ender inventory holder for the given player and
      * frequency.
      *
-     * @param player
+     * @param p
      *            the player
      * @param frequency
      *            the ender frequency to use
      * @return a personal ender inventory holder
      */
-    public static EnderStorageHolder getEnderStorageHolder(OfflinePlayer player, int frequency) {
-        return SensibleToolbox.getInstance().getEnderStorageManager().getPlayerInventoryHolder(player, frequency);
+    public static EnderStorageHolder getEnderStorageHolder(OfflinePlayer p, int frequency) {
+        return SensibleToolbox.getInstance().getEnderStorageManager().getPlayerInventoryHolder(p, frequency);
     }
 
     /**

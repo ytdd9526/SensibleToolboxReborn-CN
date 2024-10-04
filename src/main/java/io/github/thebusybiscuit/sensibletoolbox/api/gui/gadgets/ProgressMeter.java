@@ -43,25 +43,25 @@ public class ProgressMeter extends MonitorGadget {
     @Override
     public void repaint() {
         if (machine.getProgressCounterSlot() > 0 && machine.getProgressCounterSlot() < getGUI().getInventory().getSize()) {
-            ItemStack stack;
+            ItemStack s;
             double progress = machine.getProgress();
 
             if (progress > 0 && maxProcessingTime > 0) {
-                stack = progressIcon;
-                STBUtil.levelToDurability(stack, (int) (maxProcessingTime - progress), maxProcessingTime);
-                ItemMeta meta = stack.getItemMeta();
+                s = progressIcon;
+                STBUtil.levelToDurability(s, (int) (maxProcessingTime - progress), maxProcessingTime);
+                ItemMeta meta = s.getItemMeta();
                 meta.setDisplayName(machine.getProgressMessage());
                 String[] lore = machine.getProgressLore();
 
                 if (lore.length > 0) {
                     meta.setLore(GUIUtil.makeLore(lore));
                 }
-                stack.setItemMeta(meta);
+                s.setItemMeta(meta);
             } else {
-                stack = STBInventoryGUI.BG_TEXTURE;
+                s = STBInventoryGUI.BG_TEXTURE;
             }
 
-            getGUI().getInventory().setItem(machine.getProgressCounterSlot(), stack);
+            getGUI().getInventory().setItem(machine.getProgressCounterSlot(), s);
         }
 
         if (machine.getProgressItemSlot() > 0 && machine.getProgressItemSlot() < getGUI().getInventory().getSize()) {

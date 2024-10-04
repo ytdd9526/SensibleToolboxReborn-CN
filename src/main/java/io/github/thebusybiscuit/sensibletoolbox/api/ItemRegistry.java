@@ -19,14 +19,14 @@ public interface ItemRegistry {
     /**
      * Register the given item as a Sensible Toolbox item.
      *
-     * @param item
+     * @param i
      *            an instance of the item to be registered
      * @param plugin
      *            the plugin which is registering the item.
      * @throws java.lang.IllegalArgumentException
      *             if the supplied item is invalid in some way
      */
-    <T extends BaseSTBItem> void registerItem(T item, Plugin plugin);
+    <T extends BaseSTBItem> void registerItem(T i, Plugin plugin);
 
     /**
      * Register the given item as a Sensible Toolbox item.
@@ -38,7 +38,7 @@ public interface ItemRegistry {
      * registered. [itemID] is the return value of
      * {@link io.github.thebusybiscuit.sensibletoolbox.api.items.BaseSTBItem#getItemTypeID()}
      *
-     * @param item
+     * @param i
      *            an instance of the item to be registered
      * @param plugin
      *            the plugin which is registering the item.
@@ -47,7 +47,7 @@ public interface ItemRegistry {
      * @throws java.lang.IllegalArgumentException
      *             if the supplied item is invalid in some way
      */
-    <T extends BaseSTBItem> void registerItem(T item, Plugin plugin, String configPrefix);
+    <T extends BaseSTBItem> void registerItem(T i, Plugin plugin, String configPrefix);
 
     /**
      * Register the given item as a Sensible Toolbox item.
@@ -64,7 +64,7 @@ public interface ItemRegistry {
      * default "stb". See <a href="https://dev.bukkit.org/projects/sensible-toolbox/pages/permissions">
      * this page</a> for more information on per-item permissions.
      *
-     * @param item
+     * @param i
      *            an instance of the item to be registered
      * @param plugin
      *            the plugin which is registering the item.
@@ -75,7 +75,7 @@ public interface ItemRegistry {
      * @throws java.lang.IllegalArgumentException
      *             if the supplied item is invalid in some way
      */
-    <T extends BaseSTBItem> void registerItem(T item, Plugin plugin, String configPrefix, String permissionPrefix);
+    <T extends BaseSTBItem> void registerItem(T i, Plugin plugin, String configPrefix, String permissionPrefix);
 
     /**
      * Get a set of all known STB item ID's.
@@ -87,18 +87,18 @@ public interface ItemRegistry {
     /**
      * Construct and return an STB item from a supplied ItemStack.
      *
-     * @param stack
+     * @param s
      *            the item stack
      * @return the STB item, or null if the item stack is not an STB item
      */
-    BaseSTBItem fromItemStack(ItemStack stack);
+    BaseSTBItem fromItemStack(ItemStack s);
 
     /**
      * Construct and return an STB item from a supplied ItemStack. The item
      * must be an instance of the supplied class or subclass of the supplied
      * class.
      *
-     * @param stack
+     * @param s
      *            the ItemStack
      * @param type
      *            the required class
@@ -106,7 +106,7 @@ public interface ItemRegistry {
      *            the parameterised type; a subclass of BaseSTBItem
      * @return the STB item, or null if the item stack is not an STB item of the desired class
      */
-    <T extends BaseSTBItem> T fromItemStack(ItemStack stack, Class<T> type);
+    <T extends BaseSTBItem> T fromItemStack(ItemStack s, Class<T> type);
 
     /**
      * Construct and return an STB item.
@@ -137,20 +137,20 @@ public interface ItemRegistry {
     /**
      * Check if the given item stack is an STB item.
      *
-     * @param stack
+     * @param s
      *            the item stack to check
      * @return true if this item stack is an STB item
      */
-    boolean isSTBItem(ItemStack stack);
+    boolean isSTBItem(ItemStack s);
 
     /**
      * Check if the given item stack is an STB item of the given STB subclass.
      *
-     * @param stack
+     * @param s
      *            the item stack to check
      * @param c
      *            a subclass of BaseSTBItem
      * @return true if this item stack is an STB item of (or extending) the given class
      */
-    boolean isSTBItem(ItemStack stack, Class<? extends BaseSTBItem> c);
+    boolean isSTBItem(ItemStack s, Class<? extends BaseSTBItem> c);
 }

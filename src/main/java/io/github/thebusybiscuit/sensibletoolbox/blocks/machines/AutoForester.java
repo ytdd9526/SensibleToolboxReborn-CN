@@ -70,9 +70,9 @@ public class AutoForester extends AutoFarmingMachine {
     }
 
     @Override
-    public void onBlockRegistered(Location location, boolean isPlacing) {
+    public void onBlockRegistered(Location l, boolean isPlacing) {
         int i = RADIUS / 2;
-        Block block = location.getBlock();
+        Block block = l.getBlock();
 
         for (int x = -i; x <= i; x++) {
             for (int z = -i; z <= i; z++) {
@@ -80,7 +80,7 @@ public class AutoForester extends AutoFarmingMachine {
             }
         }
 
-        super.onBlockRegistered(location, isPlacing);
+        super.onBlockRegistered(l, isPlacing);
     }
 
     @Override
@@ -135,13 +135,13 @@ public class AutoForester extends AutoFarmingMachine {
 
     private boolean output(@Nonnull Material m) {
         for (int slot : getOutputSlots()) {
-            ItemStack stack = getInventoryItem(slot);
-            if (stack == null || (stack.getType() == m && stack.getAmount() < stack.getMaxStackSize())) {
-                if (stack == null) {
-                    stack = new ItemStack(m);
+            ItemStack s = getInventoryItem(slot);
+            if (s == null || (s.getType() == m && s.getAmount() < s.getMaxStackSize())) {
+                if (s == null) {
+                    s = new ItemStack(m);
                 }
 
-                setInventoryItem(slot, new CustomItemStack(stack, stack.getAmount() + 1));
+                setInventoryItem(slot, new CustomItemStack(s, s.getAmount() + 1));
                 buffer = null;
                 return true;
             }

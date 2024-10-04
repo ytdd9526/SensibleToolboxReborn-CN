@@ -157,12 +157,12 @@ public abstract class AbstractProcessingMachine extends BaseSTBMachine {
     }
 
     @Override
-    public void onBlockUnregistered(Location loc) {
+    public void onBlockUnregistered(Location l) {
         if (getProcessing() != null) {
             // any item being processed is lost, hard luck!
             setProcessing(null);
         }
-        super.onBlockUnregistered(loc);
+        super.onBlockUnregistered(l);
     }
 
     @Override
@@ -194,11 +194,11 @@ public abstract class AbstractProcessingMachine extends BaseSTBMachine {
         boolean ejectFailed = false;
         if (getAutoEjectDirection() != null && getAutoEjectDirection() != BlockFace.SELF) {
             for (int slot : getOutputSlots()) {
-                ItemStack stack = getInventoryItem(slot);
-                if (stack != null) {
-                    if (autoEject(stack)) {
-                        stack.setAmount(stack.getAmount() - 1);
-                        setInventoryItem(slot, stack);
+                ItemStack s = getInventoryItem(slot);
+                if (s != null) {
+                    if (autoEject(s)) {
+                        s.setAmount(s.getAmount() - 1);
+                        setInventoryItem(slot, s);
                         setJammed(false);
                     } else {
                         ejectFailed = true;
@@ -213,18 +213,18 @@ public abstract class AbstractProcessingMachine extends BaseSTBMachine {
     }
 
     private boolean autoEject(ItemStack result) {
-        Location loc = getRelativeLocation(getAutoEjectDirection());
-        Block target = loc.getBlock();
+        Location l = getRelativeLocation(getAutoEjectDirection());
+        Block target = l.getBlock();
         ItemStack item = result.clone();
         item.setAmount(1);
 
         if (!target.getType().isSolid() || Tag.WALL_SIGNS.isTagged(target.getType())) {
             // no (solid) block there - just drop the item
-            Item i = loc.getWorld().dropItem(loc.add(0.5, 0.5, 0.5), item);
+            Item i = l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), item);
             i.setVelocity(new Vector(0, 0, 0));
             return true;
         } else {
-            BaseSTBBlock stb = LocationManager.getManager().get(loc);
+            BaseSTBBlock stb = LocationManager.getManager().get(l);
             int nInserted = stb instanceof STBInventoryHolder ? ((STBInventoryHolder) stb).insertItems(item, getAutoEjectDirection().getOppositeFace(), false, getOwner()) : VanillaInventoryUtils.vanillaInsertion(target, item, 1, getAutoEjectDirection().getOppositeFace(), false, getOwner());
             return nInserted > 0;
         }

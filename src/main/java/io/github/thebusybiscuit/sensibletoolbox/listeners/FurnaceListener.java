@@ -107,12 +107,12 @@ public class FurnaceListener extends STBBaseListener {
         }
     }
 
-    private boolean validateSmeltingIngredient(@Nullable ItemStack stack) {
-        if (stack == null) {
+    private boolean validateSmeltingIngredient(@Nullable ItemStack s) {
+        if (s == null) {
             return false;
         }
 
-        BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(stack);
+        BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(s);
 
         if (item != null) {
             return item.getSmeltingResult() != null;
@@ -126,7 +126,7 @@ public class FurnaceListener extends STBBaseListener {
             while (recipes.hasNext()) {
                 Recipe recipe = recipes.next();
 
-                if (recipe instanceof FurnaceRecipe && vanillaRecipeCheck((FurnaceRecipe) recipe, stack)) {
+                if (recipe instanceof FurnaceRecipe && vanillaRecipeCheck((FurnaceRecipe) recipe, s)) {
                     return true;
                 }
             }
@@ -135,8 +135,8 @@ public class FurnaceListener extends STBBaseListener {
         }
     }
 
-    private boolean vanillaRecipeCheck(@Nonnull FurnaceRecipe recipe, @Nonnull ItemStack stack) {
-        return recipe.getInputChoice().test(stack) && !recipe.getKey().getNamespace().equals("sensibletoolbox");
+    private boolean vanillaRecipeCheck(@Nonnull FurnaceRecipe recipe, @Nonnull ItemStack s) {
+        return recipe.getInputChoice().test(s) && !recipe.getKey().getNamespace().equals("sensibletoolbox");
     }
 
     private int findNewSlot(InventoryClickEvent event) {

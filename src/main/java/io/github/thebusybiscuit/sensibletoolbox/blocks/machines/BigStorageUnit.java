@@ -361,7 +361,7 @@ public class BigStorageUnit extends AbstractProcessingMachine {
     }
 
     @Override
-    public void onBlockRegistered(Location location, boolean isPlacing) {
+    public void onBlockRegistered(Location l, boolean isPlacing) {
         getProgressMeter().setMaxProgress(maxCapacity);
         setProcessing(storedDisplay);
         setProgress(maxCapacity - (double) storageAmount);
@@ -369,11 +369,11 @@ public class BigStorageUnit extends AbstractProcessingMachine {
         outputAmount = output == null ? 0 : output.getAmount();
         oldTotalAmount += outputAmount;
         updateSignQuantityLine();
-        super.onBlockRegistered(location, isPlacing);
+        super.onBlockRegistered(l, isPlacing);
     }
 
     @Override
-    public void onBlockUnregistered(Location location) {
+    public void onBlockUnregistered(Location l) {
         if (getProcessing() != null && dropsItemsOnBreak()) {
             // dump contents on floor (could make a big mess)
             Location current = getLocation();
@@ -381,16 +381,16 @@ public class BigStorageUnit extends AbstractProcessingMachine {
             storageAmount = Math.min(4096, storageAmount);
 
             while (storageAmount > 0) {
-                ItemStack stack = stored.clone();
-                stack.setAmount(Math.min(storageAmount, stored.getMaxStackSize()));
-                current.getWorld().dropItemNaturally(current, stack);
+                ItemStack s = stored.clone();
+                s.setAmount(Math.min(storageAmount, stored.getMaxStackSize()));
+                current.getWorld().dropItemNaturally(current, s);
                 storageAmount -= stored.getMaxStackSize();
             }
 
             setStoredItemType(null);
             setStorageAmount(0);
         }
-        super.onBlockUnregistered(location);
+        super.onBlockUnregistered(l);
     }
 
     @Override
@@ -400,34 +400,34 @@ public class BigStorageUnit extends AbstractProcessingMachine {
             return;
         }
 
-        Player player = event.getPlayer();
+        Player p = event.getPlayer();
         ItemStack inHand = event.getItem();
 
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK && getStoredItemType() != null && hasAccessRights(player) && isItemOkay(event.getItem())) {
+        if (event.getAction() == Action.LEFT_CLICK_BLOCK && getStoredItemType() != null && hasAccessRights(p) && isItemOkay(event.getItem())) {
             // try to extract items from the output stack
-            int wanted = player.isSneaking() ? 1 : getStoredItemType().getMaxStackSize();
+            int wanted = p.isSneaking() ? 1 : getStoredItemType().getMaxStackSize();
             int nExtracted = Math.min(wanted, getOutputAmount());
 
             if (nExtracted > 0) {
-                Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation().add(0.5, 0.5, 0.5);
-                ItemStack stack = getStoredItemType().clone();
-                stack.setAmount(nExtracted);
-                loc.getWorld().dropItem(loc, stack);
+                Location l = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation().add(0.5, 0.5, 0.5);
+                ItemStack s = getStoredItemType().clone();
+                s.setAmount(nExtracted);
+                l.getWorld().dropItem(l, s);
                 setOutputAmount(getOutputAmount() - nExtracted);
-                stack.setAmount(getOutputAmount());
-                setOutputItem(stack);
+                s.setAmount(getOutputAmount());
+                setOutputItem(s);
             }
 
             event.setCancelled(true);
-        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !player.isSneaking() && hasAccessRights(player)) {
-            Long lastInsert = (Long) STBUtil.getMetadataValue(player, STB_LAST_BSU_INSERT);
+        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !p.isSneaking() && hasAccessRights(p)) {
+            Long lastInsert = (Long) STBUtil.getMetadataValue(p, STB_LAST_BSU_INSERT);
             long now = System.currentTimeMillis();
 
             if ((inHand == null || inHand.getType() == Material.AIR) && lastInsert != null && now - lastInsert < DOUBLE_CLICK_TIME) {
-                rightClickFullInsert(player);
+                rightClickFullInsert(p);
                 event.setCancelled(true);
             } else if (inHand != null && inHand.isSimilar(getStoredItemType())) {
-                rightClickInsert(player, player.getInventory().getHeldItemSlot(), inHand);
+                rightClickInsert(p, p.getInventory().getHeldItemSlot(), inHand);
                 event.setCancelled(true);
             } else {
                 super.onInteractBlock(event);
@@ -457,21 +457,21 @@ public class BigStorageUnit extends AbstractProcessingMachine {
         }
     }
 
-    private void rightClickFullInsert(Player player) {
-        for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-            ItemStack stack = player.getInventory().getItem(slot);
+    private void rightClickFullInsert(Player p) {
+        for (int slot = 0; slot < p.getInventory().getSize(); slot++) {
+            ItemStack s = p.getInventory().getItem(slot);
 
-            if (stack != null && stack.isSimilar(getStoredItemType()) && rightClickInsert(player, slot, stack) == 0) {
+            if (s != null && s.isSimilar(getStoredItemType()) && rightClickInsert(p, slot, s) == 0) {
                 break;
             }
         }
     }
 
-    private int rightClickInsert(@Nonnull Player player, int slot, @Nonnull ItemStack stack) {
-        int toInsert = Math.min(stack.getAmount(), maxCapacity - getStorageAmount());
+    private int rightClickInsert(@Nonnull Player p, int slot, @Nonnull ItemStack s) {
+        int toInsert = Math.min(s.getAmount(), maxCapacity - getStorageAmount());
 
         if (toInsert == 0) {
-            STBUtil.complain(player, getItemName() + " is full.");
+            STBUtil.complain(p, getItemName() + " is full.");
             return 0;
         }
 
@@ -481,16 +481,16 @@ public class BigStorageUnit extends AbstractProcessingMachine {
             setStorageAmount(getStorageAmount() + toInsert);
 
             if (getStoredItemType() == null) {
-                setStoredItemType(stack);
+                setStoredItemType(s);
             }
 
-            stack.setAmount(stack.getAmount() - toInsert);
-            player.getInventory().setItem(slot, stack.getAmount() == 0 ? null : stack);
+            s.setAmount(s.getAmount() - toInsert);
+            p.getInventory().setItem(slot, s.getAmount() == 0 ? null : s);
             setCharge(getCharge() - chargeNeeded);
-            player.setMetadata(STB_LAST_BSU_INSERT, new FixedMetadataValue(getProviderPlugin(), System.currentTimeMillis()));
+            p.setMetadata(STB_LAST_BSU_INSERT, new FixedMetadataValue(getProviderPlugin(), System.currentTimeMillis()));
             return toInsert;
         } else {
-            STBUtil.complain(player, getItemName() + " has insufficient charge to accept items.");
+            STBUtil.complain(p, getItemName() + " has insufficient charge to accept items.");
             return 0;
         }
     }
@@ -530,8 +530,8 @@ public class BigStorageUnit extends AbstractProcessingMachine {
     }
 
     @Override
-    public boolean acceptsItemType(ItemStack stack) {
-        return stored == null || stored.isSimilar(stack);
+    public boolean acceptsItemType(ItemStack s) {
+        return stored == null || stored.isSimilar(s);
     }
 
     @Override

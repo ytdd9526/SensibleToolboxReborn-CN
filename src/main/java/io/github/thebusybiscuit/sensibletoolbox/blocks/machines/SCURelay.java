@@ -265,13 +265,13 @@ public class SCURelay extends BatteryBox {
 
     @Override
     public ItemStack extractItems(BlockFace face, ItemStack receiver, int amount, UUID uuid) {
-        ItemStack stack = super.extractItems(face, receiver, amount, uuid);
+        ItemStack s = super.extractItems(face, receiver, amount, uuid);
 
-        if (stack != null) {
+        if (s != null) {
             rescanTransponder();
         }
 
-        return stack;
+        return s;
     }
 
     private void rescanTransponder() {
@@ -332,8 +332,8 @@ public class SCURelay extends BatteryBox {
     }
 
     @Override
-    public void onBlockRegistered(Location location, boolean isPlacing) {
-        super.onBlockRegistered(location, isPlacing);
+    public void onBlockRegistered(Location l, boolean isPlacing) {
+        super.onBlockRegistered(l, isPlacing);
         SCURelayConnection connection = getTracker().get(relayId);
         SCURelay block1 = connection.getFirst();
         SCURelay block2 = connection.getSecond();
@@ -348,11 +348,11 @@ public class SCURelay extends BatteryBox {
         }
 
         updateInfoLabels(connection);
-        worldID = location.getWorld().getUID();
+        worldID = l.getWorld().getUID();
     }
 
     @Override
-    public void onBlockUnregistered(Location loc) {
+    public void onBlockUnregistered(Location l) {
         getGUI().setItem(TRANSPONDER_SLOT, null);
 
         SCURelayConnection connection = getTracker().get(relayId);
@@ -378,7 +378,7 @@ public class SCURelay extends BatteryBox {
 
         worldID = null;
 
-        super.onBlockUnregistered(loc);
+        super.onBlockUnregistered(l);
     }
 
     private void updateInfoLabels(@Nonnull SCURelayConnection connection) {

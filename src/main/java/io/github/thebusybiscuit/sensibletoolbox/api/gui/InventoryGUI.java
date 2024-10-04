@@ -117,10 +117,10 @@ public interface InventoryGUI {
      *
      * @param slot
      *            the slot to update
-     * @param stack
+     * @param s
      *            the new item to place in the slot
      */
-    void setItem(int slot, @Nullable ItemStack stack);
+    void setItem(int slot, @Nullable ItemStack s);
 
     /**
      * Get the STB block which owns this GUI.
@@ -151,10 +151,10 @@ public interface InventoryGUI {
     /**
      * Show this GUI to the given player.
      *
-     * @param player
+     * @param p
      *            the player to show the GUI to
      */
-    void show(Player player);
+    void show(Player p);
 
     /**
      * Hides this GUI from all players
@@ -164,12 +164,12 @@ public interface InventoryGUI {
     /**
      * Hide this GUI from the given player (pop it down)
      *
-     * @param player
+     * @param p
      *            the player to hide the GUI from
      */
 
 
-    void hide(Player player);
+    void hide(Player p);
 
     /**
      * Get a list of players who currently have this GUI open.

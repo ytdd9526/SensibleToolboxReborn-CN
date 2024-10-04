@@ -86,16 +86,16 @@ public class HolographicMonitor extends BaseSTBBlock {
     }
 
     @Override
-    public void onBlockRegistered(Location location, boolean isPlacing) {
-        super.onBlockRegistered(location, isPlacing);
+    public void onBlockRegistered(Location l, boolean isPlacing) {
+        super.onBlockRegistered(l, isPlacing);
 
         onServerTick();
         this.hologram = HologramsAPI.createHologram(SensibleToolboxPlugin.getInstance(), getLocation().add(0.5, 1.4, 0.5));
     }
 
     @Override
-    public void onBlockUnregistered(Location location) {
-        super.onBlockUnregistered(location);
+    public void onBlockUnregistered(Location l) {
+        super.onBlockUnregistered(l);
 
         this.hologram.delete();
     }

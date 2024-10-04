@@ -145,11 +145,11 @@ public class BasicSolarCell extends BaseSTBMachine implements LightMeterHolder {
 
     @Override
     public ItemStack extractItems(BlockFace face, ItemStack receiver, int amount, UUID uuid) {
-        ItemStack stack = super.extractItems(face, receiver, amount, uuid);
-        if (stack != null) {
+        ItemStack s = super.extractItems(face, receiver, amount, uuid);
+        if (s != null) {
             rescanPVCell();
         }
-        return stack;
+        return s;
     }
 
     @Override
@@ -269,19 +269,19 @@ public class BasicSolarCell extends BaseSTBMachine implements LightMeterHolder {
     }
 
     @Override
-    public void onBlockRegistered(Location location, boolean isPlacing) {
+    public void onBlockRegistered(Location l, boolean isPlacing) {
         if (isPlacing) {
-            drawPVLayer(location.getBlock().getRelative(BlockFace.UP));
+            drawPVLayer(l.getBlock().getRelative(BlockFace.UP));
         }
-        super.onBlockRegistered(location, isPlacing);
+        super.onBlockRegistered(l, isPlacing);
     }
 
     @Override
-    public void onBlockUnregistered(Location location) {
+    public void onBlockUnregistered(Location l) {
         // remove any pv cell in the gui; pv level is stored separately
         getGUI().setItem(PV_CELL_SLOT, null);
 
-        super.onBlockUnregistered(location);
+        super.onBlockUnregistered(l);
     }
 
     @Nonnull
@@ -296,15 +296,15 @@ public class BasicSolarCell extends BaseSTBMachine implements LightMeterHolder {
 
     @Override
     public void onInteractBlock(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+        Player p = event.getPlayer();
 
-        if (event.getItem() == null && event.getAction() == Action.LEFT_CLICK_BLOCK && player.isSneaking()) {
-            ItemStack stack = extractItems(event.getBlockFace(), null, 1, event.getPlayer().getUniqueId());
+        if (event.getItem() == null && event.getAction() == Action.LEFT_CLICK_BLOCK && p.isSneaking()) {
+            ItemStack s = extractItems(event.getBlockFace(), null, 1, event.getPlayer().getUniqueId());
 
-            if (stack != null) {
+            if (s != null) {
                 Block block = event.getClickedBlock();
-                block.getWorld().dropItemNaturally(block.getLocation(), stack);
-                player.playSound(block.getLocation(), Sound.UI_BUTTON_CLICK, 1.0F, 0.6F);
+                block.getWorld().dropItemNaturally(block.getLocation(), s);
+                p.playSound(block.getLocation(), Sound.UI_BUTTON_CLICK, 1.0F, 0.6F);
             }
         }
         super.onInteractBlock(event);

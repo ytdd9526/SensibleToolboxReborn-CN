@@ -77,26 +77,26 @@ public class EjectorUpgrade extends AbstractMachineUpgrade implements Directiona
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-            setFacingDirection(event.getBlockFace().getOppositeFace());
-            updateHeldItemStack(event.getPlayer(), event.getHand());
-            event.setCancelled(true);
-        } else if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+    public void onInteractItem(PlayerInteractEvent e) {
+        if (e.getAction() == Action.LEFT_CLICK_BLOCK) {
+            setFacingDirection(e.getBlockFace().getOppositeFace());
+            updateHeldItemStack(e.getPlayer(), e.getHand());
+            e.setCancelled(true);
+        } else if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
             // open ejector configuration GUI
-            Block b = event.getClickedBlock();
+            Block b = e.getClickedBlock();
             BaseSTBMachine machine = b == null ? null : SensibleToolbox.getBlockAt(b.getLocation(), BaseSTBMachine.class, true);
 
             if (b == null || machine == null && !b.getType().isInteractable()) {
-                InventoryGUI gui = createGUI(event.getPlayer());
-                gui.show(event.getPlayer());
-                event.setCancelled(true);
+                InventoryGUI gui = createGUI(e.getPlayer());
+                gui.show(e.getPlayer());
+                e.setCancelled(true);
             }
         }
     }
 
-    private InventoryGUI createGUI(Player player) {
-        InventoryGUI gui = GUIUtil.createGUI(player, this, 27, ChatColor.DARK_RED + "Ejector Configuration");
+    private InventoryGUI createGUI(Player p) {
+        InventoryGUI gui = GUIUtil.createGUI(p, this, 27, ChatColor.DARK_RED + "Ejector Configuration");
         gui.addLabel("Module Direction", DIRECTION_LABEL_SLOT, null, "Set the direction in which the", "machine should eject finished items");
 
         ItemStack texture = GUIUtil.makeTexture(getMaterial(), "Ejection Direction");
@@ -118,7 +118,7 @@ public class EjectorUpgrade extends AbstractMachineUpgrade implements Directiona
     }
 
     @Override
-    public void onGUIClosed(HumanEntity player) {
-        player.setItemInHand(toItemStack(player.getItemInHand().getAmount()));
+    public void onGUIClosed(HumanEntity p) {
+        p.setItemInHand(toItemStack(p.getItemInHand().getAmount()));
     }
 }

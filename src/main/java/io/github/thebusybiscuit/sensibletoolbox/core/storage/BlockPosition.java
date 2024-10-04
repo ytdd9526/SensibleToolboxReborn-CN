@@ -25,10 +25,10 @@ public class BlockPosition {
         this.z = z;
     }
 
-    public BlockPosition(Location loc) {
-        this.x = loc.getBlockX();
-        this.y = loc.getBlockY();
-        this.z = loc.getBlockZ();
+    public BlockPosition(Location l) {
+        this.x = l.getBlockX();
+        this.y = l.getBlockY();
+        this.z = l.getBlockZ();
     }
 
     @Override

@@ -48,8 +48,8 @@ public class ValidateCommand extends STBAbstractCommand {
         Set<Block> fixed = new HashSet<>();
 
         for (BaseSTBBlock stb : LocationManager.getManager().listBlocks(world, false)) {
-            Location loc = stb.getLocation();
-            Block b = loc.getBlock();
+            Location l = stb.getLocation();
+            Block b = l.getBlock();
             Material material = stb.getMaterial();
 
             Debugger.getInstance().debug("compare: block " + b + " vs. STB: " + stb + " - " + material);
@@ -66,7 +66,7 @@ public class ValidateCommand extends STBAbstractCommand {
             }
 
             for (RelativePosition rp : stb.getBlockStructure()) {
-                Block b2 = stb.getAuxiliaryBlock(loc, rp);
+                Block b2 = stb.getAuxiliaryBlock(l, rp);
 
                 if (repairMeta(plugin, b2, stb, BaseSTBBlock.STB_MULTI_BLOCK)) {
                     fixed.add(b2);

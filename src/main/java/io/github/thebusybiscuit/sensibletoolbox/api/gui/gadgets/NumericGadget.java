@@ -61,21 +61,21 @@ public class NumericGadget extends ClickableGadget {
     }
 
     @Override
-    public void onClicked(InventoryClickEvent event) {
+    public void onClicked(InventoryClickEvent e) {
         int newValue = value;
-        if (event.isLeftClick()) {
-            newValue -= event.isShiftClick() ? altIncr : incr;
-        } else if (event.isRightClick()) {
-            newValue += event.isShiftClick() ? altIncr : incr;
+        if (e.isLeftClick()) {
+            newValue -= e.isShiftClick() ? altIncr : incr;
+        } else if (e.isRightClick()) {
+            newValue += e.isShiftClick() ? altIncr : incr;
         }
         newValue = Math.max(Math.min(newValue, range.getMaximumInt()), range.getMinimumInt());
         if (newValue != value && callback.run(newValue)) {
             value = newValue;
-            event.setCurrentItem(getTexture());
+            e.setCurrentItem(getTexture());
         } else {
             // vetoed by the block!
-            if (event.getWhoClicked() instanceof Player) {
-                STBUtil.complain((Player) event.getWhoClicked());
+            if (e.getWhoClicked() instanceof Player) {
+                STBUtil.complain((Player) e.getWhoClicked());
             }
         }
     }

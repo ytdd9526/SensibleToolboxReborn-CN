@@ -47,9 +47,9 @@ public class SilkyBreakerModule extends BreakerModule {
 
     @Override
     public boolean validateCrafting(CraftingInventory inventory) {
-        for (ItemStack stack : inventory.getMatrix()) {
-            if (stack != null && stack.getType() == Material.ENCHANTED_BOOK) {
-                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) stack.getItemMeta();
+        for (ItemStack s : inventory.getMatrix()) {
+            if (s != null && s.getType() == Material.ENCHANTED_BOOK) {
+                EnchantmentStorageMeta meta = (EnchantmentStorageMeta) s.getItemMeta();
                 if (meta.getStoredEnchantLevel(Enchantment.SILK_TOUCH) < 1) {
                     return false;
                 }

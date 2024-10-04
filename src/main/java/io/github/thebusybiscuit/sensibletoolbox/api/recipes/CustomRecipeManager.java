@@ -134,8 +134,8 @@ public class CustomRecipeManager {
     }
 
     @Nonnull
-    private static ItemStack makeSingle(@Nonnull ItemStack stack) {
-        ItemStack stack2 = stack.clone();
+    private static ItemStack makeSingle(@Nonnull ItemStack s) {
+        ItemStack stack2 = s.clone();
         stack2.setAmount(1);
         return stack2;
     }

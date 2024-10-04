@@ -98,28 +98,28 @@ public class PVCell extends BaseSTBItem {
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Player player = event.getPlayer();
+    public void onInteractItem(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Player p = e.getPlayer();
 
-            if (event.getClickedBlock() != null) {
-                BaseSTBBlock stb = SensibleToolbox.getBlockAt(event.getClickedBlock().getLocation(), true);
+            if (e.getClickedBlock() != null) {
+                BaseSTBBlock stb = SensibleToolbox.getBlockAt(e.getClickedBlock().getLocation(), true);
 
                 if (stb instanceof BasicSolarCell) {
-                    int nInserted = ((BasicSolarCell) stb).insertItems(event.getItem(), event.getBlockFace(), false, player.getUniqueId());
+                    int nInserted = ((BasicSolarCell) stb).insertItems(e.getItem(), e.getBlockFace(), false, p.getUniqueId());
 
                     if (nInserted > 0) {
-                        if (event.getHand() == EquipmentSlot.HAND) {
-                            player.getInventory().setItemInMainHand(null);
+                        if (e.getHand() == EquipmentSlot.HAND) {
+                            p.getInventory().setItemInMainHand(null);
                         } else {
-                            player.getInventory().setItemInOffHand(null);
+                            p.getInventory().setItemInOffHand(null);
                         }
-                        player.playSound(event.getClickedBlock().getLocation(), Sound.UI_BUTTON_CLICK, 1.0F, 0.6F);
+                        p.playSound(e.getClickedBlock().getLocation(), Sound.UI_BUTTON_CLICK, 1.0F, 0.6F);
                     }
                 }
             }
-            player.updateInventory();
-            event.setCancelled(true);
+            p.updateInventory();
+            e.setCancelled(true);
         }
     }
 

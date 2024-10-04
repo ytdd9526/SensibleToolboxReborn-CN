@@ -30,8 +30,8 @@ public class RecipeCommand extends AbstractCommand {
             return true;
         }
 
-        Player player = (Player) sender;
-        Inventory inv = player.getInventory();
+        Player p = (Player) sender;
+        Inventory inv = p.getInventory();
         RecipeBook book = null;
         int slot;
 
@@ -51,8 +51,8 @@ public class RecipeCommand extends AbstractCommand {
         book.setInventorySlot(slot);
         book.setRecipeNameFilter(filter);
         book.goToItemList();
-        Block b = player.getTargetBlock((Set<Material>) null, 4);
-        book.openBook(player, STBUtil.canFabricateWith(b) ? b : null);
+        Block b = p.getTargetBlock((Set<Material>) null, 4);
+        book.openBook(p, STBUtil.canFabricateWith(b) ? b : null);
         return true;
     }
 }

@@ -36,8 +36,8 @@ public class ChargeCommand extends AbstractCommand {
             return true;
         }
 
-        Player player = (Player) sender;
-        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+        Player p = (Player) sender;
+        ItemStack itemInHand = p.getInventory().getItemInMainHand();
         BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(itemInHand);
         BaseSTBBlock block = null;
         Chargeable chargeable = null;
@@ -45,7 +45,7 @@ public class ChargeCommand extends AbstractCommand {
         if (item instanceof Chargeable) {
             chargeable = (Chargeable) item;
         } else {
-            Block b = player.getTargetBlock((Set<Material>) null, 10);
+            Block b = p.getTargetBlock((Set<Material>) null, 10);
 
             if (Tag.WALL_SIGNS.isTagged(b.getType()) || Tag.STANDING_SIGNS.isTagged(b.getType())) {
                 Sign s = (Sign) b.getState();
@@ -81,10 +81,10 @@ public class ChargeCommand extends AbstractCommand {
         chargeable.setCharge(amount);
 
         if (item != null) {
-            player.getInventory().setItemInMainHand(item.toItemStack());
+            p.getInventory().setItemInMainHand(item.toItemStack());
         } else if (block != null) {
             block.update(true);
-            MiscUtil.statusMessage(player, "&6" + block.getItemName() + "&- charged to " + STBUtil.getChargeString(chargeable));
+            MiscUtil.statusMessage(p, "&6" + block.getItemName() + "&- charged to " + STBUtil.getChargeString(chargeable));
         }
 
         return true;

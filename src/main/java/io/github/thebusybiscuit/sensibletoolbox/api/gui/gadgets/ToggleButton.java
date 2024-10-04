@@ -45,16 +45,16 @@ public class ToggleButton extends ClickableGadget {
     }
 
     @Override
-    public void onClicked(InventoryClickEvent event) {
+    public void onClicked(InventoryClickEvent e) {
         boolean newValue = !value;
 
         if (callback.run(newValue)) {
             value = newValue;
-            event.setCurrentItem(getTexture());
+            e.setCurrentItem(getTexture());
         } else {
             // vetoed!
-            if (event.getWhoClicked() instanceof Player) {
-                STBUtil.complain((Player) event.getWhoClicked());
+            if (e.getWhoClicked() instanceof Player) {
+                STBUtil.complain((Player) e.getWhoClicked());
             }
         }
     }

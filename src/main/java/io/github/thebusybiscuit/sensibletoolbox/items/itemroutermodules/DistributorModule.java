@@ -52,13 +52,13 @@ public class DistributorModule extends DirectionalItemRouterModule {
     }
 
     @Override
-    public boolean execute(Location loc) {
+    public boolean execute(Location l) {
         if (getItemRouter() == null) {
             // shouldn't happen...
             return false;
         }
 
-        doPull(getFacing(), loc);
+        doPull(getFacing(), l);
 
         if (getItemRouter().getNeighbours().size() > 1 && getItemRouter().getBufferItem() != null) {
             int nToInsert = getItemRouter().getStackSize();
@@ -69,7 +69,7 @@ public class DistributorModule extends DirectionalItemRouterModule {
                 return false;
             }
 
-            Block b = loc.getBlock();
+            Block b = l.getBlock();
             Block target = b.getRelative(face);
             BaseSTBBlock stb = SensibleToolbox.getBlockAt(target.getLocation(), true);
 

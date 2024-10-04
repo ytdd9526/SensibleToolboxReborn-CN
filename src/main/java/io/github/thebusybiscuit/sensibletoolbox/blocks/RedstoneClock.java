@@ -133,8 +133,8 @@ public class RedstoneClock extends BaseSTBBlock {
 
     @Override
     public void onServerTick() {
-        Location loc = getLocation();
-        Block b = loc.getBlock();
+        Location l = getLocation();
+        Block b = l.getBlock();
         long time = getTicksLived();
 
         if (time % getInterval() == 0 && isRedstoneActive()) {
@@ -176,18 +176,18 @@ public class RedstoneClock extends BaseSTBBlock {
     }
 
     @Override
-    public void onInteractBlock(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !event.getPlayer().isSneaking()) {
-            getGUI().show(event.getPlayer());
-            event.setCancelled(true);
+    public void onInteractBlock(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && !e.getPlayer().isSneaking()) {
+            getGUI().show(e.getPlayer());
+            e.setCancelled(true);
         }
     }
 
     @Override
-    public void onBlockUnregistered(Location location) {
+    public void onBlockUnregistered(Location l) {
         // ensure the non-active form of the item is always dropped
         active = false;
-        super.onBlockUnregistered(location);
+        super.onBlockUnregistered(l);
     }
 
     @Override

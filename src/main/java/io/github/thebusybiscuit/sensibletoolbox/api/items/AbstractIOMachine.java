@@ -82,12 +82,12 @@ public abstract class AbstractIOMachine extends AbstractProcessingMachine {
     }
 
     @Override
-    public void onBlockUnregistered(Location loc) {
-        for (ItemStack stack : pendingItems) {
-            loc.getWorld().dropItemNaturally(loc, stack);
+    public void onBlockUnregistered(Location l) {
+        for (ItemStack s : pendingItems) {
+            l.getWorld().dropItemNaturally(l, s);
         }
 
-        super.onBlockUnregistered(loc);
+        super.onBlockUnregistered(l);
     }
 
     private void pushItemIntoOutput(ItemStack result, boolean addBonus) {
@@ -137,14 +137,14 @@ public abstract class AbstractIOMachine extends AbstractProcessingMachine {
     }
 
     private void pullItemIntoProcessing(int inputSlot) {
-        ItemStack stack = getInventoryItem(inputSlot);
-        ItemStack toProcess = stack.clone();
+        ItemStack s = getInventoryItem(inputSlot);
+        ItemStack toProcess = s.clone();
         toProcess.setAmount(1);
         ProcessingResult recipe = getCustomRecipeFor(toProcess);
 
         if (recipe == null) {
             // shouldn't happen but...
-            getLocation().getWorld().dropItemNaturally(getLocation(), stack);
+            getLocation().getWorld().dropItemNaturally(getLocation(), s);
             setInventoryItem(inputSlot, null);
             return;
         }
@@ -152,19 +152,19 @@ public abstract class AbstractIOMachine extends AbstractProcessingMachine {
         setProcessing(toProcess);
         getProgressMeter().setMaxProgress(recipe.getProcessingTime());
         setProgress(recipe.getProcessingTime());
-        stack.setAmount(stack.getAmount() - 1);
-        setInventoryItem(inputSlot, stack);
+        s.setAmount(s.getAmount() - 1);
+        setInventoryItem(inputSlot, s);
 
         update(false);
     }
 
     @Override
-    public boolean acceptsItemType(ItemStack item) {
-        return CustomRecipeManager.getManager().hasRecipe(this, item);
+    public boolean acceptsItemType(ItemStack i) {
+        return CustomRecipeManager.getManager().hasRecipe(this, i);
     }
 
-    private ProcessingResult getCustomRecipeFor(ItemStack stack) {
-        return CustomRecipeManager.getManager().getRecipe(this, stack);
+    private ProcessingResult getCustomRecipeFor(ItemStack s) {
+        return CustomRecipeManager.getManager().getRecipe(this, s);
     }
 
     @Override

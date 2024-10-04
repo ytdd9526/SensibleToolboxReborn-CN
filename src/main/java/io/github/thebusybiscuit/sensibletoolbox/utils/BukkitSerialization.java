@@ -44,8 +44,8 @@ public final class BukkitSerialization {
 
             // Save every element in the list
             for (int i = 0; i < maxItems; i++) {
-                ItemStack stack = inventory.getItem(i);
-                dataOutput.writeObject(stack);
+                ItemStack s = inventory.getItem(i);
+                dataOutput.writeObject(s);
             }
 
             // Serialize that array
@@ -66,10 +66,10 @@ public final class BukkitSerialization {
 
             // Read the serialized inventory
             for (int i = 0; i < maxItems; i++) {
-                ItemStack stack = (ItemStack) dataInput.readObject();
+                ItemStack s = (ItemStack) dataInput.readObject();
 
-                if (stack != null) {
-                    inventory.setItem(i, stack);
+                if (s != null) {
+                    inventory.setItem(i, s);
                 }
             }
 

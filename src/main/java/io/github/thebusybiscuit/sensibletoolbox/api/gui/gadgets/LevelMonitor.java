@@ -30,16 +30,16 @@ public class LevelMonitor extends MonitorGadget {
 
     @Override
     public void repaint() {
-        ItemStack stack;
+        ItemStack s;
         int level = reporter.getLevel();
 
         if (reporter.getMaxLevel() > 0) {
-            stack = reporter.getLevelIcon();
-            STBUtil.levelToDurability(stack, level, reporter.getMaxLevel());
-            ItemMeta meta = stack.getItemMeta();
+            s = reporter.getLevelIcon();
+            STBUtil.levelToDurability(s, level, reporter.getMaxLevel());
+            ItemMeta meta = s.getItemMeta();
             meta.setDisplayName(reporter.getLevelMessage());
-            stack.setItemMeta(meta);
-            getGUI().getInventory().setItem(reporter.getLevelMonitorSlot(), stack);
+            s.setItemMeta(meta);
+            getGUI().getInventory().setItem(reporter.getLevelMonitorSlot(), s);
         }
     }
 
