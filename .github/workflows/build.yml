@@ -69,7 +69,7 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: "v${{ env.NEW_VERSION }}" # Use the incremented version for the tag
+          tag_name: "vReborn-${{ env.NEW_VERSION }}" # Use the incremented version for the tag with a dash
           files: "SensibleToolbox v${{ env.NEW_VERSION }}.jar" # Use the renamed file
           name: "SensibleToolbox v${{ env.NEW_VERSION }}" # Naming the release
           body: |
