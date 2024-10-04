@@ -16,7 +16,8 @@ jobs:
       - name: Set up JDK
         uses: actions/setup-java@v2
         with:
-          java-version: '17' # Specify the required Java version
+          java-version: 16
+          distribution: adopt
 
       # Step 3: Get the current version from pom.xml
       - name: Get current version
