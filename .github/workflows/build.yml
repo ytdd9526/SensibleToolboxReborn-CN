@@ -54,14 +54,14 @@ jobs:
       # Step 6: Rename the JAR file
       - name: Rename JAR file
         run: |
-          mv target/*.jar "target/SensibleToolbox v${{ env.NEW_VERSION }}.jar"
+          mv *.jar "SensibleToolbox v${{ env.NEW_VERSION }}.jar"
 
       # Step 7: Create a release with the JAR
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
           tag_name: "v${{ env.NEW_VERSION }}" # Use the incremented version for the tag
-          files: target/"SensibleToolbox v${{ env.NEW_VERSION }}.jar" # Use the renamed file
+          files: "SensibleToolbox v${{ env.NEW_VERSION }}.jar" # Use the renamed file
           name: "SensibleToolbox v${{ env.NEW_VERSION }}" # Naming the release
           body: |
             Release of version v${{ env.NEW_VERSION }}.
