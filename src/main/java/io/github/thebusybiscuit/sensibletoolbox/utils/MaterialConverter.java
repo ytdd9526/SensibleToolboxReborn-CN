@@ -68,6 +68,6 @@ public final class MaterialConverter {
      * @return true if the stack is log; false otherwise
      */
     public static boolean isLog(@Nonnull Material log) {
-        return log.name().endsWith("_LOG") || log.name().endsWith("_WOOD");
+        return log.name().endsWith("_LOG") || log.name().endsWith("_WOOD") || log.name().endsWith("_HYPHAE");
     }
 }
