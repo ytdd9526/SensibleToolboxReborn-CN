@@ -74,7 +74,7 @@
 
     <build>
         <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
-        <finalName>${project.name} Reborn v${project.version}</finalName>
+        <finalName>${project.name} vReborn${project.version}</finalName>
 
         <plugins>
             <!-- Compiler plugin -->
