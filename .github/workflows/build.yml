@@ -51,17 +51,21 @@ jobs:
       - name: Build with Maven
         run: mvn clean package --file pom.xml
 
-      # Step 6: Rename the JAR file
+      # Step 6: List the contents of the target directory for debugging
+      - name: List target directory
+        run: ls -la target
+
+      # Step 7: Rename the JAR file
       - name: Rename JAR file
         run: |
-          # Set the base name of the JAR file
-          BASE_JAR="SensibleToolbox-Reborn"
-          # Get the current version
-          CURRENT_VERSION="${{ env.NEW_VERSION }}"
-          # Get the new JAR file name
-          mv "${BASE_JAR}-${CURRENT_VERSION#Reborn }.jar" "SensibleToolbox v${CURRENT_VERSION}.jar"
+          # Find the generated JAR file
+          JAR_FILE=$(ls target/*.jar | head -n 1)  # Get the first jar file in target
+          echo "Found JAR file: $JAR_FILE"
+          
+          # Rename it
+          mv "$JAR_FILE" "SensibleToolbox v${{ env.NEW_VERSION }}.jar"
 
-      # Step 7: Create a release with the JAR
+      # Step 8: Create a release with the JAR
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
