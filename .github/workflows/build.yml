@@ -23,21 +23,28 @@ jobs:
       - name: Get current version
         id: get_version
         run: |
+          # Extract the version from the pom.xml
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "Current version: $VERSION"
-          # Extract the numeric part and increment it
+          
+          # Strip the "Reborn " prefix
           BASE_VERSION=${VERSION#Reborn }
+          
+          # Split the version into its parts
           IFS='.' read -r -a version_parts <<< "$BASE_VERSION"
+          
           # Increment the last part
           LAST_INDEX=${#version_parts[@]}-1
           version_parts[$LAST_INDEX]=$((version_parts[$LAST_INDEX]+1))
-          NEW_VERSION="Reborn ${version_parts[*]}"
+          
+          # Create new version string with 'Reborn' prefix
+          NEW_VERSION="Reborn ${version_parts[0]}.${version_parts[1]}.${version_parts[LAST_INDEX]}"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       # Step 4: Update the version in pom.xml
       - name: Update version in pom.xml
         run: |
-          mvn versions:set -DnewVersion=${{ env.NEW_VERSION }}
+          mvn versions:set -DnewVersion="${{ env.NEW_VERSION }}"
           mvn versions:commit
 
       # Step 5: Build the project
@@ -53,9 +60,9 @@ jobs:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: v${{ env.NEW_VERSION }} # Using the incremented version for the tag
+          tag_name: "v${{ env.NEW_VERSION }}" # Use the incremented version for the tag
           files: target/"SensibleToolbox v${{ env.NEW_VERSION }}.jar" # Use the renamed file
-          name: SensibleToolbox v${{ env.NEW_VERSION }} # Naming the release
+          name: "SensibleToolbox v${{ env.NEW_VERSION }}" # Naming the release
           body: |
             Release of version v${{ env.NEW_VERSION }}.
         env:
