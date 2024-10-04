@@ -66,6 +66,7 @@ jobs:
       # Step 9: Push the commit and the new version tag to the repository
       - name: Create Git Tag and push
         run: |
-          git tag -a "v${{ env.VERSION }}" -m "Release v${{ env.VERSION }}"
+          TAG_NAME="v${{ env.VERSION// /\. }}"
+          git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
           git push origin master
-          git push origin "v${{ env.VERSION }}"
+          git push origin "$TAG_NAME"
