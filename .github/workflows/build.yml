@@ -54,7 +54,12 @@ jobs:
       # Step 6: Rename the JAR file
       - name: Rename JAR file
         run: |
-          mv *.jar "SensibleToolbox v${{ env.NEW_VERSION }}.jar"
+          # Set the base name of the JAR file
+          BASE_JAR="SensibleToolbox-Reborn"
+          # Get the current version
+          CURRENT_VERSION="${{ env.NEW_VERSION }}"
+          # Get the new JAR file name
+          mv "${BASE_JAR}-${CURRENT_VERSION#Reborn }.jar" "SensibleToolbox v${CURRENT_VERSION}.jar"
 
       # Step 7: Create a release with the JAR
       - name: Create Release
