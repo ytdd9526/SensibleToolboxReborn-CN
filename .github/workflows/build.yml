@@ -27,8 +27,8 @@ jobs:
           VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           echo "Current version: $VERSION"
           
-          # Strip the "Reborn " prefix
-          BASE_VERSION=${VERSION#Reborn }
+          # Strip the "Reborn-" prefix
+          BASE_VERSION=${VERSION#Reborn-}
           
           # Split the version into its parts
           IFS='.' read -r -a version_parts <<< "$BASE_VERSION"
@@ -37,8 +37,8 @@ jobs:
           LAST_INDEX=${#version_parts[@]}-1
           version_parts[$LAST_INDEX]=$((version_parts[$LAST_INDEX]+1))
           
-          # Create new version string with 'Reborn' prefix
-          NEW_VERSION="Reborn ${version_parts[0]}.${version_parts[1]}.${version_parts[$LAST_INDEX]}"
+          # Create new version string with 'Reborn-' prefix
+          NEW_VERSION="Reborn-${version_parts[0]}.${version_parts[1]}.${version_parts[$LAST_INDEX]}"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       # Step 4: Update the version in pom.xml
@@ -50,10 +50,6 @@ jobs:
       # Step 5: Build the project
       - name: Build with Maven
         run: mvn clean package --file pom.xml
-
-      # Step 6: List the contents of the target directory for debugging
-      - name: List target directory
-        run: ls -la target
 
       # Step 7: Rename the JAR file
       - name: Rename JAR file
