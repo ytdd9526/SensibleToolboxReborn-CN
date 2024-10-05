@@ -26,8 +26,8 @@ public class BreakerModule extends DirectionalItemRouterModule {
     }
 
     @Override
-    public boolean execute(Location loc) {
-        Block b = getTargetLocation(loc).getBlock();
+    public boolean execute(Location l) {
+        Block b = getTargetLocation(l).getBlock();
 
         if (b.isEmpty() || b.isLiquid() || b.getType().getHardness() >= 3600000) {
             return false;
@@ -51,9 +51,9 @@ public class BreakerModule extends DirectionalItemRouterModule {
                     int toAdd = Math.min(mainDrop.getAmount(), inBuffer.getMaxStackSize() - inBuffer.getAmount());
                     getItemRouter().setBufferAmount(inBuffer.getAmount() + toAdd);
                     if (toAdd < mainDrop.getAmount()) {
-                        ItemStack stack = mainDrop.clone();
-                        stack.setAmount(mainDrop.getAmount() - toAdd);
-                        b.getWorld().dropItemNaturally(b.getLocation(), stack);
+                        ItemStack s = mainDrop.clone();
+                        s.setAmount(mainDrop.getAmount() - toAdd);
+                        b.getWorld().dropItemNaturally(b.getLocation(), s);
                     }
                 }
 

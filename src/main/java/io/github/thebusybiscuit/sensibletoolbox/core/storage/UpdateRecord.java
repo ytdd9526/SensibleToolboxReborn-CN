@@ -28,14 +28,14 @@ class UpdateRecord {
         return new UpdateRecord(DatabaseOperation.COMMIT, null);
     }
 
-    protected UpdateRecord(@Nonnull DatabaseOperation op, @Nullable Location loc) {
+    protected UpdateRecord(@Nonnull DatabaseOperation op, @Nullable Location l) {
         this.op = op;
 
-        if (loc != null) {
-            this.worldID = loc.getWorld().getUID();
-            this.x = loc.getBlockX();
-            this.y = loc.getBlockY();
-            this.z = loc.getBlockZ();
+        if (l != null) {
+            this.worldID = l.getWorld().getUID();
+            this.x = l.getBlockX();
+            this.y = l.getBlockY();
+            this.z = l.getBlockZ();
         } else {
             this.worldID = null;
             this.x = 0;

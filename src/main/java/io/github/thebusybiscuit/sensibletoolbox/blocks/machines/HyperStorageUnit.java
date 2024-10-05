@@ -129,7 +129,7 @@ public class HyperStorageUnit extends BigStorageUnit {
     }
 
     @Override
-    public void onBlockUnregistered(Location loc) {
+    public void onBlockUnregistered(Location l) {
         // move all output items into storage so they don't get dropped
         ItemStack output = getOutputItem();
 
@@ -139,6 +139,6 @@ public class HyperStorageUnit extends BigStorageUnit {
             setOutputItem(null);
         }
 
-        super.onBlockUnregistered(loc);
+        super.onBlockUnregistered(l);
     }
 }

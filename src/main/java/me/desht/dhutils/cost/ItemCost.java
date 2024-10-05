@@ -33,10 +33,10 @@ public class ItemCost {
         this.toMatch = new ItemStack(mat, amount);
     }
 
-    public ItemCost(@Nonnull ItemStack stack) {
-        this.amount = stack.getAmount();
+    public ItemCost(@Nonnull ItemStack s) {
+        this.amount = s.getAmount();
         this.matchMeta = true;
-        this.toMatch = stack.clone();
+        this.toMatch = s.clone();
     }
 
     public int getAmount() {
@@ -57,16 +57,16 @@ public class ItemCost {
         return getAmount() + " " + getMaterial().toString().toLowerCase().replace("_", " ");
     }
 
-    public boolean isAffordable(@Nonnull Player player) {
+    public boolean isAffordable(@Nonnull Player p) {
         int remainingCheck = getAmount();
-        return getRemaining(remainingCheck, player.getInventory()) <= 0;
+        return getRemaining(remainingCheck, p.getInventory()) <= 0;
     }
 
     /**
      * Check if this item cost can be met from the player's inventory and zero
      * or more supplementary inventories.
      *
-     * @param player
+     * @param p
      *            the player to check
      * @param playerFirst
      *            true if the player's inventory should be checked before the extra inventories
@@ -74,15 +74,15 @@ public class ItemCost {
      *            zero or more Inventory objects
      * @return true if the cost can be met; false otherwise
      */
-    public boolean isAffordable(@Nonnull Player player, boolean playerFirst, Inventory... extraInventories) {
+    public boolean isAffordable(@Nonnull Player p, boolean playerFirst, Inventory... extraInventories) {
         List<Inventory> invs = new ArrayList<>(extraInventories.length + 1);
 
         if (playerFirst) {
-            invs.add(player.getInventory());
+            invs.add(p.getInventory());
             invs.addAll(Arrays.asList(extraInventories));
         } else {
             invs.addAll(Arrays.asList(extraInventories));
-            invs.add(player.getInventory());
+            invs.add(p.getInventory());
         }
 
         int remainingCheck = getAmount();
@@ -113,41 +113,41 @@ public class ItemCost {
         return remainingCheck;
     }
 
-    public void apply(@Nonnull Player player) {
+    public void apply(@Nonnull Player p) {
         if (getAmount() > 0) {
-            chargeItems(player.getInventory());
+            chargeItems(p.getInventory());
         } else {
-            int dropped = addItems(player.getInventory());
-            dropExcess(player, dropped);
+            int dropped = addItems(p.getInventory());
+            dropExcess(p, dropped);
         }
     }
 
     /**
      * Apply this cost to the given player plus zero or more supplementary inventories.
      *
-     * @param player
+     * @param p
      *            the player to give or take items from
      * @param playerFirst
      *            if true, then the player's inventory will be modified first
      * @param extraInventories
      *            zero or more supplementary inventories to give or take items from
      */
-    public void apply(@Nonnull Player player, boolean playerFirst, Inventory... extraInventories) {
+    public void apply(@Nonnull Player p, boolean playerFirst, Inventory... extraInventories) {
         Inventory[] invs = new Inventory[extraInventories.length + 1];
 
         if (playerFirst) {
-            invs[0] = player.getInventory();
+            invs[0] = p.getInventory();
             System.arraycopy(extraInventories, 0, invs, 1, extraInventories.length);
         } else {
             System.arraycopy(extraInventories, 0, invs, 0, extraInventories.length);
-            invs[extraInventories.length] = player.getInventory();
+            invs[extraInventories.length] = p.getInventory();
         }
 
         if (getAmount() > 0) {
             chargeItems(invs);
         } else {
             int dropped = addItems(invs);
-            dropExcess(player, dropped);
+            dropExcess(p, dropped);
         }
     }
 
@@ -222,11 +222,11 @@ public class ItemCost {
         return quantity;
     }
 
-    protected boolean matches(@Nonnull ItemStack stack) {
-        if (toMatch.getType() != stack.getType()) {
+    protected boolean matches(@Nonnull ItemStack s) {
+        if (toMatch.getType() != s.getType()) {
             return false;
         } else if (matchMeta) {
-            String d1 = stack.hasItemMeta() ? stack.getItemMeta().getDisplayName() : null;
+            String d1 = s.hasItemMeta() ? s.getItemMeta().getDisplayName() : null;
             String d2 = toMatch.hasItemMeta() ? toMatch.getItemMeta().getDisplayName() : null;
 
             if ((d1 != null && !d1.equals(d2)) || (d2 != null && !d2.equals(d1))) {
@@ -239,10 +239,10 @@ public class ItemCost {
         }
     }
 
-    private void dropExcess(@Nonnull Player player, int amount) {
+    private void dropExcess(@Nonnull Player p, int amount) {
         while (amount > 0) {
-            ItemStack stack = new ItemStack(getMaterial(), Math.min(amount, getMaterial().getMaxStackSize()));
-            player.getWorld().dropItemNaturally(player.getLocation(), stack);
+            ItemStack s = new ItemStack(getMaterial(), Math.min(amount, getMaterial().getMaxStackSize()));
+            p.getWorld().dropItemNaturally(p.getLocation(), s);
             amount -= getMaterial().getMaxStackSize();
         }
     }

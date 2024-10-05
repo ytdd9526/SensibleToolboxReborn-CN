@@ -105,8 +105,8 @@ class QueueSwapper extends BukkitRunnable {
                     tool.removeEnchantment(Enchantment.SILK_TOUCH);
                 }
 
-                for (ItemStack stack : b.getDrops(tool)) {
-                    STBUtil.giveItems(rec.getPlayer(), stack);
+                for (ItemStack s : b.getDrops(tool)) {
+                    STBUtil.giveItems(rec.getPlayer(), s);
                 }
             }
 
@@ -138,11 +138,11 @@ class QueueSwapper extends BukkitRunnable {
         }
     }
 
-    private int getSlotForItem(Player player, Material from) {
-        for (int slot = 0; slot < player.getInventory().getSize(); slot++) {
-            ItemStack stack = player.getInventory().getItem(slot);
+    private int getSlotForItem(Player p, Material from) {
+        for (int slot = 0; slot < p.getInventory().getSize(); slot++) {
+            ItemStack s = p.getInventory().getItem(slot);
 
-            if (stack != null && stack.getType() == from && !stack.hasItemMeta()) {
+            if (s != null && s.getType() == from && !s.hasItemMeta()) {
                 return slot;
             }
         }

@@ -66,11 +66,11 @@ public class MoistureChecker extends BaseSTBItem {
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+    public void onInteractItem(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Block b = event.getClickedBlock();
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Block b = e.getClickedBlock();
 
             if (STBUtil.isCrop(b.getType())) {
                 b = b.getRelative(BlockFace.DOWN);
@@ -91,17 +91,17 @@ public class MoistureChecker extends BaseSTBItem {
             if (!l.isEmpty()) {
                 Bukkit.getScheduler().runTask(getProviderPlugin(), () -> {
                     for (Location loc : l) {
-                        player.sendBlockChange(loc, getWoolFromSaturationlevel(loc.getBlock()));
+                        p.sendBlockChange(loc, getWoolFromSaturationlevel(loc.getBlock()));
                     }
                 });
 
                 Bukkit.getScheduler().runTaskLater(getProviderPlugin(), () -> {
                     for (Location loc : l) {
-                        player.sendBlockChange(loc, loc.getBlock().getBlockData());
+                        p.sendBlockChange(loc, loc.getBlock().getBlockData());
                     }
                 }, 30L);
 
-                event.setCancelled(true);
+                e.setCancelled(true);
             }
         }
     }

@@ -22,13 +22,13 @@ public class PersistableLocation implements ConfigurationSerializable {
 
     private boolean savePitchAndYaw;
 
-    public PersistableLocation(Location loc) {
-        worldName = loc.getWorld().getName();
-        x = loc.getX();
-        y = loc.getY();
-        z = loc.getZ();
-        pitch = loc.getPitch();
-        yaw = loc.getYaw();
+    public PersistableLocation(Location l) {
+        worldName = l.getWorld().getName();
+        x = l.getX();
+        y = l.getY();
+        z = l.getZ();
+        pitch = l.getPitch();
+        yaw = l.getYaw();
         savePitchAndYaw = true;
     }
 
@@ -104,10 +104,10 @@ public class PersistableLocation implements ConfigurationSerializable {
             throw new IllegalStateException("World not loaded");
         }
 
-        Location loc = new Location(w, x, y, z);
-        loc.setPitch(pitch);
-        loc.setYaw(yaw);
-        return loc;
+        Location l = new Location(w, x, y, z);
+        l.setPitch(pitch);
+        l.setYaw(yaw);
+        return l;
     }
 
     public Block getBlock() {

@@ -259,7 +259,7 @@ public class Pump extends AbstractProcessingMachine {
     }
 
     @Override
-    public boolean acceptsItemType(ItemStack stack) {
-        return stack.getType() == Material.BUCKET || stack.getType() == Material.GLASS_BOTTLE;
+    public boolean acceptsItemType(ItemStack s) {
+        return s.getType() == Material.BUCKET || s.getType() == Material.GLASS_BOTTLE;
     }
 }

@@ -112,34 +112,34 @@ public class WateringCan extends BaseSTBItem {
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+    public void onInteractItem(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
         ItemStack newStack = null;
         floodWarning = false;
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Block block = event.getClickedBlock();
-            Block neighbour = block.getRelative(event.getBlockFace());
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Block block = e.getClickedBlock();
+            Block neighbour = block.getRelative(e.getBlockFace());
 
             if (neighbour.getType() == Material.WATER) {
                 // attempt to refill the watering can
-                player.playSound(player.getLocation(), Sound.BLOCK_WATER_AMBIENT, 1, 0.8F);
+                p.playSound(p.getLocation(), Sound.BLOCK_WATER_AMBIENT, 1, 0.8F);
                 neighbour.setType(Material.AIR);
                 setWaterLevel(MAX_LEVEL);
                 newStack = toItemStack();
             } else if (STBUtil.isCrop(block.getType())) {
                 // attempt to grow the crops in a 3x3 area, and use some water from the can
-                waterCrops(player, block);
-                waterSoil(player, block.getRelative(BlockFace.DOWN));
+                waterCrops(p, block);
+                waterSoil(p, block.getRelative(BlockFace.DOWN));
                 newStack = toItemStack();
             } else if (block.getType() == Material.FARMLAND) {
                 if (STBUtil.isCrop(block.getRelative(BlockFace.UP).getType())) {
-                    waterCrops(player, block.getRelative(BlockFace.UP));
-                    waterSoil(player, block);
+                    waterCrops(p, block.getRelative(BlockFace.UP));
+                    waterSoil(p, block);
                     newStack = toItemStack();
                 } else {
                     // make the soil wetter if possible
-                    waterSoil(player, block);
+                    waterSoil(p, block);
                     newStack = toItemStack();
                 }
             } else if (block.getType() == Material.COBBLESTONE && getWaterLevel() >= 10) {
@@ -147,43 +147,43 @@ public class WateringCan extends BaseSTBItem {
                     block.setType(Material.MOSSY_COBBLESTONE);
                 }
 
-                useSomeWater(player, block, 10);
+                useSomeWater(p, block, 10);
                 newStack = toItemStack();
             } else if (block.getType() == Material.STONE_BRICKS && getWaterLevel() >= 10) {
                 if (ThreadLocalRandom.current().nextBoolean()) {
                     block.setType(Material.MOSSY_STONE_BRICKS);
                 }
 
-                useSomeWater(player, block, 10);
+                useSomeWater(p, block, 10);
                 newStack = toItemStack();
             } else if (block.getType() == Material.DIRT && maybeGrowGrass(block)) {
-                useSomeWater(player, block, 1);
+                useSomeWater(p, block, 1);
                 newStack = toItemStack();
             }
-        } else if (event.getAction() == Action.RIGHT_CLICK_AIR) {
-            Block b = player.getEyeLocation().getBlock();
+        } else if (e.getAction() == Action.RIGHT_CLICK_AIR) {
+            Block b = p.getEyeLocation().getBlock();
 
             if (b.getType() == Material.WATER) {
                 // attempt to refill the watering can
                 b.setType(Material.AIR);
-                player.playSound(player.getLocation(), Sound.BLOCK_WATER_AMBIENT, 1, 0.8F);
+                p.playSound(p.getLocation(), Sound.BLOCK_WATER_AMBIENT, 1, 0.8F);
                 setWaterLevel(MAX_LEVEL);
                 newStack = toItemStack();
             }
         }
 
-        event.setCancelled(true);
+        e.setCancelled(true);
 
         if (newStack != null) {
-            if (event.getHand() == EquipmentSlot.HAND) {
-                player.getInventory().setItemInMainHand(newStack);
+            if (e.getHand() == EquipmentSlot.HAND) {
+                p.getInventory().setItemInMainHand(newStack);
             } else {
-                player.getInventory().setItemInOffHand(newStack);
+                p.getInventory().setItemInOffHand(newStack);
             }
         }
 
         if (floodWarning) {
-            MiscUtil.alertMessage(player, "This soil is getting very wet!");
+            MiscUtil.alertMessage(p, "This soil is getting very wet!");
             floodWarning = false;
         }
     }
@@ -200,25 +200,25 @@ public class WateringCan extends BaseSTBItem {
     }
 
     @Override
-    public void onItemConsume(PlayerItemConsumeEvent event) {
-        Player player = event.getPlayer();
+    public void onItemConsume(PlayerItemConsumeEvent e) {
+        Player p = e.getPlayer();
 
-        if (player.getFireTicks() > 0 && getWaterLevel() >= FIRE_EXTINGUISH_AMOUNT) {
-            player.setFireTicks(0);
+        if (p.getFireTicks() > 0 && getWaterLevel() >= FIRE_EXTINGUISH_AMOUNT) {
+            p.setFireTicks(0);
             setWaterLevel(getWaterLevel() - FIRE_EXTINGUISH_AMOUNT);
-            MiscUtil.alertMessage(player, "The fire is out!");
+            MiscUtil.alertMessage(p, "The fire is out!");
         }
 
-        player.getInventory().setItemInMainHand(toItemStack());
-        player.updateInventory();
-        event.setCancelled(true);
+        p.getInventory().setItemInMainHand(toItemStack());
+        p.updateInventory();
+        e.setCancelled(true);
     }
 
     @ParametersAreNonnullByDefault
-    private void waterSoil(Player player, Block b) {
+    private void waterSoil(Player p, Block b) {
         for (Block block : STBUtil.getSurroundingBlocks(b)) {
             if (getWaterLevel() <= 0) {
-                STBUtil.complain(player);
+                STBUtil.complain(p);
                 break;
             }
 
@@ -231,10 +231,10 @@ public class WateringCan extends BaseSTBItem {
                 }
 
                 checkForFlooding(block);
-                useSomeWater(player, b, 1);
+                useSomeWater(p, b, 1);
             }
 
-            if (player.isSneaking()) {
+            if (p.isSneaking()) {
                 // only water one block if sneaking
                 break;
             }
@@ -242,16 +242,16 @@ public class WateringCan extends BaseSTBItem {
     }
 
     @ParametersAreNonnullByDefault
-    private void waterCrops(Player player, Block b) {
+    private void waterCrops(Player p, Block b) {
         for (Block block : STBUtil.getSurroundingBlocks(b)) {
             if (getWaterLevel() <= 0) {
-                STBUtil.complain(player);
+                STBUtil.complain(p);
                 break;
             }
 
-            maybeGrowCrop(player, block);
+            maybeGrowCrop(p, block);
 
-            if (player.isSneaking()) {
+            if (p.isSneaking()) {
                 // only water one block if sneaking
                 break;
             }
@@ -259,8 +259,8 @@ public class WateringCan extends BaseSTBItem {
     }
 
     @ParametersAreNonnullByDefault
-    private void maybeGrowCrop(Player player, Block b) {
-        if (!STBUtil.isCrop(b.getType()) || !SensibleToolbox.getProtectionManager().hasPermission(player, b, Interaction.PLACE_BLOCK)) {
+    private void maybeGrowCrop(Player p, Block b) {
+        if (!STBUtil.isCrop(b.getType()) || !SensibleToolbox.getProtectionManager().hasPermission(p, b, Interaction.PLACE_BLOCK)) {
             return;
         }
 
@@ -278,7 +278,7 @@ public class WateringCan extends BaseSTBItem {
         }
 
         checkForFlooding(b.getRelative(BlockFace.DOWN));
-        useSomeWater(player, b, 1);
+        useSomeWater(p, b, 1);
     }
 
     private void checkForFlooding(@Nonnull Block soil) {

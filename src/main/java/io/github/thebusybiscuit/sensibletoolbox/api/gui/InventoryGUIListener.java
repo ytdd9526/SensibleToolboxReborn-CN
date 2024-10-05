@@ -12,7 +12,7 @@ public interface InventoryGUIListener {
     /**
      * Called when a slot in an inventory GUI is clicked by a player.
      *
-     * @param player
+     * @param p
      *            the player who clicked
      * @param slot
      *            the raw inventory slot which was clicked
@@ -24,13 +24,13 @@ public interface InventoryGUIListener {
      *            the item on the player's cursor
      * @return true if the click should go ahead, false if it should be cancelled
      */
-    boolean onSlotClick(HumanEntity player, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor);
+    boolean onSlotClick(HumanEntity p, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor);
 
     /**
      * Called when a slot in a player inventory is clicked by a player while
      * an inventory GUI is shown.
      *
-     * @param player
+     * @param p
      *            the player who clicked
      * @param slot
      *            the raw inventory slot which was clicked
@@ -42,7 +42,7 @@ public interface InventoryGUIListener {
      *            the item on the player's cursor
      * @return true if the click should go ahead, false if it should be cancelled
      */
-    boolean onPlayerInventoryClick(HumanEntity player, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor);
+    boolean onPlayerInventoryClick(HumanEntity p, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor);
 
     /**
      * Called when an attempt is made to shift-click an item into an inventory
@@ -51,7 +51,7 @@ public interface InventoryGUIListener {
      * clicked will be automatically adjusted, based on this method's return
      * value.
      *
-     * @param player
+     * @param p
      *            the player who clicked
      * @param slot
      *            the slot that was shift-clicked
@@ -59,7 +59,7 @@ public interface InventoryGUIListener {
      *            the item stack to be inserted
      * @return the number of items from the stack that were actually inserted
      */
-    int onShiftClickInsert(HumanEntity player, int slot, ItemStack toInsert);
+    int onShiftClickInsert(HumanEntity p, int slot, ItemStack toInsert);
 
     /**
      * Called when an attempt is made to shift-click an item out of an

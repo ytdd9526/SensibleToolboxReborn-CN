@@ -74,24 +74,24 @@ public class EnderTuner extends BaseSTBItem {
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Block clicked = event.getClickedBlock();
+    public void onInteractItem(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Block clicked = e.getClickedBlock();
             BaseSTBBlock stb = clicked == null ? null : SensibleToolbox.getBlockAt(clicked.getLocation(), true);
 
-            if (stb instanceof EnderTunable && stb.hasAccessRights(event.getPlayer())) {
+            if (stb instanceof EnderTunable && stb.hasAccessRights(e.getPlayer())) {
                 tuningBlock = (EnderTunable) stb;
             }
 
-            inventoryGUI = makeTuningGUI(event.getPlayer());
-            inventoryGUI.show(event.getPlayer());
-            event.setCancelled(true);
+            inventoryGUI = makeTuningGUI(e.getPlayer());
+            inventoryGUI.show(e.getPlayer());
+            e.setCancelled(true);
         }
     }
 
     @Nonnull
-    private InventoryGUI makeTuningGUI(@Nonnull Player player) {
-        InventoryGUI gui = GUIUtil.createGUI(player, this, TUNING_GUI_SIZE, ChatColor.DARK_PURPLE + "Ender Tuner");
+    private InventoryGUI makeTuningGUI(@Nonnull Player p) {
+        InventoryGUI gui = GUIUtil.createGUI(p, this, TUNING_GUI_SIZE, ChatColor.DARK_PURPLE + "Ender Tuner");
 
         for (int slot = 0; slot < gui.getInventory().getSize(); slot++) {
             gui.setSlotType(slot, SlotType.BACKGROUND);
@@ -112,12 +112,12 @@ public class EnderTuner extends BaseSTBItem {
         }
 
         gui.addGadget(new ToggleButton(gui, GLOBAL_BUTTON_SLOT, global, GLOBAL_TEXTURE, PERSONAL_TEXTURE, newValue -> {
-            ItemStack stack = gui.getItem(TUNED_ITEM_SLOT);
-            BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(stack);
+            ItemStack s = gui.getItem(TUNED_ITEM_SLOT);
+            BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(s);
 
             if (item instanceof EnderTunable) {
                 ((EnderTunable) item).setGlobal(newValue);
-                gui.setItem(TUNED_ITEM_SLOT, item.toItemStack(stack.getAmount()));
+                gui.setItem(TUNED_ITEM_SLOT, item.toItemStack(s.getAmount()));
 
                 if (tuningBlock != null) {
                     tuningBlock.setGlobal(newValue);
@@ -131,12 +131,12 @@ public class EnderTuner extends BaseSTBItem {
         }));
 
         gui.addGadget(new NumericGadget(gui, FREQUENCY_BUTTON_SLOT, "Ender Frequency", new IntRange(1, EnderStorage.MAX_ENDER_FREQUENCY), freq, 1, 10, newValue -> {
-            ItemStack stack = gui.getItem(TUNED_ITEM_SLOT);
-            BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(stack);
+            ItemStack s = gui.getItem(TUNED_ITEM_SLOT);
+            BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(s);
 
             if (item instanceof EnderTunable) {
                 ((EnderTunable) item).setEnderFrequency(newValue);
-                gui.setItem(TUNED_ITEM_SLOT, item.toItemStack(stack.getAmount()));
+                gui.setItem(TUNED_ITEM_SLOT, item.toItemStack(s.getAmount()));
 
                 if (tuningBlock != null) {
                     tuningBlock.setEnderFrequency(newValue);
@@ -152,10 +152,10 @@ public class EnderTuner extends BaseSTBItem {
     }
 
     @Override
-    public boolean onSlotClick(HumanEntity player, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor) {
+    public boolean onSlotClick(HumanEntity p, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor) {
         if (tuningBlock != null) {
-            if (player instanceof Player) {
-                STBUtil.complain((Player) player);
+            if (p instanceof Player) {
+                STBUtil.complain((Player) p);
             }
             return false;
         }
@@ -177,15 +177,15 @@ public class EnderTuner extends BaseSTBItem {
     }
 
     @Override
-    public boolean onPlayerInventoryClick(HumanEntity player, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor) {
+    public boolean onPlayerInventoryClick(HumanEntity p, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor) {
         return true;
     }
 
     @Override
-    public int onShiftClickInsert(HumanEntity player, int slot, ItemStack toInsert) {
+    public int onShiftClickInsert(HumanEntity p, int slot, ItemStack toInsert) {
         if (tuningBlock != null) {
-            if (player instanceof Player) {
-                STBUtil.complain((Player) player);
+            if (p instanceof Player) {
+                STBUtil.complain((Player) p);
             } else {
                 return 0;
             }
@@ -204,10 +204,10 @@ public class EnderTuner extends BaseSTBItem {
     }
 
     @Override
-    public boolean onShiftClickExtract(HumanEntity player, int slot, ItemStack toExtract) {
+    public boolean onShiftClickExtract(HumanEntity p, int slot, ItemStack toExtract) {
         if (tuningBlock != null) {
-            if (player instanceof Player) {
-                STBUtil.complain((Player) player);
+            if (p instanceof Player) {
+                STBUtil.complain((Player) p);
             }
             return false;
         }
@@ -221,17 +221,17 @@ public class EnderTuner extends BaseSTBItem {
     }
 
     @Override
-    public boolean onClickOutside(HumanEntity player) {
+    public boolean onClickOutside(HumanEntity p) {
         return false;
     }
 
     @Override
-    public void onGUIClosed(final HumanEntity player) {
+    public void onGUIClosed(final HumanEntity p) {
         if (tuningBlock == null) {
-            ItemStack stack = inventoryGUI.getItem(TUNED_ITEM_SLOT);
+            ItemStack s = inventoryGUI.getItem(TUNED_ITEM_SLOT);
 
-            if (stack != null) {
-                STBUtil.giveItems(player, stack);
+            if (s != null) {
+                STBUtil.giveItems(p, s);
             }
         }
     }

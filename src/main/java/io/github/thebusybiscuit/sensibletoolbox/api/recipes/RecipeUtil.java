@@ -68,12 +68,12 @@ public final class RecipeUtil {
 
     private static void addFurnaceRecipes(@Nonnull BaseSTBItem item) {
         // add custom furnace recipes
-        ItemStack stack = item.getSmeltingResult();
+        ItemStack s = item.getSmeltingResult();
 
-        if (stack != null) {
+        if (s != null) {
             NamespacedKey key = new NamespacedKey(SensibleToolboxPlugin.getInstance(), item.getItemTypeID() + "_furnacerecipe");
-            Bukkit.addRecipe(new FurnaceRecipe(key, stack, item.getMaterial(), 0, 200));
-            recordReverseSmelt(stack, item.toItemStack());
+            Bukkit.addRecipe(new FurnaceRecipe(key, s, item.getMaterial(), 0, 200));
+            recordReverseSmelt(s, item.toItemStack());
         }
     }
 
@@ -111,13 +111,13 @@ public final class RecipeUtil {
      * via a vanilla furnace recipe, possibly one which was added by an STB
      * item.
      *
-     * @param stack
+     * @param s
      *            the item stack to check
      * @return a list of the ingredients which could be smelted into the item
      */
     @Nonnull
-    public static List<ItemStack> getSmeltingIngredientsFor(@Nonnull ItemStack stack) {
-        List<ItemStack> res = reverseCustomSmelts.get(stack);
+    public static List<ItemStack> getSmeltingIngredientsFor(@Nonnull ItemStack s) {
+        List<ItemStack> res = reverseCustomSmelts.get(s);
         return res == null ? Collections.emptyList() : res;
     }
 

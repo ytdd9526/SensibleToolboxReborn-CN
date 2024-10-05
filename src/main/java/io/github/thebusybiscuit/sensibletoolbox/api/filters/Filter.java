@@ -78,24 +78,24 @@ public class Filter implements Cloneable {
     /**
      * Add an item to this filter.
      *
-     * @param stack
+     * @param s
      *            the item to add
      */
-    public void addItem(@Nonnull ItemStack stack) {
-        filteredItems.add(stack);
+    public void addItem(@Nonnull ItemStack s) {
+        filteredItems.add(s);
     }
 
     /**
      * Check if this filter, with its current items/whitelisting/filter-type,
      * should allow the given item to pass.
      *
-     * @param stack
+     * @param s
      *            the item to check
      *
      * @return true if the filter should pass the item; false otherwise
      */
-    public boolean shouldPass(@Nonnull ItemStack stack) {
-        Preconditions.checkArgument(stack != null, "Cannot filter null ItemStacks");
+    public boolean shouldPass(@Nonnull ItemStack s) {
+        Preconditions.checkArgument(s != null, "Cannot filter null ItemStacks");
 
         if (filteredItems.isEmpty()) {
             return !whiteList;
@@ -104,7 +104,7 @@ public class Filter implements Cloneable {
         switch (filterType) {
             case MATERIAL:
                 for (ItemStack f : filteredItems) {
-                    if (f.getType() == stack.getType()) {
+                    if (f.getType() == s.getType()) {
                         return whiteList;
                     }
                 }
@@ -112,7 +112,7 @@ public class Filter implements Cloneable {
                 return !whiteList;
             case ITEM_META:
                 for (ItemStack f : filteredItems) {
-                    if (f.isSimilar(stack)) {
+                    if (f.isSimilar(s)) {
                         return whiteList;
                     }
                 }

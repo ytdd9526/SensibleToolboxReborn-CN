@@ -93,8 +93,8 @@ public final class MiscUtil {
         }
     }
 
-    public static String formatLocation(Location loc) {
-        return String.format("%d,%d,%d,%s", loc.getBlockX(), loc.getBlockY(), loc.getBlockZ(), loc.getWorld().getName());
+    public static String formatLocation(Location l) {
+        return String.format("%d,%d,%d,%s", l.getBlockX(), l.getBlockY(), l.getBlockZ(), l.getWorld().getName());
     }
 
     public static Location parseLocation(String arglist) {

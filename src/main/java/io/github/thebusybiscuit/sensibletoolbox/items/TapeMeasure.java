@@ -84,22 +84,22 @@ public class TapeMeasure extends BaseSTBItem {
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (event.getPlayer().isSneaking()) {
-                setAnchor(event.getClickedBlock());
-                updateHeldItemStack(event.getPlayer(), event.getHand());
-                MiscUtil.statusMessage(event.getPlayer(), ChatColor.YELLOW + "Tape measure anchor point set.");
+    public void onInteractItem(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (e.getPlayer().isSneaking()) {
+                setAnchor(e.getClickedBlock());
+                updateHeldItemStack(e.getPlayer(), e.getHand());
+                MiscUtil.statusMessage(e.getPlayer(), ChatColor.YELLOW + "Tape measure anchor point set.");
             } else {
-                makeMeasurement(event.getPlayer(), event.getClickedBlock());
+                makeMeasurement(e.getPlayer(), e.getClickedBlock());
             }
-        } else if (event.getAction() == Action.RIGHT_CLICK_AIR) {
+        } else if (e.getAction() == Action.RIGHT_CLICK_AIR) {
             setAnchor(null);
-            updateHeldItemStack(event.getPlayer(), event.getHand());
-            MiscUtil.statusMessage(event.getPlayer(), ChatColor.YELLOW + "Tape measure anchor point cleared.");
+            updateHeldItemStack(e.getPlayer(), e.getHand());
+            MiscUtil.statusMessage(e.getPlayer(), ChatColor.YELLOW + "Tape measure anchor point cleared.");
         }
 
-        event.setCancelled(true);
+        e.setCancelled(true);
     }
 
     @ParametersAreNonnullByDefault

@@ -1,0 +1,74 @@
+name: Build and Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up JDK
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 16
+          distribution: adopt
+
+      # Step 3: Get the current version from pom.xml
+      - name: Get current version
+        id: get_version
+        run: |
+          # Extract the version from the pom.xml
+          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
+          echo "Current version: $VERSION"
+          
+          # Strip the "Reborn-" prefix
+          BASE_VERSION=${VERSION#Reborn-}
+          
+          # Split the version into its parts
+          IFS='.' read -r -a version_parts <<< "$BASE_VERSION"
+          
+          # Increment the last part
+          LAST_INDEX=${#version_parts[@]}-1
+          version_parts[$LAST_INDEX]=$((version_parts[$LAST_INDEX]+1))
+          
+          # Create new version string with 'Reborn-' prefix
+          NEW_VERSION="Reborn-${version_parts[0]}.${version_parts[1]}.${version_parts[$LAST_INDEX]}"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
+
+      # Step 4: Update the version in pom.xml
+      - name: Update version in pom.xml
+        run: |
+          mvn versions:set -DnewVersion="${{ env.NEW_VERSION }}"
+          mvn versions:commit
+
+      # Step 5: Build the project
+      - name: Build with Maven
+        run: mvn clean package --file pom.xml
+
+      # Step 7: Rename the JAR file
+      - name: Rename JAR file
+        run: |
+          # Find the generated JAR file
+          JAR_FILE=$(ls target/*.jar | head -n 1)  # Get the first jar file in target
+          echo "Found JAR file: $JAR_FILE"
+          
+          # Rename it
+          mv "$JAR_FILE" "SensibleToolbox v${{ env.NEW_VERSION }}.jar"
+
+      # Step 8: Create a release with the JAR
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: "v${{ env.NEW_VERSION }}" # Use the incremented version for the tag without extra prefix
+          files: "SensibleToolbox v${{ env.NEW_VERSION }}.jar" # Use the renamed file
+          name: "SensibleToolbox v${{ env.NEW_VERSION }}" # Naming the release
+          body: |
+            Release of version v${{ env.NEW_VERSION }}.
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

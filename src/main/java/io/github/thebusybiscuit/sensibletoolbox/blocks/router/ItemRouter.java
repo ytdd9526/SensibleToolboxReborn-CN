@@ -239,7 +239,7 @@ public class ItemRouter extends BaseSTBBlock implements STBInventoryHolder {
     }
 
     @Override
-    public void onBlockRegistered(Location loc, boolean isPlacing) {
+    public void onBlockRegistered(Location l, boolean isPlacing) {
         Bukkit.getScheduler().runTask(getProviderPlugin(), this::findNeighbourInventories);
 
         if (updateNeeded) {
@@ -247,11 +247,11 @@ public class ItemRouter extends BaseSTBBlock implements STBInventoryHolder {
             updateNeeded = false;
         }
 
-        super.onBlockRegistered(loc, isPlacing);
+        super.onBlockRegistered(l, isPlacing);
     }
 
     @Override
-    public void onBlockUnregistered(Location loc) {
+    public void onBlockUnregistered(Location l) {
         // eject any items in the buffer and/or module slots
         getGUI().ejectItems(BUFFER_ITEM_SLOT);
         setBufferItem(null);
@@ -262,7 +262,7 @@ public class ItemRouter extends BaseSTBBlock implements STBInventoryHolder {
 
         clearModules();
 
-        super.onBlockUnregistered(loc);
+        super.onBlockUnregistered(l);
     }
 
     @Override
@@ -281,12 +281,12 @@ public class ItemRouter extends BaseSTBBlock implements STBInventoryHolder {
         }
 
         if (isRedstoneActive()) {
-            Location loc = getLocation();
+            Location l = getLocation();
 
             for (InstalledModule e : modules) {
                 if (e.getModule() instanceof DirectionalItemRouterModule) {
                     DirectionalItemRouterModule dmod = (DirectionalItemRouterModule) e.getModule();
-                    if (dmod.execute(loc.clone())) {
+                    if (dmod.execute(l.clone())) {
                         didSomeWork = true;
                         if (dmod.isTerminator()) {
                             break;
@@ -312,11 +312,11 @@ public class ItemRouter extends BaseSTBBlock implements STBInventoryHolder {
 
     private void findNeighbourInventories() {
         neighbours.clear();
-        Location loc = getLocation();
-        if (loc == null) {
+        Location l = getLocation();
+        if (l == null) {
             return;
         }
-        Block b = loc.getBlock();
+        Block b = l.getBlock();
 
         for (BlockFace face : STBUtil.getDirectBlockFaces()) {
             Block b1 = b.getRelative(face);
@@ -569,13 +569,13 @@ public class ItemRouter extends BaseSTBBlock implements STBInventoryHolder {
         Map<ItemStack, Integer> mods = new LinkedHashMap<>();
 
         for (int i = 0; i < MOD_SLOT_COUNT; i++) {
-            ItemStack stack = inv.getItem(baseSlot + i);
+            ItemStack s = inv.getItem(baseSlot + i);
 
-            if (stack != null) {
-                if (!mods.containsKey(stack)) {
-                    mods.put(stack, stack.getAmount());
+            if (s != null) {
+                if (!mods.containsKey(s)) {
+                    mods.put(s, s.getAmount());
                 } else {
-                    mods.put(stack, mods.get(stack) + stack.getAmount());
+                    mods.put(s, mods.get(s) + s.getAmount());
                 }
             }
         }

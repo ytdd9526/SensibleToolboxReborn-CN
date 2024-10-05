@@ -399,9 +399,9 @@ public class AutoBuilder extends BaseSTBMachine {
     }
 
     private ItemStack fetchNextBuildItem() {
-        ItemStack stack = getGUI().getItem(getInputSlots()[invSlot]);
+        ItemStack s = getGUI().getItem(getInputSlots()[invSlot]);
 
-        if (stack == null) {
+        if (s == null) {
             int scanSlot = invSlot;
 
             for (int i = 0; i < getInputSlots().length; i++) {
@@ -420,18 +420,18 @@ public class AutoBuilder extends BaseSTBMachine {
                 return null;
             } else {
                 invSlot = scanSlot;
-                stack = getGUI().getItem(getInputSlots()[invSlot]);
+                s = getGUI().getItem(getInputSlots()[invSlot]);
             }
         }
 
-        if (stack.getAmount() == 1) {
+        if (s.getAmount() == 1) {
             setInventoryItem(getInputSlots()[invSlot], null);
-            return stack;
+            return s;
         } else {
-            ItemStack res = stack.clone();
+            ItemStack res = s.clone();
             res.setAmount(1);
-            stack.setAmount(stack.getAmount() - 1);
-            setInventoryItem(getInputSlots()[invSlot], stack);
+            s.setAmount(s.getAmount() - 1);
+            setInventoryItem(getInputSlots()[invSlot], s);
             return res;
         }
     }
@@ -490,9 +490,9 @@ public class AutoBuilder extends BaseSTBMachine {
     }
 
     @Override
-    public boolean acceptsItemType(ItemStack stack) {
+    public boolean acceptsItemType(ItemStack s) {
         // solid blocks, no special metadata
-        return stack.getType().isSolid() && !stack.hasItemMeta();
+        return s.getType().isSolid() && !s.hasItemMeta();
     }
 
     @Override
@@ -502,9 +502,9 @@ public class AutoBuilder extends BaseSTBMachine {
                 if (onCursor.getType() != Material.AIR) {
                     LandMarker item = SensibleToolbox.getItemRegistry().fromItemStack(onCursor, LandMarker.class);
                     if (item != null) {
-                        ItemStack stack = onCursor.clone();
-                        stack.setAmount(1);
-                        getGUI().getInventory().setItem(slot, stack);
+                        ItemStack s = onCursor.clone();
+                        s.setAmount(1);
+                        getGUI().getInventory().setItem(slot, s);
                     }
                 } else if (inSlot != null) {
                     getGUI().getInventory().setItem(slot, null);
@@ -543,14 +543,14 @@ public class AutoBuilder extends BaseSTBMachine {
     }
 
     private void insertLandMarker(ItemStack toInsert) {
-        ItemStack stack = toInsert.clone();
-        stack.setAmount(1);
+        ItemStack s = toInsert.clone();
+        s.setAmount(1);
 
         if (getInventoryItem(LANDMARKER_SLOT_1) == null) {
-            setInventoryItem(LANDMARKER_SLOT_1, stack);
+            setInventoryItem(LANDMARKER_SLOT_1, s);
             setStatus(setupWorkArea());
         } else if (getInventoryItem(LANDMARKER_SLOT_2) == null) {
-            setInventoryItem(LANDMARKER_SLOT_2, stack);
+            setInventoryItem(LANDMARKER_SLOT_2, s);
             setStatus(setupWorkArea());
         }
         updateAttachedLabelSigns();

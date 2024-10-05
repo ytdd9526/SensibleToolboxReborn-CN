@@ -26,13 +26,13 @@ public final class GUIUtil {
     /**
      * Get the GUI which the given player currently has open, if any.
      *
-     * @param player
+     * @param p
      *            the player
      * @return the GUI the player is currently viewing, or null
      */
     @Nullable
-    public static InventoryGUI getOpenGUI(@Nonnull Player player) {
-        return STBInventoryGUI.getOpenGUI(player);
+    public static InventoryGUI getOpenGUI(@Nonnull Player p) {
+        return STBInventoryGUI.getOpenGUI(p);
     }
 
     /**
@@ -62,15 +62,15 @@ public final class GUIUtil {
     /**
      * Change the display name (primary tooltip) for a texture.
      *
-     * @param stack
+     * @param s
      *            the item to modify
      * @param disp
      *            the new display name
      */
-    public static void setDisplayName(ItemStack stack, String disp) {
-        ItemMeta meta = stack.getItemMeta();
+    public static void setDisplayName(ItemStack s, String disp) {
+        ItemMeta meta = s.getItemMeta();
         meta.setDisplayName(disp);
-        stack.setItemMeta(meta);
+        s.setItemMeta(meta);
     }
 
     /**
@@ -115,7 +115,7 @@ public final class GUIUtil {
      * method is normally used to create the GUI for an STB item object,
      * where the GUI is created when the item is interacted with in some way.
      *
-     * @param player
+     * @param p
      *            the player to open the GUI for
      * @param listener
      *            the STB item or block which owns the GUI
@@ -126,7 +126,7 @@ public final class GUIUtil {
      * @return a new inventory GUI object
      */
     @Nonnull
-    public static InventoryGUI createGUI(Player player, InventoryGUIListener listener, int size, String title) {
-        return new STBInventoryGUI(player, listener, size, title);
+    public static InventoryGUI createGUI(Player p, InventoryGUIListener listener, int size, String title) {
+        return new STBInventoryGUI(p, listener, size, title);
     }
 }

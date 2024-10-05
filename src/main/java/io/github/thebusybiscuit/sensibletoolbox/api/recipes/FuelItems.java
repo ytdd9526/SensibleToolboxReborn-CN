@@ -31,7 +31,7 @@ public class FuelItems {
     /**
      * Register an item as fuel.
      *
-     * @param stack
+     * @param s
      *            the item to register
      * @param ignoreData
      *            true if the item's data value should be ignore; false otherwise
@@ -40,19 +40,19 @@ public class FuelItems {
      * @param burnTime
      *            the time in server ticks to convert the item into SCU
      */
-    public void addFuel(ItemStack stack, boolean ignoreData, double chargePerTick, int burnTime) {
+    public void addFuel(ItemStack s, boolean ignoreData, double chargePerTick, int burnTime) {
         if (ignoreData) {
-            fuelMaterials.put(stack.getType(), new FuelValues(chargePerTick, burnTime));
+            fuelMaterials.put(s.getType(), new FuelValues(chargePerTick, burnTime));
         } else {
-            fuels.put(getSingle(stack), new FuelValues(chargePerTick, burnTime));
+            fuels.put(getSingle(s), new FuelValues(chargePerTick, burnTime));
         }
 
-        ItemStack info = stack.clone();
+        ItemStack info = s.clone();
         ItemMeta im = info.getItemMeta();
-        im.setLore(Arrays.asList(ChatColor.GRAY + "" + ChatColor.ITALIC + get(stack).toString()));
+        im.setLore(Arrays.asList(ChatColor.GRAY + "" + ChatColor.ITALIC + get(s).toString()));
         info.setItemMeta(im);
         fuelInfo.add(info);
-        Debugger.getInstance().debug("register burnable fuel: " + stack + " -> " + get(stack).toString());
+        Debugger.getInstance().debug("register burnable fuel: " + s + " -> " + get(s).toString());
     }
 
     public Collection<ItemStack> getFuelInfos() {
@@ -62,31 +62,31 @@ public class FuelItems {
     /**
      * Get the fuel values for the given item.
      *
-     * @param stack
+     * @param s
      *            the item to check
      * @return the fuel values for the item, or null if this item is not known
      */
-    public FuelValues get(ItemStack stack) {
-        FuelValues res = fuels.get(getSingle(stack));
-        return res == null ? fuelMaterials.get(stack.getType()) : res;
+    public FuelValues get(ItemStack s) {
+        FuelValues res = fuels.get(getSingle(s));
+        return res == null ? fuelMaterials.get(s.getType()) : res;
     }
 
     /**
      * Check if the given can be used as a fuel.
      *
-     * @param stack
+     * @param s
      *            the item to check
      * @return true if the item is a fuel, false otherwise
      */
-    public boolean has(ItemStack stack) {
-        return fuels.containsKey(getSingle(stack)) || fuelMaterials.containsKey(stack.getType());
+    public boolean has(ItemStack s) {
+        return fuels.containsKey(getSingle(s)) || fuelMaterials.containsKey(s.getType());
     }
 
-    private ItemStack getSingle(ItemStack stack) {
-        if (stack.getAmount() == 1) {
-            return stack;
+    private ItemStack getSingle(ItemStack s) {
+        if (s.getAmount() == 1) {
+            return s;
         } else {
-            ItemStack stack2 = stack.clone();
+            ItemStack stack2 = s.clone();
             stack2.setAmount(1);
             return stack2;
         }

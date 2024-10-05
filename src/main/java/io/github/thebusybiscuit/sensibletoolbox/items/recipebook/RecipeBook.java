@@ -118,7 +118,7 @@ public class RecipeBook extends BaseSTBItem {
     private boolean fabricationAvailable;
     private boolean fabricationFree;
     private final Deque<ItemAndRecipeNumber> trail = new ArrayDeque<>();
-    private Player player;
+    private Player p;
     private int inventorySlot;
     private final List<InventoryHolder> resourceInventories = new ArrayList<>();
     private final Set<String> providerNames = new HashSet<>();
@@ -177,9 +177,9 @@ public class RecipeBook extends BaseSTBItem {
 
         while (iter.hasNext()) {
             Recipe recipe = iter.next();
-            ItemStack stack = recipe.getResult().clone();
-            stack.setAmount(1);
-            itemSet.add(stack);
+            ItemStack s = recipe.getResult().clone();
+            s.setAmount(1);
+            itemSet.add(s);
         }
 
         CustomRecipeManager crm = CustomRecipeManager.getManager();
@@ -201,12 +201,12 @@ public class RecipeBook extends BaseSTBItem {
         } else {
             filteredItems = new ArrayList<>();
 
-            for (ItemStack stack : fullItemList) {
-                if (filterString.isEmpty() || ItemUtils.getItemName(stack).toLowerCase(Locale.ROOT).contains(filterString)) {
-                    BaseSTBItem stbItem = SensibleToolbox.getItemRegistry().fromItemStack(stack);
+            for (ItemStack s : fullItemList) {
+                if (filterString.isEmpty() || ItemUtils.getItemName(s).toLowerCase(Locale.ROOT).contains(filterString)) {
+                    BaseSTBItem stbItem = SensibleToolbox.getItemRegistry().fromItemStack(s);
 
                     if (includeItem(stbItem)) {
-                        filteredItems.add(stack);
+                        filteredItems.add(s);
                     }
                 }
             }
@@ -234,11 +234,11 @@ public class RecipeBook extends BaseSTBItem {
     private boolean includeItem(@Nullable BaseSTBItem stbItem) {
         switch (recipeTypeFilter) {
             case ALL:
-                return stbItem == null || (stbItem.checkPlayerPermission(player, ItemAction.CRAFT) && (providerNames.isEmpty() || providerNames.contains(stbItem.getProviderPlugin().getName())));
+                return stbItem == null || (stbItem.checkPlayerPermission(p, ItemAction.CRAFT) && (providerNames.isEmpty() || providerNames.contains(stbItem.getProviderPlugin().getName())));
             case VANILLA:
                 return stbItem == null;
             case STB:
-                return stbItem != null && stbItem.checkPlayerPermission(player, ItemAction.CRAFT) && (providerNames.isEmpty() || providerNames.contains(stbItem.getProviderPlugin().getName()));
+                return stbItem != null && stbItem.checkPlayerPermission(p, ItemAction.CRAFT) && (providerNames.isEmpty() || providerNames.contains(stbItem.getProviderPlugin().getName()));
             default:
                 return true;
         }
@@ -309,19 +309,19 @@ public class RecipeBook extends BaseSTBItem {
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Block clicked = event.getClickedBlock();
+    public void onInteractItem(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Block clicked = e.getClickedBlock();
             boolean isWorkbench = STBUtil.canFabricateWith(clicked);
 
-            if (clicked != null && clicked.getType().isInteractable() && !isWorkbench && !event.getPlayer().isSneaking()) {
+            if (clicked != null && clicked.getType().isInteractable() && !isWorkbench && !e.getPlayer().isSneaking()) {
                 // allow opening doors, throwing levers etc. with a recipe book in hand
                 return;
             }
 
-            openBook(event.getPlayer(), isWorkbench ? clicked : null);
-            setInventorySlot(event.getPlayer().getInventory().getHeldItemSlot());
-            event.setCancelled(true);
+            openBook(e.getPlayer(), isWorkbench ? clicked : null);
+            setInventorySlot(e.getPlayer().getInventory().getHeldItemSlot());
+            e.setCancelled(true);
         }
     }
 
@@ -336,19 +336,19 @@ public class RecipeBook extends BaseSTBItem {
     /**
      * Open this recipe book for the given player.
      *
-     * @param player
+     * @param p
      *            the player to show the book GUI to
      * @param fabricationBlock
      *            a block which can be used for fabricating items,
      *            most commonly a workbench block; may also be
      *            null
      */
-    public void openBook(Player player, Block fabricationBlock) {
-        this.player = player;
-        fabricationFree = player.hasPermission(FREEFAB_PERMISSION);
-        setFabricationAvailable(fabricationFree || fabricationBlock != null || hasFabricatorInInventory(player));
+    public void openBook(Player p, Block fabricationBlock) {
+        this.p = p;
+        fabricationFree = p.hasPermission(FREEFAB_PERMISSION);
+        setFabricationAvailable(fabricationFree || fabricationBlock != null || hasFabricatorInInventory(p));
         findResourceInventories(fabricationBlock);
-        gui = GUIUtil.createGUI(player, this, 54, "Recipe Book");
+        gui = GUIUtil.createGUI(p, this, 54, "Recipe Book");
         buildFilteredList();
 
         if (viewingItem < 0) {
@@ -357,7 +357,7 @@ public class RecipeBook extends BaseSTBItem {
             drawRecipePage();
         }
 
-        gui.show(player);
+        gui.show(p);
     }
 
     private void findResourceInventories(Block fabricationBlock) {
@@ -370,7 +370,7 @@ public class RecipeBook extends BaseSTBItem {
         for (BlockFace face : STBUtil.getDirectBlockFaces()) {
             Block b = fabricationBlock.getRelative(face);
 
-            if (VanillaInventoryUtils.isVanillaInventory(b) && SensibleToolbox.getProtectionManager().hasPermission(player, b, Interaction.INTERACT_BLOCK)) {
+            if (VanillaInventoryUtils.isVanillaInventory(b) && SensibleToolbox.getProtectionManager().hasPermission(p, b, Interaction.INTERACT_BLOCK)) {
                 Optional<InventoryHolder> holder = VanillaInventoryUtils.getVanillaInventory(b).map(Inventory::getHolder);
 
                 if (holder.isPresent()) {
@@ -379,17 +379,17 @@ public class RecipeBook extends BaseSTBItem {
             } else {
                 BaseSTBBlock stb = SensibleToolbox.getBlockAt(b.getLocation());
 
-                if (stb instanceof STBInventoryHolder && stb.hasAccessRights(player)) {
+                if (stb instanceof STBInventoryHolder && stb.hasAccessRights(p)) {
                     resourceInventories.add((STBInventoryHolder) stb);
                 }
             }
         }
 
-        Debugger.getInstance().debug("recipebook: found " + resourceInventories.size() + " resource inventories adjacent to " + fabricationBlock + " for " + player.getName());
+        Debugger.getInstance().debug("recipebook: found " + resourceInventories.size() + " resource inventories adjacent to " + fabricationBlock + " for " + p.getName());
     }
 
-    private boolean hasFabricatorInInventory(@Nonnull Player player) {
-        PlayerInventory inv = player.getInventory();
+    private boolean hasFabricatorInInventory(@Nonnull Player p) {
+        PlayerInventory inv = p.getInventory();
 
         for (int slot = 0; slot < 36; slot++) {
             if (STBUtil.canFabricateWith(inv.getItem(slot))) {
@@ -401,7 +401,7 @@ public class RecipeBook extends BaseSTBItem {
     }
 
     @Override
-    public boolean onSlotClick(HumanEntity player, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor) {
+    public boolean onSlotClick(HumanEntity p, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor) {
         if (viewingItem == -1) {
             // switch to viewing the item's recipe
             if (itemListPos.containsKey(inSlot)) {
@@ -436,7 +436,7 @@ public class RecipeBook extends BaseSTBItem {
     }
 
     @Override
-    public boolean onShiftClickExtract(HumanEntity player, int slot, ItemStack toExtract) {
+    public boolean onShiftClickExtract(HumanEntity p, int slot, ItemStack toExtract) {
         return false;
     }
 
@@ -516,19 +516,19 @@ public class RecipeBook extends BaseSTBItem {
     }
 
     @Nullable
-    public static ItemStack getIngredient(@Nullable BaseSTBItem resultingItem, @Nullable ItemStack stack) {
-        if (stack == null) {
+    public static ItemStack getIngredient(@Nullable BaseSTBItem resultingItem, @Nullable ItemStack s) {
+        if (s == null) {
             return null;
         }
 
         if (resultingItem != null) {
-            Class<? extends BaseSTBItem> c = resultingItem.getCraftingRestriction(stack.getType());
+            Class<? extends BaseSTBItem> c = resultingItem.getCraftingRestriction(s.getType());
 
             if (c != null) {
                 try {
                     BaseSTBItem item2 = c.getDeclaredConstructor().newInstance();
                     ItemStack stack2 = item2.toItemStack();
-                    stack2.setDurability(stack.getDurability());
+                    stack2.setDurability(s.getDurability());
                     return stack2;
                 } catch (Exception | LinkageError e) {
                     SensibleToolboxPlugin.getInstance().getLogger().log(Level.SEVERE, "Exception while reading crafting ingredients", e);
@@ -536,13 +536,13 @@ public class RecipeBook extends BaseSTBItem {
             }
         }
 
-        return stack;
+        return s;
     }
 
     @Override
-    public void onGUIClosed(HumanEntity player) {
+    public void onGUIClosed(HumanEntity p) {
         int slot = getInventorySlot();
-        PlayerInventory inventory = player.getInventory();
+        PlayerInventory inventory = p.getInventory();
 
         if (SensibleToolbox.getItemRegistry().isSTBItem(inventory.getItem(slot), RecipeBook.class)) {
             // If the player moved his recipe book to a different slot, we don't want to
@@ -552,9 +552,9 @@ public class RecipeBook extends BaseSTBItem {
     }
 
     private void tryFabrication(@Nonnull Recipe recipe) {
-        Debugger.getInstance().debug("recipe book: attempt to fabricate " + recipe.getResult() + " for " + player.getName());
+        Debugger.getInstance().debug("recipe book: attempt to fabricate " + recipe.getResult() + " for " + p.getName());
 
-        fabricationFree = player.hasPermission(FREEFAB_PERMISSION);
+        fabricationFree = p.hasPermission(FREEFAB_PERMISSION);
         if (fabricationFree) {
             fabricateFree(recipe.getResult());
             return;
@@ -569,12 +569,12 @@ public class RecipeBook extends BaseSTBItem {
 
         for (InventoryHolder h : resourceInventories) {
             if (h instanceof STBInventoryHolder) {
-                Inventory inv = ((STBInventoryHolder) h).showOutputItems(player.getUniqueId());
+                Inventory inv = ((STBInventoryHolder) h).showOutputItems(p.getUniqueId());
 
                 if (inv != null) {
                     vanillaInventories.add(inv);
                 }
-            } else if (h instanceof BlockState && SensibleToolbox.getProtectionManager().hasPermission(player, ((BlockState) h).getBlock(), Interaction.INTERACT_BLOCK)) {
+            } else if (h instanceof BlockState && SensibleToolbox.getProtectionManager().hasPermission(p, ((BlockState) h).getBlock(), Interaction.INTERACT_BLOCK)) {
                 vanillaInventories.add(h.getInventory());
             }
         }
@@ -588,8 +588,8 @@ public class RecipeBook extends BaseSTBItem {
         for (ItemStack ingredient : ingredients) {
             ItemCost cost = new ItemCost(ingredient);
 
-            if (!cost.isAffordable(player, false, inventories)) {
-                MiscUtil.errorMessage(player, "Missing: &f" + ItemUtils.getItemName(ingredient));
+            if (!cost.isAffordable(p, false, inventories)) {
+                MiscUtil.errorMessage(p, "Missing: &f" + ItemUtils.getItemName(ingredient));
                 ok = false;
             }
 
@@ -601,7 +601,7 @@ public class RecipeBook extends BaseSTBItem {
 
             for (ItemCost cost : costs) {
                 Debugger.getInstance().debug(2, this + ": apply cost " + cost.getDescription() + " to player");
-                cost.apply(player, false, inventories);
+                cost.apply(p, false, inventories);
                 taken.addAll(cost.getActualItemsTaken());
             }
 
@@ -609,11 +609,11 @@ public class RecipeBook extends BaseSTBItem {
 
             for (Inventory inv : vanillaInventories) {
                 if (inv.getHolder() instanceof STBInventoryHolder) {
-                    ((STBInventoryHolder) inv.getHolder()).updateOutputItems(player.getUniqueId(), inv);
+                    ((STBInventoryHolder) inv.getHolder()).updateOutputItems(p.getUniqueId(), inv);
                 }
             }
         } else {
-            STBUtil.complain(player);
+            STBUtil.complain(p);
         }
     }
 
@@ -626,18 +626,18 @@ public class RecipeBook extends BaseSTBItem {
             result = stb.toItemStack();
         }
 
-        player.getInventory().addItem(result);
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
-        MiscUtil.statusMessage(player, "Fabricated (free): &f" + ItemUtils.getItemName(result));
+        p.getInventory().addItem(result);
+        p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
+        MiscUtil.statusMessage(p, "Fabricated (free): &f" + ItemUtils.getItemName(result));
     }
 
     private void fabricateNormal(List<ItemStack> taken, ItemStack result) {
         double totalCharge = 0.0;
 
-        for (ItemStack stack : taken) {
+        for (ItemStack s : taken) {
             // the SCU level of any chargeable ingredient will contribute
             // to the charge on the resulting item
-            BaseSTBItem stb = SensibleToolbox.getItemRegistry().fromItemStack(stack);
+            BaseSTBItem stb = SensibleToolbox.getItemRegistry().fromItemStack(s);
 
             if (stb instanceof Chargeable) {
                 totalCharge += ((Chargeable) stb).getCharge();
@@ -652,24 +652,24 @@ public class RecipeBook extends BaseSTBItem {
             result = stb.toItemStack();
         }
 
-        player.getInventory().addItem(result);
-        player.playSound(player.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
-        MiscUtil.statusMessage(player, "Fabricated: &f" + ItemUtils.getItemName(result));
+        p.getInventory().addItem(result);
+        p.playSound(p.getLocation(), Sound.ENTITY_ITEM_PICKUP, 1.0F, 1.0F);
+        MiscUtil.statusMessage(p, "Fabricated: &f" + ItemUtils.getItemName(result));
     }
 
     private List<ItemStack> mergeIngredients() {
         Map<ItemStack, Integer> amounts = new HashMap<>();
 
-        for (ItemStack stack : currentIngredients) {
+        for (ItemStack s : currentIngredients) {
             // for (int slot : RECIPE_SLOTS) {
             // ItemStack stack = gui.getInventory().getItem(slot);
-            if (stack != null) {
-                Integer existing = amounts.get(stack);
+            if (s != null) {
+                Integer existing = amounts.get(s);
 
                 if (existing == null) {
-                    amounts.put(stack, 1);
+                    amounts.put(s, 1);
                 } else {
-                    amounts.put(stack, existing + 1);
+                    amounts.put(s, existing + 1);
                 }
             }
         }
@@ -677,9 +677,9 @@ public class RecipeBook extends BaseSTBItem {
         List<ItemStack> res = new ArrayList<>();
 
         for (Map.Entry<ItemStack, Integer> e : amounts.entrySet()) {
-            ItemStack stack = e.getKey().clone();
-            stack.setAmount(e.getValue());
-            res.add(stack);
+            ItemStack s = e.getKey().clone();
+            s.setAmount(e.getValue());
+            res.add(s);
         }
 
         return res;
@@ -700,8 +700,8 @@ public class RecipeBook extends BaseSTBItem {
         // Furnace recipes need special treatment, since there could be multiple
         // recipes per material (STB item ingredients), but Bukkit FurnaceRecipe
         // doesn't support that concept.
-        for (ItemStack stack : RecipeUtil.getSmeltingIngredientsFor(result)) {
-            recipes.add(new STBFurnaceRecipe(result, stack));
+        for (ItemStack s : RecipeUtil.getSmeltingIngredientsFor(result)) {
+            recipes.add(new STBFurnaceRecipe(result, s));
         }
 
         // Custom STB recipes: items which are created in a machine added by STB

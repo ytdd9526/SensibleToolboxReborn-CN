@@ -83,28 +83,28 @@ public abstract class EnergyCell extends BaseSTBItem implements Chargeable {
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (event.getHand() == EquipmentSlot.OFF_HAND) {
-                event.setCancelled(true);
+    public void onInteractItem(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (e.getHand() == EquipmentSlot.OFF_HAND) {
+                e.setCancelled(true);
                 return;
             }
-            event.setCancelled(true);
-            chargeHotbarItems(event.getPlayer());
+            e.setCancelled(true);
+            chargeHotbarItems(e.getPlayer());
         }
     }
 
-    private void chargeHotbarItems(@Nonnull Player player) {
+    private void chargeHotbarItems(@Nonnull Player p) {
         if (getCharge() > 0) {
-            int held = player.getInventory().getHeldItemSlot();
+            int held = p.getInventory().getHeldItemSlot();
 
             for (int slot = 0; slot < 8; slot++) {
                 if (slot == held) {
                     continue;
                 }
 
-                ItemStack stack = player.getInventory().getItem(slot);
-                BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(stack);
+                ItemStack s = p.getInventory().getItem(slot);
+                BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(s);
 
                 if (item instanceof Chargeable) {
                     Chargeable c = (Chargeable) item;
@@ -113,9 +113,9 @@ public abstract class EnergyCell extends BaseSTBItem implements Chargeable {
                     if (toTransfer > 0) {
                         toTransfer = Math.min(toTransfer, getCharge());
                         setCharge(getCharge() - toTransfer);
-                        player.setItemInHand(toItemStack());
+                        p.setItemInHand(toItemStack());
                         c.setCharge(c.getCharge() + toTransfer);
-                        player.getInventory().setItem(slot, item.toItemStack());
+                        p.getInventory().setItem(slot, item.toItemStack());
                         break;
                     }
                 }

@@ -115,18 +115,18 @@ public class ShowCommand extends AbstractCommand {
                 return;
             }
 
-            Player player = (Player) sender;
+            Player p = (Player) sender;
             // try to show either the held item or the targeted block
-            item = SensibleToolbox.getItemRegistry().fromItemStack(player.getInventory().getItemInMainHand());
+            item = SensibleToolbox.getItemRegistry().fromItemStack(p.getInventory().getItemInMainHand());
 
             if (item == null) {
-                Block b = player.getTargetBlock((Set<Material>) null, 10);
+                Block b = p.getTargetBlock((Set<Material>) null, 10);
                 item = LocationManager.getManager().get(b.getLocation(), true);
             }
         } else {
             try {
-                Location loc = MiscUtil.parseLocation(locStr);
-                item = LocationManager.getManager().get(loc);
+                Location l = MiscUtil.parseLocation(locStr);
+                item = LocationManager.getManager().get(l);
                 Preconditions.checkArgument(item != null, "No STB block at " + locStr);
             } catch (IllegalArgumentException e) {
                 throw new DHUtilsException(e.getMessage());

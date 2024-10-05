@@ -192,15 +192,15 @@ public class FishingNet extends AbstractProcessingMachine {
     }
 
     @Override
-    public boolean acceptsItemType(ItemStack stack) {
+    public boolean acceptsItemType(ItemStack s) {
         ItemMeta bait = new FishBait().toItemStack().getItemMeta();
-        if (!stack.hasItemMeta()) {
+        if (!s.hasItemMeta()) {
             return false;
-        } else if (!stack.getItemMeta().hasLore()) {
+        } else if (!s.getItemMeta().hasLore()) {
             return false;
-        } else if (!stack.getItemMeta().hasDisplayName()) {
+        } else if (!s.getItemMeta().hasDisplayName()) {
             return false;
-        } else if (stack.getItemMeta().getDisplayName().equals(bait.getDisplayName()) && stack.getItemMeta().getLore().toString().equals(bait.getLore().toString())) {
+        } else if (s.getItemMeta().getDisplayName().equals(bait.getDisplayName()) && s.getItemMeta().getLore().toString().equals(bait.getLore().toString())) {
             return true;
         } else {
             return false;

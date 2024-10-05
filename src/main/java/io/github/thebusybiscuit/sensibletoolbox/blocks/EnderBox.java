@@ -114,20 +114,20 @@ public class EnderBox extends BaseSTBBlock implements EnderTunable, STBInventory
     }
 
     @Override
-    public void onInteractBlock(PlayerInteractEvent event) {
-        super.onInteractBlock(event);
+    public void onInteractBlock(PlayerInteractEvent e) {
+        super.onInteractBlock(e);
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !event.getPlayer().isSneaking()) {
-            Player player = event.getPlayer();
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && !e.getPlayer().isSneaking()) {
+            Player p = e.getPlayer();
 
-            if (!hasAccessRights(player)) {
-                STBUtil.complain(player, "That " + getItemName() + " is private!");
+            if (!hasAccessRights(p)) {
+                STBUtil.complain(p, "That " + getItemName() + " is private!");
             } else {
-                Inventory inv = isGlobal() ? EnderStorage.getEnderInventory(getEnderFrequency()) : EnderStorage.getEnderInventory(player, getEnderFrequency());
-                player.openInventory(inv);
-                player.playSound(getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 1.0F);
+                Inventory inv = isGlobal() ? EnderStorage.getEnderInventory(getEnderFrequency()) : EnderStorage.getEnderInventory(p, getEnderFrequency());
+                p.openInventory(inv);
+                p.playSound(getLocation(), Sound.BLOCK_CHEST_OPEN, 0.5F, 1.0F);
             }
-            event.setCancelled(true);
+            e.setCancelled(true);
         }
     }
 

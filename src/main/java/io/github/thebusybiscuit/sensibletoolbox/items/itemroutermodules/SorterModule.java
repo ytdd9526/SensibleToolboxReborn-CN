@@ -49,14 +49,14 @@ public class SorterModule extends DirectionalItemRouterModule {
     }
 
     @Override
-    public boolean execute(Location loc) {
+    public boolean execute(Location l) {
         if (getItemRouter() != null && getItemRouter().getBufferItem() != null) {
             if (getFilter() != null && !getFilter().shouldPass(getItemRouter().getBufferItem())) {
                 return false;
             }
 
             Debugger.getInstance().debug(2, "sorter in " + getItemRouter() + " has: " + getItemRouter().getBufferItem());
-            Location targetLoc = getTargetLocation(loc);
+            Location targetLoc = getTargetLocation(l);
             int nToInsert = getItemRouter().getStackSize();
             BaseSTBBlock stb = SensibleToolbox.getBlockAt(targetLoc, true);
             int nInserted;

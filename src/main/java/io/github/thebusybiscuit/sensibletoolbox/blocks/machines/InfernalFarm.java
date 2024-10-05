@@ -64,9 +64,9 @@ public class InfernalFarm extends AutoFarm {
     }
 
     @Override
-    public void onBlockRegistered(Location location, boolean isPlacing) {
+    public void onBlockRegistered(Location l, boolean isPlacing) {
         int i = RADIUS;
-        Block block = location.getBlock();
+        Block block = l.getBlock();
 
         for (int x = -i; x <= i; x++) {
             for (int z = -i; z <= i; z++) {
@@ -74,7 +74,7 @@ public class InfernalFarm extends AutoFarm {
             }
         }
         //Without this, the machine stops updating the charge after a restart.
-        super.onBlockRegistered(location, isPlacing);
+        super.onBlockRegistered(l, isPlacing);
     }
 
     @Override

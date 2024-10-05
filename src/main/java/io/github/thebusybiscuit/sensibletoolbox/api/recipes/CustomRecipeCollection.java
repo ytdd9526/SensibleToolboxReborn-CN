@@ -105,15 +105,15 @@ public class CustomRecipeCollection {
         }
         List<String> l = new ArrayList<>(input.length);
 
-        for (ItemStack stack : input) {
-            if (stack == null) {
+        for (ItemStack s : input) {
+            if (s == null) {
                 if (shaped) {
                     l.add("");
                 } else {
                     throw new IllegalArgumentException("null items not allowed for shapeless recipes");
                 }
             } else {
-                l.add(stack.getAmount() + "x" + RecipeUtil.makeRecipeKey(ignoreData, stack));
+                l.add(s.getAmount() + "x" + RecipeUtil.makeRecipeKey(ignoreData, s));
             }
         }
 

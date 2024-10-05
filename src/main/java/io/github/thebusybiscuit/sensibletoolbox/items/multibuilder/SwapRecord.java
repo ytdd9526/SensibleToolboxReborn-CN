@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 final class SwapRecord {
 
-    private final Player player;
+    private final Player p;
     private final Block block;
     private final Material source;
     private final Material target;
@@ -22,8 +22,8 @@ final class SwapRecord {
 
 
     @ParametersAreNonnullByDefault
-    SwapRecord(Player player, Block block, Material source, Material target, int layersLeft, MultiBuilder builder, int slot, double chargeNeeded, BlockFace direction) {
-        this.player = player;
+    SwapRecord(Player p, Block block, Material source, Material target, int layersLeft, MultiBuilder builder, int slot, double chargeNeeded, BlockFace direction) {
+        this.p = p;
         this.block = block;
         this.source = source;
         this.target = target;
@@ -36,7 +36,7 @@ final class SwapRecord {
 
     @Nonnull
     public Player getPlayer() {
-        return player;
+        return p;
     }
 
     @Nonnull

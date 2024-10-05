@@ -221,8 +221,8 @@ public class HeatEngine extends Generator {
     }
 
     private void pullItemIntoProcessing(int inputSlot) {
-        ItemStack stack = getInventoryItem(inputSlot);
-        currentFuel = fuelItems.get(stack);
+        ItemStack s = getInventoryItem(inputSlot);
+        currentFuel = fuelItems.get(s);
 
         if (getRegulatorAmount() > 0 && getCharge() + currentFuel.getTotalFuelValue() >= getMaxCharge() && getCharge() > 0) {
             // Regulator prevents pulling fuel in unless there's definitely
@@ -230,11 +230,11 @@ public class HeatEngine extends Generator {
             return;
         }
 
-        setProcessing(makeProcessingItem(currentFuel, stack));
+        setProcessing(makeProcessingItem(currentFuel, s));
         getProgressMeter().setMaxProgress(currentFuel.getBurnTime());
         setProgress(currentFuel.getBurnTime());
-        stack.setAmount(stack.getAmount() - 1);
-        setInventoryItem(inputSlot, stack);
+        s.setAmount(s.getAmount() - 1);
+        setInventoryItem(inputSlot, s);
         update(false);
     }
 

@@ -71,7 +71,7 @@ public class ButtonGadget extends ClickableGadget {
     }
 
     @Override
-    public void onClicked(InventoryClickEvent event) {
+    public void onClicked(InventoryClickEvent e) {
         if (callback != null) {
             callback.run();
         }

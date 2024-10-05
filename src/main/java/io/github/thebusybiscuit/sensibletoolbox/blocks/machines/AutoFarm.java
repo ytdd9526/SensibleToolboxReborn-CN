@@ -61,7 +61,7 @@ public class AutoFarm extends AutoFarmingMachine {
 
     @Override
     public String[] getLore() {
-        return new String[] { "Automatically harvests and replants", "Wheat/Potato/Carrot Crops", "in a " + RADIUS + "x" + RADIUS + " Radius 2 Blocks above the Machine" };
+        return new String[] { "Automatically harvests and replants", "Wheat/Potato/Carrot/Beetroot Crops", "in a " + RADIUS + "x" + RADIUS + " Radius 2 Blocks above the Machine" };
     }
 
     @Override
@@ -80,9 +80,9 @@ public class AutoFarm extends AutoFarmingMachine {
     }
 
     @Override
-    public void onBlockRegistered(Location location, boolean isPlacing) {
+    public void onBlockRegistered(Location l, boolean isPlacing) {
         int i = RADIUS;
-        Block block = location.getBlock();
+        Block block = l.getBlock();
 
         for (int x = -i; x <= i; x++) {
             for (int z = -i; z <= i; z++) {
@@ -90,7 +90,7 @@ public class AutoFarm extends AutoFarmingMachine {
             }
         }
 
-        super.onBlockRegistered(location, isPlacing);
+        super.onBlockRegistered(l, isPlacing);
     }
 
     @Override
@@ -129,20 +129,20 @@ public class AutoFarm extends AutoFarmingMachine {
 
     protected boolean output(@Nonnull Material m) {
         for (int slot : getOutputSlots()) {
-            ItemStack stack = getInventoryItem(slot);
+            ItemStack s = getInventoryItem(slot);
 
-            if (stack == null || (stack.getType() == m && stack.getAmount() < stack.getMaxStackSize())) {
-                if (stack == null) {
-                    stack = new ItemStack(m);
+            if (s == null || (s.getType() == m && s.getAmount() < s.getMaxStackSize())) {
+                if (s == null) {
+                    s = new ItemStack(m);
                 }
 
                 int amount = 1;
 
                 if (!m.isBlock()) {
-                    amount = (stack.getMaxStackSize() - stack.getAmount()) > 3 ? (ThreadLocalRandom.current().nextInt(2) + 1) : (stack.getMaxStackSize() - stack.getAmount());
+                    amount = (s.getMaxStackSize() - s.getAmount()) > 3 ? (ThreadLocalRandom.current().nextInt(2) + 1) : (s.getMaxStackSize() - s.getAmount());
                 }
 
-                setInventoryItem(slot, new CustomItemStack(stack, stack.getAmount() + amount));
+                setInventoryItem(slot, new CustomItemStack(s, s.getAmount() + amount));
                 buffer = null;
                 return true;
             }

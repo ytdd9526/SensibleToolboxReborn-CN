@@ -84,20 +84,20 @@ public class VacuumModule extends DirectionalItemRouterModule {
     }
 
     @Override
-    public boolean execute(Location loc) {
-        loc.add(0.5, 0.5, 0.5);
+    public boolean execute(Location l) {
+        l.add(0.5, 0.5, 0.5);
 
-        for (Entity entity : loc.getWorld().getNearbyEntities(loc, RADIUS, RADIUS, RADIUS, n -> n instanceof Item && n.isValid())) {
+        for (Entity entity : l.getWorld().getNearbyEntities(l, RADIUS, RADIUS, RADIUS, n -> n instanceof Item && n.isValid())) {
             Item item = (Item) entity;
 
             ItemStack onGround = item.getItemStack();
             ItemStack buffer = getItemRouter().getBufferItem();
             Location itemLoc = item.getLocation();
 
-            if (item.getPickupDelay() <= 0 && getFilter().shouldPass(onGround) && rightDirection(itemLoc, loc) && (buffer == null || buffer.isSimilar(onGround)) && STBUtil.getMetadataValue(item, STB_VACUUMED) == null) {
-                double rtrY = loc.getY();
-                double dist = loc.distanceSquared(item.getLocation());
-                Vector vel = loc.subtract(itemLoc).toVector().normalize().multiply(Math.min(dist * 0.06, 0.7));
+            if (item.getPickupDelay() <= 0 && getFilter().shouldPass(onGround) && rightDirection(itemLoc, l) && (buffer == null || buffer.isSimilar(onGround)) && STBUtil.getMetadataValue(item, STB_VACUUMED) == null) {
+                double rtrY = l.getY();
+                double dist = l.distanceSquared(item.getLocation());
+                Vector vel = l.subtract(itemLoc).toVector().normalize().multiply(Math.min(dist * 0.06, 0.7));
 
                 if (itemLoc.getY() < rtrY) {
                     vel.setY(vel.getY() + (rtrY - itemLoc.getY()) / 10);

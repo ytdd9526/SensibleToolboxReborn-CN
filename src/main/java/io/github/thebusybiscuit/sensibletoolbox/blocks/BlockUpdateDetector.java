@@ -100,8 +100,8 @@ public class BlockUpdateDetector extends BaseSTBBlock {
     }
 
     @Override
-    public void onBlockPhysics(BlockPhysicsEvent event) {
-        Block b = event.getBlock();
+    public void onBlockPhysics(BlockPhysicsEvent e) {
+        Block b = e.getBlock();
         long timeNow = getLocation().getWorld().getFullTime();
         Debugger.getInstance().debug(this + ": BUD physics: time=" + timeNow + ", lastPulse=" + lastPulse + ", duration=" + getDuration());
 
@@ -119,13 +119,13 @@ public class BlockUpdateDetector extends BaseSTBBlock {
     }
 
     @Override
-    public void onInteractBlock(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !event.getPlayer().isSneaking()) {
-            getGUI().show(event.getPlayer());
-            event.setCancelled(true);
+    public void onInteractBlock(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && !e.getPlayer().isSneaking()) {
+            getGUI().show(e.getPlayer());
+            e.setCancelled(true);
         }
 
-        super.onInteractBlock(event);
+        super.onInteractBlock(e);
     }
 
     @Override
@@ -148,10 +148,10 @@ public class BlockUpdateDetector extends BaseSTBBlock {
     }
 
     @Override
-    public void onBlockUnregistered(Location location) {
+    public void onBlockUnregistered(Location l) {
         // ensure the non-active form of the item is always dropped
         active = false;
-        super.onBlockUnregistered(location);
+        super.onBlockUnregistered(l);
     }
 
     @Override

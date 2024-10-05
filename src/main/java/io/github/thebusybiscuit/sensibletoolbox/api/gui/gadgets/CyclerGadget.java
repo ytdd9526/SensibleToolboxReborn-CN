@@ -51,12 +51,12 @@ public abstract class CyclerGadget<T extends Enum<T>> extends ClickableGadget {
      *            the GUI slot to display the gadget in
      * @param label
      *            the primary tooltip for the gadget
-     * @param item
+     * @param i
      *            the item this gadget should apply to
      */
-    protected CyclerGadget(InventoryGUI gui, int slot, String label, BaseSTBItem item) {
+    protected CyclerGadget(InventoryGUI gui, int slot, String label, BaseSTBItem i) {
         super(gui, slot);
-        stbItem = item == null ? gui.getOwningItem() : item;
+        stbItem = i == null ? gui.getOwningItem() : i;
         this.label = label;
     }
 
@@ -144,17 +144,17 @@ public abstract class CyclerGadget<T extends Enum<T>> extends ClickableGadget {
 
     @SuppressWarnings("unchecked")
     @Override
-    public void onClicked(InventoryClickEvent event) {
-        if (ownerOnly() && !mayOverride(event.getWhoClicked()) && stbItem instanceof BaseSTBBlock) {
+    public void onClicked(InventoryClickEvent e) {
+        if (ownerOnly() && !mayOverride(e.getWhoClicked()) && stbItem instanceof BaseSTBBlock) {
             BaseSTBBlock stb = (BaseSTBBlock) stbItem;
-            if (!event.getWhoClicked().getUniqueId().equals(stb.getOwner())) {
+            if (!e.getWhoClicked().getUniqueId().equals(stb.getOwner())) {
                 return;
             }
         }
 
         int b = currentValue.ordinal();
         int n = b;
-        int adjust = event.isRightClick() ? -1 : 1;
+        int adjust = e.isRightClick() ? -1 : 1;
 
         do {
             n = (n + adjust) % stacks.length;
@@ -171,7 +171,7 @@ public abstract class CyclerGadget<T extends Enum<T>> extends ClickableGadget {
                 break;
             }
         } while (!supported(stbItem, currentValue));
-        event.setCurrentItem(getTexture());
+        e.setCurrentItem(getTexture());
         apply(stbItem, currentValue);
     }
 
@@ -189,23 +189,23 @@ public abstract class CyclerGadget<T extends Enum<T>> extends ClickableGadget {
     }
 
     private ItemStack makeTexture(T what, Material type, ChatColor color, String... lore) {
-        ItemStack stack = new ItemStack(type);
-        ItemMeta meta = stack.getItemMeta();
+        ItemStack s = new ItemStack(type);
+        ItemMeta meta = s.getItemMeta();
         meta.setDisplayName(ChatColor.WHITE.toString() + ChatColor.UNDERLINE + label + ":" + color + " " + what.toString());
 
         if (lore.length > 0) {
             String ownerName = getOwnerName();
             List<String> l = Lists.newArrayListWithCapacity(lore.length);
 
-            for (String s : lore) {
-                l.add(ChatColor.GRAY + s.replace("<OWNER>", ownerName));
+            for (String stack : lore) {
+                l.add(ChatColor.GRAY + stack.replace("<OWNER>", ownerName));
             }
 
             meta.setLore(l);
         }
 
-        stack.setItemMeta(meta);
-        return stack;
+        s.setItemMeta(meta);
+        return s;
     }
 
     @Nonnull

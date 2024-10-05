@@ -129,30 +129,30 @@ public class STBItemRegistry implements ItemRegistry, Keyed {
     }
 
     @Override
-    public BaseSTBItem fromItemStack(@Nullable ItemStack stack) {
-        if (stack == null) {
+    public BaseSTBItem fromItemStack(@Nullable ItemStack s) {
+        if (s == null) {
             return null;
         }
 
-        Configuration conf = getItemAttributes(stack);
+        Configuration conf = getItemAttributes(s);
         BaseSTBItem item = getItemById(conf.getString("*TYPE"), conf);
 
         if (item != null) {
-            item.storeEnchants(stack);
+            item.storeEnchants(s);
         }
 
         return item;
     }
 
     @Nonnull
-    private Configuration getItemAttributes(@Nonnull ItemStack stack) {
-        Preconditions.checkArgument(stack != null, "ItemStack cannot be null!");
+    private Configuration getItemAttributes(@Nonnull ItemStack s) {
+        Preconditions.checkArgument(s != null, "ItemStack cannot be null!");
 
-        if (!stack.hasItemMeta()) {
+        if (!s.hasItemMeta()) {
             return new MemoryConfiguration();
         }
 
-        Optional<String> optional = PersistentDataAPI.getOptionalString(stack.getItemMeta(), namespacedKey);
+        Optional<String> optional = PersistentDataAPI.getOptionalString(s.getItemMeta(), namespacedKey);
 
         if (optional.isPresent()) {
             return YamlConfiguration.loadConfiguration(new StringReader(optional.get()));
@@ -162,8 +162,8 @@ public class STBItemRegistry implements ItemRegistry, Keyed {
     }
 
     @Override
-    public <T extends BaseSTBItem> T fromItemStack(ItemStack stack, Class<T> type) {
-        BaseSTBItem item = fromItemStack(stack);
+    public <T extends BaseSTBItem> T fromItemStack(ItemStack s, Class<T> type) {
+        BaseSTBItem item = fromItemStack(s);
 
         if (item != null && type.isAssignableFrom(item.getClass())) {
             return type.cast(item);
@@ -194,13 +194,13 @@ public class STBItemRegistry implements ItemRegistry, Keyed {
     }
 
     @Override
-    public boolean isSTBItem(ItemStack stack) {
-        return isSTBItem(stack, null);
+    public boolean isSTBItem(ItemStack s) {
+        return isSTBItem(s, null);
     }
 
     @Override
-    public boolean isSTBItem(ItemStack stack, Class<? extends BaseSTBItem> c) {
-        BaseSTBItem item = fromItemStack(stack);
+    public boolean isSTBItem(ItemStack s, Class<? extends BaseSTBItem> c) {
+        BaseSTBItem item = fromItemStack(s);
         if (c == null) {
             return item != null;
         } else {

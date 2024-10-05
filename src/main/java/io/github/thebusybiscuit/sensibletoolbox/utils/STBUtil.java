@@ -434,17 +434,17 @@ public final class STBUtil {
      * Get a display-formatted string for the given ItemStack. The item stack's metadata is
      * taken into account, as it the size of the stack.
      *
-     * @param stack
+     * @param s
      *            the item stack
      * @return a formatted description of the item stack
      */
     @Nonnull
-    public static String describeItemStack(@Nullable ItemStack stack) {
-        if (stack == null) {
+    public static String describeItemStack(@Nullable ItemStack s) {
+        if (s == null) {
             return "nothing";
         }
 
-        return stack.getAmount() + " x " + ItemUtils.getItemName(stack);
+        return s.getAmount() + " x " + ItemUtils.getItemName(s);
     }
 
     /**
@@ -459,10 +459,10 @@ public final class STBUtil {
      * @return a new ItemStack with the given title and lore
      */
     public static ItemStack makeStack(Material material, String title, String... lore) {
-        ItemStack stack = new ItemStack(material);
+        ItemStack s = new ItemStack(material);
 
         if (title != null) {
-            ItemMeta meta = stack.getItemMeta();
+            ItemMeta meta = s.getItemMeta();
             meta.setDisplayName(title);
             List<String> newLore = new ArrayList<>(lore.length);
 
@@ -471,9 +471,9 @@ public final class STBUtil {
             }
 
             meta.setLore(newLore);
-            stack.setItemMeta(meta);
+            s.setItemMeta(meta);
         }
-        return stack;
+        return s;
     }
 
     /**
@@ -531,73 +531,73 @@ public final class STBUtil {
      * Check if the given item can be used to fabricate items via vanilla
      * recipes.
      *
-     * @param stack
+     * @param s
      *            the item stack to check
      * @return true if the item can be used to fabricate with, false otherwise
      */
-    public static boolean canFabricateWith(@Nullable ItemStack stack) {
-        return stack != null && stack.getType() == Material.CRAFTING_TABLE;
+    public static boolean canFabricateWith(@Nullable ItemStack s) {
+        return s != null && s.getType() == Material.CRAFTING_TABLE;
     }
 
     /**
      * Send an audible alert to the given player indicating a problem of some
      * kind.
      *
-     * @param player
+     * @param p
      *            the player
      */
-    public static void complain(@Nonnull Player player) {
-        Preconditions.checkArgument(player != null, "Cannot complain to nobody");
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, 1.0F);
+    public static void complain(@Nonnull Player p) {
+        Preconditions.checkArgument(p != null, "Cannot complain to nobody");
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, 1.0F);
     }
 
     /**
      * Send an error message to the given player, along with an audible alert.
      *
-     * @param player
+     * @param p
      *            the player
      * @param message
      *            the message text
      */
-    public static void complain(Player player, String message) {
-        player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, 1.0F);
-        MiscUtil.errorMessage(player, message);
+    public static void complain(Player p, String message) {
+        p.playSound(p.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 1.0F, 1.0F);
+        MiscUtil.errorMessage(p, message);
     }
 
-    public static void complain(HumanEntity player, String message) {
-        if (player instanceof Player) {
-            complain((Player) player, message);
+    public static void complain(HumanEntity p, String message) {
+        if (p instanceof Player) {
+            complain((Player) p, message);
         }
     }
 
     /**
      * Give the items to a player, dropping any excess items on the ground.
      *
-     * @param player
+     * @param p
      *            the player
      * @param stacks
      *            one or more item stacks
      */
-    public static void giveItems(HumanEntity player, ItemStack stacks) {
-        Map<Integer, ItemStack> excess = player.getInventory().addItem(stacks);
+    public static void giveItems(HumanEntity p, ItemStack stacks) {
+        Map<Integer, ItemStack> excess = p.getInventory().addItem(stacks);
 
-        for (ItemStack stack : excess.values()) {
-            player.getWorld().dropItemNaturally(player.getLocation(), stack);
+        for (ItemStack s : excess.values()) {
+            p.getWorld().dropItemNaturally(p.getLocation(), s);
         }
     }
 
     @Nonnull
-    public static List<String> dumpItemStack(@Nullable ItemStack stack) {
-        if (stack == null) {
+    public static List<String> dumpItemStack(@Nullable ItemStack s) {
+        if (s == null) {
             return Collections.emptyList();
         }
 
         List<String> l = new ArrayList<>();
-        l.add("Quantity: " + stack.getAmount());
-        l.add("Material/Data: " + stack.getType() + ":" + stack.getDurability());
+        l.add("Quantity: " + s.getAmount());
+        l.add("Material/Data: " + s.getType() + ":" + s.getDurability());
 
-        if (stack.hasItemMeta()) {
-            ItemMeta meta = stack.getItemMeta();
+        if (s.hasItemMeta()) {
+            ItemMeta meta = s.getItemMeta();
             l.add("Display name: " + meta.getDisplayName());
 
             if (meta.hasLore()) {
@@ -653,13 +653,13 @@ public final class STBUtil {
             }
         }
 
-        ItemStack stack = new ItemStack(material, amount);
+        ItemStack s = new ItemStack(material, amount);
 
         if (glowing && SensibleToolboxPlugin.getInstance().isProtocolLibEnabled()) {
-            ItemGlow.setGlowing(stack, true);
+            ItemGlow.setGlowing(s, true);
         }
 
-        return stack;
+        return s;
     }
 
     /**
@@ -728,20 +728,20 @@ public final class STBUtil {
      * Encode the given level as a proportion of the given maximum as an item
      * durability; useful for displaying in the item's durability bar.
      *
-     * @param stack
+     * @param s
      *            the item stack
      * @param val
      *            the value to encode, between 0 and <em>max</em>
      * @param max
      *            the maximum value
      */
-    public static void levelToDurability(ItemStack stack, int val, int max) {
-        short maxDur = stack.getType().getMaxDurability();
-        Preconditions.checkArgument(maxDur > 0, "Item stack " + stack + " does not have a durability bar!");
+    public static void levelToDurability(ItemStack s, int val, int max) {
+        short maxDur = s.getType().getMaxDurability();
+        Preconditions.checkArgument(maxDur > 0, "Item stack " + s + " does not have a durability bar!");
         Preconditions.checkArgument(val >= 0 && val <= max, "Value " + val + " out of range 0.." + max);
         float d = val / (float) max;
         short dur = (short) (maxDur * d);
-        stack.setDurability((short) (Math.max(1, maxDur - dur)));
+        s.setDurability((short) (Math.max(1, maxDur - dur)));
     }
 
     /**

@@ -101,30 +101,30 @@ public class SoundMuffler extends BaseSTBBlock {
     }
 
     @Override
-    public void onBlockRegistered(Location loc, boolean isPlacing) {
+    public void onBlockRegistered(Location l, boolean isPlacing) {
         SensibleToolboxPlugin plugin = ((SensibleToolboxPlugin) getProviderPlugin());
         SoundMufflerListener listener = plugin.getSoundMufflerListener();
         listener.registerMuffler(this);
 
-        super.onBlockRegistered(loc, isPlacing);
+        super.onBlockRegistered(l, isPlacing);
     }
 
     @Override
-    public void onBlockUnregistered(Location loc) {
+    public void onBlockUnregistered(Location l) {
         SensibleToolboxPlugin plugin = ((SensibleToolboxPlugin) getProviderPlugin());
         SoundMufflerListener listener = plugin.getSoundMufflerListener();
         listener.unregisterMuffler(this);
 
-        super.onBlockUnregistered(loc);
+        super.onBlockUnregistered(l);
     }
 
     @Override
-    public void onInteractBlock(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !event.getPlayer().isSneaking()) {
-            getGUI().show(event.getPlayer());
+    public void onInteractBlock(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && !e.getPlayer().isSneaking()) {
+            getGUI().show(e.getPlayer());
         }
 
-        super.onInteractBlock(event);
+        super.onInteractBlock(e);
     }
 
     @Override

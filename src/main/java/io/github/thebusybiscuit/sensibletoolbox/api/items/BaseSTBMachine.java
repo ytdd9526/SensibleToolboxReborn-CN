@@ -566,26 +566,26 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
     }
 
     @Override
-    public void onInteractBlock(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK && !event.getPlayer().isSneaking()) {
+    public void onInteractBlock(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK && !e.getPlayer().isSneaking()) {
             if (getGUI() != null) {
                 // gui shouldn't ever be null, but let's be defensive
-                getGUI().show(event.getPlayer());
+                getGUI().show(e.getPlayer());
             }
-            event.setCancelled(true);
+            e.setCancelled(true);
         }
-        super.onInteractBlock(event);
+        super.onInteractBlock(e);
     }
 
     @Override
-    public void onBlockRegistered(Location location, boolean isPlacing) {
+    public void onBlockRegistered(Location l, boolean isPlacing) {
         SensibleToolboxPlugin.getInstance().getEnergyNetManager().onMachinePlaced(this);
 
-        super.onBlockRegistered(location, isPlacing);
+        super.onBlockRegistered(l, isPlacing);
     }
 
     @Override
-    public void onBlockUnregistered(Location loc) {
+    public void onBlockUnregistered(Location l) {
         // Machines broken while viewed allow items to be taken out.
         // We need to close the inventories if opened.
         getGUI().hideForAll();
@@ -601,7 +601,7 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
         upgrades.clear();
         SensibleToolboxPlugin.getInstance().getEnergyNetManager().onMachineRemoved(this);
 
-        super.onBlockUnregistered(loc);
+        super.onBlockUnregistered(l);
     }
 
     /**
@@ -771,25 +771,25 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
 
         for (int i = 0; i < max; i++) {
             int slot = slots == null ? i : slots[i];
-            ItemStack stack = getInventoryItem(slot);
+            ItemStack s = getInventoryItem(slot);
 
-            if (stack != null && (receiver == null || stack.isSimilar(receiver))) {
-                int toTake = Math.min(amount, stack.getAmount());
+            if (s != null && (receiver == null || s.isSimilar(receiver))) {
+                int toTake = Math.min(amount, s.getAmount());
 
                 if (receiver != null) {
                     toTake = Math.min(toTake, receiver.getType().getMaxStackSize() - receiver.getAmount());
                 }
 
                 if (toTake > 0) {
-                    ItemStack result = stack.clone();
+                    ItemStack result = s.clone();
                     result.setAmount(toTake);
 
                     if (receiver != null) {
                         receiver.setAmount(receiver.getAmount() + toTake);
                     }
 
-                    stack.setAmount(stack.getAmount() - toTake);
-                    setInventoryItem(slot, stack);
+                    s.setAmount(s.getAmount() - toTake);
+                    setInventoryItem(slot, s);
                     setJammed(false);
                     update(false);
 
@@ -836,7 +836,7 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
     }
 
     @Override
-    public boolean onSlotClick(HumanEntity player, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor) {
+    public boolean onSlotClick(HumanEntity p, int slot, ClickType click, ItemStack inSlot, ItemStack onCursor) {
         if (isInputSlot(slot)) {
             if (onCursor.getType() != Material.AIR && !acceptsItemType(onCursor)) {
                 return false;
@@ -857,7 +857,7 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
             if (onCursor.getType() != Material.AIR) {
                 BaseSTBItem stb = SensibleToolbox.getItemRegistry().fromItemStack(onCursor);
 
-                if (!isValidUpgrade(player, stb)) {
+                if (!isValidUpgrade(p, stb)) {
                     return false;
                 }
             }
@@ -881,10 +881,10 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
     }
 
     @Override
-    public int onShiftClickInsert(HumanEntity player, int slot, ItemStack toInsert) {
+    public int onShiftClickInsert(HumanEntity p, int slot, ItemStack toInsert) {
         BaseSTBItem item = SensibleToolbox.getItemRegistry().fromItemStack(toInsert);
 
-        if (getUpgradeSlots().length > 0 && isValidUpgrade(player, item)) {
+        if (getUpgradeSlots().length > 0 && isValidUpgrade(p, item)) {
             int upgradeSlot = findAvailableUpgradeSlot(toInsert);
 
             if (upgradeSlot >= 0) {
@@ -908,25 +908,25 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
         return toInsert.getAmount() - remaining;
     }
 
-    private int doInsertion(ItemStack stack) {
-        if (!acceptsItemType(stack)) {
-            return stack.getAmount();
+    private int doInsertion(ItemStack s) {
+        if (!acceptsItemType(s)) {
+            return s.getAmount();
         }
 
-        int remaining = stack.getAmount();
+        int remaining = s.getAmount();
 
         for (int slot : getInputSlots()) {
             ItemStack inInventory = getInventoryItem(slot);
 
             if (inInventory == null) {
-                setInventoryItem(slot, stack);
+                setInventoryItem(slot, s);
                 return 0;
-            } else if (inInventory.isSimilar(stack)) {
-                int toInsert = Math.min(stack.getAmount(), stack.getMaxStackSize() - inInventory.getAmount());
+            } else if (inInventory.isSimilar(s)) {
+                int toInsert = Math.min(s.getAmount(), s.getMaxStackSize() - inInventory.getAmount());
                 inInventory.setAmount(inInventory.getAmount() + toInsert);
                 setInventoryItem(slot, inInventory);
                 remaining -= toInsert;
-                stack.setAmount(remaining);
+                s.setAmount(remaining);
             }
 
             if (remaining <= 0) {
@@ -997,19 +997,19 @@ public abstract class BaseSTBMachine extends BaseSTBBlock implements ChargeableB
         upgrades.clear();
 
         for (int slot : getUpgradeSlots()) {
-            ItemStack stack = getInventoryItem(slot);
+            ItemStack s = getInventoryItem(slot);
 
-            if (stack != null) {
-                AbstractMachineUpgrade upgrade = SensibleToolbox.getItemRegistry().fromItemStack(stack, AbstractMachineUpgrade.class);
+            if (s != null) {
+                AbstractMachineUpgrade upgrade = SensibleToolbox.getItemRegistry().fromItemStack(s, AbstractMachineUpgrade.class);
 
                 if (upgrade == null) {
                     setInventoryItem(slot, null);
 
                     if (getLocation() != null) {
-                        getLocation().getWorld().dropItemNaturally(getLocation(), stack);
+                        getLocation().getWorld().dropItemNaturally(getLocation(), s);
                     }
                 } else {
-                    upgrade.setAmount(stack.getAmount());
+                    upgrade.setAmount(s.getAmount());
                     upgrades.add(upgrade);
 
                     if (getTicksLived() > 20) {

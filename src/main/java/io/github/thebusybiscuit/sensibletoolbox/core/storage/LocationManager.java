@@ -116,8 +116,8 @@ public final class LocationManager {
     public void addTicker(@Nonnull BaseSTBBlock stb) {
         Preconditions.checkArgument(stb != null, "Cannot add a ticker that is null!");
 
-        Location loc = stb.getLocation();
-        World w = loc.getWorld();
+        Location l = stb.getLocation();
+        World w = l.getWorld();
         Set<BaseSTBBlock> tickerSet = allTickers.get(w.getUID());
 
         if (tickerSet == null) {
@@ -141,44 +141,44 @@ public final class LocationManager {
         return index;
     }
 
-    public void registerLocation(Location loc, BaseSTBBlock stb, boolean isPlacing) {
-        BaseSTBBlock stb2 = get(loc);
+    public void registerLocation(Location l, BaseSTBBlock stb, boolean isPlacing) {
+        BaseSTBBlock stb2 = get(l);
 
         if (stb2 != null) {
-            LogUtils.warning("Attempt to register duplicate STB block " + stb + " @ " + loc + " - existing block " + stb2);
+            LogUtils.warning("Attempt to register duplicate STB block " + stb + " @ " + l + " - existing block " + stb2);
             return;
         }
 
-        stb.setLocation(blockAccess, loc);
+        stb.setLocation(blockAccess, l);
 
-        String locStr = MiscUtil.formatLocation(loc);
-        getWorldIndex(loc.getWorld()).put(locStr, stb);
-        stb.preRegister(blockAccess, loc, isPlacing);
+        String locStr = MiscUtil.formatLocation(l);
+        getWorldIndex(l.getWorld()).put(locStr, stb);
+        stb.preRegister(blockAccess, l, isPlacing);
 
         if (isPlacing) {
-            addPendingDatabaseOperation(loc, locStr, DatabaseOperation.INSERT);
+            addPendingDatabaseOperation(l, locStr, DatabaseOperation.INSERT);
         }
 
         if (stb.getTickRate() > 0) {
             addTicker(stb);
         }
 
-        Debugger.getInstance().debug("Registered " + stb + " @ " + loc);
+        Debugger.getInstance().debug("Registered " + stb + " @ " + l);
     }
 
-    public void updateLocation(Location loc) {
-        addPendingDatabaseOperation(loc, MiscUtil.formatLocation(loc), DatabaseOperation.UPDATE);
+    public void updateLocation(Location l) {
+        addPendingDatabaseOperation(l, MiscUtil.formatLocation(l), DatabaseOperation.UPDATE);
     }
 
-    public void unregisterLocation(Location loc, BaseSTBBlock stb) {
+    public void unregisterLocation(Location l, BaseSTBBlock stb) {
         if (stb != null) {
-            stb.onBlockUnregistered(loc);
-            String locStr = MiscUtil.formatLocation(loc);
-            addPendingDatabaseOperation(loc, locStr, DatabaseOperation.DELETE);
-            getWorldIndex(loc.getWorld()).remove(locStr);
-            Debugger.getInstance().debug("Unregistered " + stb + " @ " + loc);
+            stb.onBlockUnregistered(l);
+            String locStr = MiscUtil.formatLocation(l);
+            addPendingDatabaseOperation(l, locStr, DatabaseOperation.DELETE);
+            getWorldIndex(l.getWorld()).remove(locStr);
+            Debugger.getInstance().debug("Unregistered " + stb + " @ " + l);
         } else {
-            LogUtils.warning("Attempt to unregister non-existent STB block @ " + loc);
+            LogUtils.warning("Attempt to unregister non-existent STB block @ " + l);
         }
     }
 
@@ -208,22 +208,22 @@ public final class LocationManager {
         Debugger.getInstance().debug("moved " + stb + " from " + oldLoc + " to " + newLoc);
     }
 
-    private void addPendingDatabaseOperation(Location loc, String locStr, DatabaseOperation op) {
+    private void addPendingDatabaseOperation(Location l, String locStr, DatabaseOperation op) {
         UpdateRecord existingRec = pendingUpdates.get(locStr);
 
         switch (op) {
             case INSERT:
                 if (existingRec == null) {
                     // brand new insertion
-                    pendingUpdates.put(locStr, new UpdateRecord(DatabaseOperation.INSERT, loc));
+                    pendingUpdates.put(locStr, new UpdateRecord(DatabaseOperation.INSERT, l));
                 } else if (existingRec.getOp() == DatabaseOperation.DELETE) {
                     // re-inserting where a block was just deleted
-                    pendingUpdates.put(locStr, new UpdateRecord(DatabaseOperation.UPDATE, loc));
+                    pendingUpdates.put(locStr, new UpdateRecord(DatabaseOperation.UPDATE, l));
                 }
                 break;
             case UPDATE:
                 if (existingRec == null || existingRec.getOp() != DatabaseOperation.INSERT) {
-                    pendingUpdates.put(locStr, new UpdateRecord(DatabaseOperation.UPDATE, loc));
+                    pendingUpdates.put(locStr, new UpdateRecord(DatabaseOperation.UPDATE, l));
                 }
                 break;
             case DELETE:
@@ -231,7 +231,7 @@ public final class LocationManager {
                     // remove a recent insertion
                     pendingUpdates.remove(locStr);
                 } else {
-                    pendingUpdates.put(locStr, new UpdateRecord(DatabaseOperation.DELETE, loc));
+                    pendingUpdates.put(locStr, new UpdateRecord(DatabaseOperation.DELETE, l));
                 }
                 break;
             default:
@@ -242,21 +242,21 @@ public final class LocationManager {
     /**
      * Get the STB block at the given location.
      *
-     * @param loc
+     * @param l
      *            the location to check at
      *
      * @return the STB block at the given location, or null if no matching item
      */
     @Nullable
-    public BaseSTBBlock get(Location loc) {
-        return get(loc, false);
+    public BaseSTBBlock get(Location l) {
+        return get(l, false);
     }
 
     /**
      * Get the STB block at the given location, or if the location contains a
      * sign, possibly at the location the sign is attached to.
      *
-     * @param loc
+     * @param l
      *            the location to check at
      * @param checkSigns
      *            if true, and the location contains a sign, check at
@@ -265,8 +265,8 @@ public final class LocationManager {
      * @return the STB block at the given location, or null if no matching item
      */
     @Nullable
-    public BaseSTBBlock get(Location loc, boolean checkSigns) {
-        Block b = loc.getBlock();
+    public BaseSTBBlock get(Location l, boolean checkSigns) {
+        Block b = l.getBlock();
 
         if (checkSigns && Tag.WALL_SIGNS.isTagged(b.getType())) {
             WallSign sign = (WallSign) b.getBlockData();
@@ -286,7 +286,7 @@ public final class LocationManager {
     /**
      * Get the STB block of the given type at the given location.
      *
-     * @param loc
+     * @param l
      *            the location to check at
      * @param type
      *            the type of STB block required
@@ -296,14 +296,14 @@ public final class LocationManager {
      * @return the STB block at the given location, or null if no matching item
      */
     @Nullable
-    public <T extends BaseSTBBlock> T get(Location loc, Class<T> type) {
-        return get(loc, type, false);
+    public <T extends BaseSTBBlock> T get(Location l, Class<T> type) {
+        return get(l, type, false);
     }
 
     /**
      * Get the STB block of the given type at the given location.
      *
-     * @param loc
+     * @param l
      *            the location to check at
      * @param type
      *            the type of STB block required
@@ -316,8 +316,8 @@ public final class LocationManager {
      * @return the STB block at the given location, or null if no matching item
      */
     @Nullable
-    public <T extends BaseSTBBlock> T get(Location loc, Class<T> type, boolean checkSigns) {
-        BaseSTBBlock stbBlock = get(loc, checkSigns);
+    public <T extends BaseSTBBlock> T get(Location l, Class<T> type, boolean checkSigns) {
+        BaseSTBBlock stbBlock = get(l, checkSigns);
 
         if (stbBlock != null && type.isAssignableFrom(stbBlock.getClass())) {
             return type.cast(stbBlock);
@@ -441,12 +441,12 @@ public final class LocationManager {
                 BaseSTBItem stbItem = SensibleToolbox.getItemRegistry().getItemById(type, conf);
 
                 if (stbItem != null) {
-                    Location loc = new Location(world, x, y, z);
+                    Location l = new Location(world, x, y, z);
 
                     if (stbItem instanceof BaseSTBBlock) {
-                        registerLocation(loc, (BaseSTBBlock) stbItem, false);
+                        registerLocation(l, (BaseSTBBlock) stbItem, false);
                     } else {
-                        LogUtils.severe("STB item " + type + " @ " + loc + " is not a block!");
+                        LogUtils.severe("STB item " + type + " @ " + l + " is not a block!");
                     }
                 } else {
                     // defer it - should hopefully be registered by another plugin later

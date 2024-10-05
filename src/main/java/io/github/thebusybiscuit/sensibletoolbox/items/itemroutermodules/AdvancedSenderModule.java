@@ -81,23 +81,23 @@ public class AdvancedSenderModule extends DirectionalItemRouterModule {
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        if (event.getAction() == Action.LEFT_CLICK_BLOCK && !event.getPlayer().isSneaking()) {
+    public void onInteractItem(PlayerInteractEvent e) {
+        if (e.getAction() == Action.LEFT_CLICK_BLOCK && !e.getPlayer().isSneaking()) {
             // try to link up with a receiver module
-            ItemRouter rtr = SensibleToolbox.getBlockAt(event.getClickedBlock().getLocation(), ItemRouter.class, true);
+            ItemRouter rtr = SensibleToolbox.getBlockAt(e.getClickedBlock().getLocation(), ItemRouter.class, true);
             if (rtr != null && rtr.getReceiver() != null) {
                 linkToRouter(rtr);
-                updateHeldItemStack(event.getPlayer(), event.getHand());
+                updateHeldItemStack(e.getPlayer(), e.getHand());
             } else {
-                STBUtil.complain(event.getPlayer());
+                STBUtil.complain(e.getPlayer());
             }
-            event.setCancelled(true);
-        } else if (event.getPlayer().isSneaking() && (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK)) {
+            e.setCancelled(true);
+        } else if (e.getPlayer().isSneaking() && (e.getAction() == Action.LEFT_CLICK_AIR || e.getAction() == Action.LEFT_CLICK_BLOCK)) {
             linkToRouter(null);
-            updateHeldItemStack(event.getPlayer(), event.getHand());
-            event.setCancelled(true);
-        } else if (event.getItem().getAmount() == 1 && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)) {
-            super.onInteractItem(event);
+            updateHeldItemStack(e.getPlayer(), e.getHand());
+            e.setCancelled(true);
+        } else if (e.getItem().getAmount() == 1 && (e.getAction() == Action.RIGHT_CLICK_AIR || e.getAction() == Action.RIGHT_CLICK_BLOCK)) {
+            super.onInteractItem(e);
         }
     }
 
@@ -110,7 +110,7 @@ public class AdvancedSenderModule extends DirectionalItemRouterModule {
     }
 
     @Override
-    public boolean execute(Location loc) {
+    public boolean execute(Location l) {
         if (getItemRouter() != null && getItemRouter().getBufferItem() != null && linkedLoc != null) {
             if (getFilter() != null && !getFilter().shouldPass(getItemRouter().getBufferItem())) {
                 return false;
@@ -119,7 +119,7 @@ public class AdvancedSenderModule extends DirectionalItemRouterModule {
             ItemRouter otherRouter = SensibleToolbox.getBlockAt(linkedLoc, ItemRouter.class, false);
 
             if (otherRouter != null) {
-                if (!inRange(loc)) {
+                if (!inRange(l)) {
                     return false;
                 }
 

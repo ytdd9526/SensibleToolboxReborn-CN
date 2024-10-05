@@ -19,7 +19,7 @@ public interface STBInventoryHolder extends InventoryHolder {
      * <p/>
      * If a non-null uuid is provided, an access rights check should be made.
      *
-     * @param item
+     * @param i
      *            the item stack to insert (an attempt will be made to insert all items)
      * @param face
      *            the side to insert into; BlockFace.SELF may be used if insertion is manual
@@ -29,7 +29,7 @@ public interface STBInventoryHolder extends InventoryHolder {
      *            ID of the player who is doing the extracting (may be null)
      * @return the number of items actually inserted
      */
-    int insertItems(ItemStack item, BlockFace face, boolean sorting, UUID uuid);
+    int insertItems(ItemStack i, BlockFace face, boolean sorting, UUID uuid);
 
     /**
      * Attempt to extract items from the block on the given side. The size of the returned

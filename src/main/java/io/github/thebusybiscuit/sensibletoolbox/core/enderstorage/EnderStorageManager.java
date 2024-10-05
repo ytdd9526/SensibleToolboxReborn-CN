@@ -11,9 +11,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import com.google.common.base.Preconditions;
+import io.github.thebusybiscuit.sensibletoolbox.api.SensibleToolbox;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 
 import io.github.thebusybiscuit.sensibletoolbox.SensibleToolboxPlugin;
@@ -21,6 +23,7 @@ import io.github.thebusybiscuit.sensibletoolbox.api.enderstorage.EnderStorageHol
 import io.github.thebusybiscuit.sensibletoolbox.items.EnderBag;
 import me.desht.dhutils.MiscUtil;
 import me.desht.dhutils.text.LogUtils;
+import org.bukkit.inventory.ItemStack;
 
 public class EnderStorageManager implements Listener {
 
@@ -66,19 +69,19 @@ public class EnderStorageManager implements Listener {
         return h;
     }
 
-    public PlayerEnderHolder getPlayerInventoryHolder(OfflinePlayer player, Integer frequency) {
+    public PlayerEnderHolder getPlayerInventoryHolder(OfflinePlayer p, Integer frequency) {
         Preconditions.checkArgument(frequency > 0 && frequency <= MAX_ENDER_FREQUENCY, "Frequency out of range: " + frequency);
-        Map<Integer, PlayerEnderHolder> map = playerInvs.get(player.getUniqueId());
+        Map<Integer, PlayerEnderHolder> map = playerInvs.get(p.getUniqueId());
 
         if (map == null) {
             map = new HashMap<>();
-            playerInvs.put(player.getUniqueId(), map);
+            playerInvs.put(p.getUniqueId(), map);
         }
 
         PlayerEnderHolder h = map.get(frequency);
 
         if (h == null) {
-            h = new PlayerEnderHolder(this, player, frequency);
+            h = new PlayerEnderHolder(this, p, frequency);
 
             try {
                 h.loadInventory();
@@ -143,10 +146,21 @@ public class EnderStorageManager implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
-        if (event.getInventory().getHolder() instanceof STBEnderStorageHolder) {
-            EnderStorageHolder h = (EnderStorageHolder) event.getInventory().getHolder();
+    public void onInventoryClose(InventoryCloseEvent e) {
+        if (e.getInventory().getHolder() instanceof STBEnderStorageHolder) {
+            EnderStorageHolder h = (EnderStorageHolder) e.getInventory().getHolder();
             setChanged(h);
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+        ItemStack clickedItem = e.getCurrentItem();
+
+        if (e.getInventory().getHolder() instanceof STBEnderStorageHolder) {
+            if (clickedItem != null && SensibleToolbox.getItemRegistry().fromItemStack(clickedItem) instanceof EnderBag) {
+                e.setCancelled(true);
+            }
         }
     }
 }

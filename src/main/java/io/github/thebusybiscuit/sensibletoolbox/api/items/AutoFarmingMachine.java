@@ -98,13 +98,13 @@ public abstract class AutoFarmingMachine extends BaseSTBMachine {
     protected void handleAutoEjection() {
         if (getAutoEjectDirection() != null && getAutoEjectDirection() != BlockFace.SELF) {
             for (int slot : getOutputSlots()) {
-                ItemStack stack = getInventoryItem(slot);
+                ItemStack s = getInventoryItem(slot);
 
-                if (stack != null) {
-                    if (autoEject(stack)) {
-                        int amount = stack.getAmount() > 3 ? stack.getAmount() - 4 : 0;
-                        stack.setAmount(amount);
-                        setInventoryItem(slot, stack);
+                if (s != null) {
+                    if (autoEject(s)) {
+                        int amount = s.getAmount() > 3 ? s.getAmount() - 4 : 0;
+                        s.setAmount(amount);
+                        setInventoryItem(slot, s);
                         setJammed(false);
                     }
 
@@ -115,19 +115,19 @@ public abstract class AutoFarmingMachine extends BaseSTBMachine {
     }
 
     private boolean autoEject(@Nonnull ItemStack result) {
-        Location loc = getRelativeLocation(getAutoEjectDirection());
-        Block target = loc.getBlock();
-        ItemStack item = result.clone();
-        item.setAmount(1);
+        Location l = getRelativeLocation(getAutoEjectDirection());
+        Block target = l.getBlock();
+        ItemStack i = result.clone();
+        i.setAmount(1);
 
         if (!target.getType().isSolid() || Tag.WALL_SIGNS.isTagged(target.getType())) {
             // no (solid) block there - just drop the item
-            Item i = loc.getWorld().dropItem(loc.add(0.5, 0.5, 0.5), item);
-            i.setVelocity(new Vector(0, 0, 0));
+            Item item = l.getWorld().dropItem(l.add(0.5, 0.5, 0.5), i);
+            item.setVelocity(new Vector(0, 0, 0));
             return true;
         } else {
-            BaseSTBBlock stb = LocationManager.getManager().get(loc);
-            int nInserted = stb instanceof STBInventoryHolder ? ((STBInventoryHolder) stb).insertItems(item, getAutoEjectDirection().getOppositeFace(), false, getOwner()) : VanillaInventoryUtils.vanillaInsertion(target, item, 1, getAutoEjectDirection().getOppositeFace(), false, getOwner());
+            BaseSTBBlock stb = LocationManager.getManager().get(l);
+            int nInserted = stb instanceof STBInventoryHolder ? ((STBInventoryHolder) stb).insertItems(i, getAutoEjectDirection().getOppositeFace(), false, getOwner()) : VanillaInventoryUtils.vanillaInsertion(target, i, 1, getAutoEjectDirection().getOppositeFace(), false, getOwner());
             return nInserted > 0;
         }
     }

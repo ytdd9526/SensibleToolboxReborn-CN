@@ -48,7 +48,7 @@ public class DirectionGadget extends ClickableGadget {
     }
 
     @Override
-    public void onClicked(InventoryClickEvent event) {
+    public void onClicked(InventoryClickEvent e) {
         // this is just the central button click handler (clear direction)
         // specific direction handlers are dealt with in makeDirectionButton()
         if (allowSelf) {

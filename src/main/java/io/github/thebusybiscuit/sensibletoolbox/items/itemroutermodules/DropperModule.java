@@ -46,20 +46,20 @@ public class DropperModule extends DirectionalItemRouterModule {
     }
 
     @Override
-    public boolean execute(Location loc) {
+    public boolean execute(Location l) {
         if (getItemRouter() != null && getItemRouter().getBufferItem() != null) {
             if (getFilter() != null && !getFilter().shouldPass(getItemRouter().getBufferItem())) {
                 return false;
             }
 
             int toDrop = getItemRouter().getStackSize();
-            ItemStack stack = getItemRouter().extractItems(BlockFace.SELF, null, toDrop, null);
+            ItemStack s = getItemRouter().extractItems(BlockFace.SELF, null, toDrop, null);
 
-            if (stack != null) {
-                Location targetLoc = getTargetLocation(loc).add(0.5, 0.5, 0.5);
-                Item item = targetLoc.getWorld().dropItem(targetLoc, stack);
+            if (s != null) {
+                Location targetLoc = getTargetLocation(l).add(0.5, 0.5, 0.5);
+                Item item = targetLoc.getWorld().dropItem(targetLoc, s);
                 item.setVelocity(new Vector(0, 0, 0));
-                Debugger.getInstance().debug(2, "dropper dropped " + stack + " from " + getItemRouter());
+                Debugger.getInstance().debug(2, "dropper dropped " + s + " from " + getItemRouter());
             }
 
             return true;

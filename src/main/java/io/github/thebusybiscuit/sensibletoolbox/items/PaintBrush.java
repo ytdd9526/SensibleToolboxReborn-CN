@@ -114,9 +114,9 @@ public class PaintBrush extends BaseSTBItem {
 
     @Override
     public ItemStack toItemStack(int amount) {
-        ItemStack stack = super.toItemStack(amount);
-        STBUtil.levelToDurability(stack, getPaintLevel(), getMaxPaintLevel());
-        return stack;
+        ItemStack s = super.toItemStack(amount);
+        STBUtil.levelToDurability(s, getPaintLevel(), getMaxPaintLevel());
+        return s;
     }
 
     @Override
@@ -138,40 +138,40 @@ public class PaintBrush extends BaseSTBItem {
     }
 
     @Override
-    public void onInteractItem(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
+    public void onInteractItem(PlayerInteractEvent e) {
+        Player p = e.getPlayer();
 
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Block b = event.getClickedBlock();
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Block b = e.getClickedBlock();
             BaseSTBBlock stb = SensibleToolbox.getBlockAt(b.getLocation(), true);
 
             if (stb instanceof PaintCan) {
                 refillFromCan((PaintCan) stb);
-                event.setCancelled(true);
+                e.setCancelled(true);
             } else if (okToColor(b, stb)) {
-                int painted = paint(player, b);
+                int painted = paint(p, b);
 
                 if (painted > 0) {
-                    player.playSound(player.getLocation(), Sound.BLOCK_WATER_AMBIENT, 1.0F, 1.5F);
+                    p.playSound(p.getLocation(), Sound.BLOCK_WATER_AMBIENT, 1.0F, 1.5F);
                 }
             }
-        } else if (event.getAction() == Action.RIGHT_CLICK_AIR && player.isSneaking()) {
+        } else if (e.getAction() == Action.RIGHT_CLICK_AIR && p.isSneaking()) {
             setPaintLevel(0);
         }
 
-        updateHeldItemStack(event.getPlayer(), event.getHand());
-        event.setCancelled(true);
+        updateHeldItemStack(e.getPlayer(), e.getHand());
+        e.setCancelled(true);
     }
 
-    private int paint(@Nonnull Player player, @Nonnull Block b) {
+    private int paint(@Nonnull Player p, @Nonnull Block b) {
         // Bukkit Colorable interface doesn't cover all colorable blocks at this time, only Wool
-        if (player.isSneaking()) {
+        if (p.isSneaking()) {
             // paint a single block
-            return paintBlocks(player, b);
+            return paintBlocks(p, b);
         } else {
             // paint multiple blocks around the clicked block
             Block[] blocks = findBlocksAround(b);
-            return paintBlocks(player, blocks);
+            return paintBlocks(p, blocks);
         }
     }
 
@@ -211,30 +211,30 @@ public class PaintBrush extends BaseSTBItem {
     }
 
     @Override
-    public void onInteractEntity(PlayerInteractEntityEvent event) {
-        if (!event.getHand().equals(EquipmentSlot.HAND)) {
+    public void onInteractEntity(PlayerInteractEntityEvent e) {
+        if (!e.getHand().equals(EquipmentSlot.HAND)) {
             return;
         }
-        event.setCancelled(true);
+        e.setCancelled(true);
 
         if (getPaintLevel() <= 0) {
             return;
         }
 
-        Entity e = event.getRightClicked();
+        Entity ent = e.getRightClicked();
         int paintUsed = 0;
 
-        if (e instanceof Colorable) {
-            ((Colorable) e).setColor(getColor());
+        if (ent instanceof Colorable) {
+            ((Colorable) ent).setColor(getColor());
             paintUsed = 1;
-        } else if (e instanceof Painting) {
-            Art art = ((Painting) e).getArt();
+        } else if (ent instanceof Painting) {
+            Art art = ((Painting) ent).getArt();
 
             if (getPaintLevel() >= art.getBlockHeight() * art.getBlockWidth()) {
-                openArtworkMenu(event.getPlayer(), event.getHand(), (Painting) e);
+                openArtworkMenu(e.getPlayer(), e.getHand(), (Painting) e);
             } else {
-                Location loc = e.getLocation().add(0, -art.getBlockHeight() / 2.0, 0);
-                HoloMessage.popup(event.getPlayer(), loc, ChatColor.RED + "Not enough paint!");
+                Location l = ent.getLocation().add(0, -art.getBlockHeight() / 2.0, 0);
+                HoloMessage.popup(e.getPlayer(), l, ChatColor.RED + "Not enough paint!");
             }
         } else if (e instanceof Wolf) {
             Wolf wolf = (Wolf) e;
@@ -244,8 +244,8 @@ public class PaintBrush extends BaseSTBItem {
 
         if (paintUsed > 0) {
             setPaintLevel(getPaintLevel() - paintUsed);
-            updateHeldItemStack(event.getPlayer(), event.getHand());
-            event.getPlayer().playSound(e.getLocation(), Sound.BLOCK_WATER_AMBIENT, 1.0F, 1.5F);
+            updateHeldItemStack(e.getPlayer(), e.getHand());
+            e.getPlayer().playSound(ent.getLocation(), Sound.BLOCK_WATER_AMBIENT, 1.0F, 1.5F);
         }
     }
 
@@ -284,11 +284,11 @@ public class PaintBrush extends BaseSTBItem {
         }
     }
 
-    private int paintBlocks(@Nonnull Player player, Block... blocks) {
+    private int paintBlocks(@Nonnull Player p, Block... blocks) {
         int painted = 0;
 
         for (Block b : blocks) {
-            if (!SensibleToolbox.getProtectionManager().hasPermission(player, b, Interaction.PLACE_BLOCK)) {
+            if (!SensibleToolbox.getProtectionManager().hasPermission(p, b, Interaction.PLACE_BLOCK)) {
                 continue;
             }
 
